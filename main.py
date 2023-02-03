@@ -6,7 +6,7 @@ def main():
 
     convert_to_jpg(images)
     image_processing()
-    ocr_result(images)
+    ocr_result_to_txt(images)
 
 
 def convert_to_jpg(images):
@@ -15,9 +15,11 @@ def convert_to_jpg(images):
 def image_processing():
     pass
 
-def ocr_result(images):
+def ocr_result_to_txt(images):
+    f = open("Forest Green Rovers/Season1011.txt", "a", encoding="utf-8")
     for img in images:
-        print(pytesseract.image_to_string(img))
+        f.write(pytesseract.image_to_string(img))
+    f.close()
 
 
 main()
