@@ -1,12 +1,12 @@
 import pytesseract
-from pdf2image import convert_from_path
+from pdf2image import convert_from_path #PDFPageCountError
 import numpy as np
 import cv2
 import os
 
 def main():
     #images = convert_from_path('Season 2010-2011 FGR.pdf')
-    test_image = images[7]
+    #test_image = images[7]
     files_to_convert = get_filenames()
     convert_to_jpg(files_to_convert)
     #processed_images = image_processing(images)
@@ -26,8 +26,19 @@ def get_filenames():
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
-def convert_to_jpg(dict):
-    #for key, value in dict.items():
+def convert_to_jpg(pdf_dict):
+    images_dict = dict()
+    for team, f_statements in pdf_dict.items():
+        images_list = []
+        try:
+            for file in f_statements:
+                path = f'Financial statements/{team}/{file}'
+                image = convert_from_path(path)
+                images_list.append(image)
+        except (IOError, ValueError):
+            pass
+        images_dict[team] = images_list
+    return images_dict #loop through the dict and convert pdfs to jpg, later going to save them also so this doesn't have to be executed every time
 
 def image_processing(images):
     processed_images = []
