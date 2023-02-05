@@ -1,8 +1,9 @@
 import pytesseract
-from pdf2image import convert_from_path #PDFPageCountError
+from pdf2image import convert_from_path
 import numpy as np
 import cv2
 import os
+from PIL import Image
 
 def main():
     #images = convert_from_path('Season 2010-2011 FGR.pdf')
@@ -11,6 +12,7 @@ def main():
     files_to_convert = get_filenames()
     images_dict = convert_to_jpg(files_to_convert)
     processed_images = image_processing(images_dict)
+    merged_financial_statement = merge_images(processed_images)
     #ocr_result_to_txt(processed_images)
 
 def get_filenames():
@@ -40,7 +42,6 @@ def convert_to_jpg(pdf_dict):
         except (IOError, ValueError):
             pass
         images_dict[team] = images_list
-    print(images_dict)
     return images_dict #loop through the dict and convert pdfs to jpg, later going to save them also so this doesn't have to be executed every time
 
 def image_processing(images_dict):
@@ -59,22 +60,30 @@ def image_processing(images_dict):
                 # test_image = cv2.medianBlur(test_image, 3)
                 image = cv2.GaussianBlur(image, (3, 3), 0)
                 processed_images_list.append(image)
-                save_processed_images(image, team)
-        processed_images[team] = processed_images_list
+        processed_images[team] = np.vstack(processed_images_list)
     return processed_images
 
 def save_processed_images(image, team):
-    #dirpath = f'{os.getcwd()}\Processed images\{team}'
     try:
+        os.mkdir(f'{os.getcwd()}\Processed images')
         dirpath = f'{os.getcwd()}\Processed images'
-        os.mkdir(dirpath)
-        #os.makedirs(dirpath)
         os.chdir(dirpath)
-        #print(os.getcwd())
-        #cv2.imwrite()
     except FileExistsError:
-        pass
+        try:
+            os.chdir(f'{os.getcwd()}\Processed images')
+            os.mkdir(f'{os.getcwd()}\{team}')
+            os.chdir(f'{os.getcwd()}\{team}')
+            image.save(f'{team} financial statements.jpg', 'JPEG')
+        except FileExistsError:
+            pass
 
+
+def merge_images(images):
+    # img = Image.open('example.jpg')
+    # width, height = img.size
+    for team in images.keys():
+        merged_image = Image.fromarray(images[team])
+        save_processed_images(merged_image, team)
 
 def ocr_result_to_txt(images):
     f = open("Financial statements in txt/Forest Green Rovers/Season1011.txt", "a", encoding="utf-8")
