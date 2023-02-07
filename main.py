@@ -12,11 +12,11 @@ def main():
     #images = convert_from_path('Season 2010-2011 FGR.pdf')
     #test_image = images[7]
     #print(os.getcwd())
-    #files_to_convert = get_filenames()
-    #images_dict = convert_to_jpg(files_to_convert)
-    #processed_images = image_processing(images_dict)
-    #merged_financial_statement = merge_images(processed_images)
-    ocr_result_to_txt()
+    files_to_convert = get_filenames()
+    images_dict = convert_to_jpg(files_to_convert)
+    processed_images = image_processing(images_dict)
+    merged_financial_statement = merge_images(processed_images)
+    #ocr_result_to_txt()
 
 def get_filenames():
     team_and_files = dict()
@@ -54,10 +54,10 @@ def image_processing(images_dict):
     processed_images = {}
     for team, images in images_dict.items():
         for img in images:
-            print(images, len(images))
+            #print(images, len(images))
             processed_images_list = []
             for index, image in enumerate(img):
-                if 2 <= index <= 5:
+                if index <= 5:
                     continue
                 kernel = np.ones((1, 1), np.uint8)
                 image = np.array(image)
@@ -134,7 +134,7 @@ def ocr_result_to_txt():
             #print(image_text)
             #f = open(f"\{team}\{season}.txt", "w", encoding="utf-8")
             #f.write(image.text)
-            os.chdir('..')
+            os.chdir(dir_path)
     #f.close()
 
     #f = open("Financial statements in txt/Forest Green Rovers/Season1011.txt", "a", encoding="utf-8")
