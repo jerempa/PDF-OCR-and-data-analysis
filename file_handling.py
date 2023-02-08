@@ -8,12 +8,12 @@ def get_filenames(folder):
         if os.path.isdir(dir):
             global current_team
             current_team = directory
-            if directory != 'Forest Green Rovers':
-                for filename in os.listdir(dir):
-                    file = os.path.join(dir, filename)
-                    if os.path.isfile(file):
-                        files.append(filename)
-                team_and_files[directory] = files
+            #if directory != 'Forest Green Rovers':
+            for filename in os.listdir(dir):
+                file = os.path.join(dir, filename)
+                if os.path.isfile(file):
+                    files.append(filename)
+            team_and_files[directory] = files
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
@@ -73,13 +73,20 @@ def create_dir_for_images(image, team, f_statement_season):
         os.chdir('..')
 
 def save_files(image, team, f_statement_season):
+    print(image, team)
     try:
         os.mkdir(f'{os.getcwd()}\{team}')
         os.chdir(f'{os.getcwd()}\{team}')
-        image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        try:
+            image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        except OSError:
+            pass
         os.chdir('..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}\{team}')
-        image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        try:
+            image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        except OSError:
+            pass
         os.chdir('..')
     #get_correct_dates(team, f_statement_season)

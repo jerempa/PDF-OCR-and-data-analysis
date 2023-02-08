@@ -3,7 +3,7 @@ import file_handling
 
 #first_season = str()
 starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
-first_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
+#first_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
 
 def get_correct_dates(date_str):
     #global first_season
@@ -27,11 +27,11 @@ def get_correct_dates(date_str):
 
     #return new_date_str
 
-def return_first_season():
-    try:
-        return first_seasons[file_handling.return_cur_team()]
-    except KeyError:
-        pass
+# def return_first_season():
+#     try:
+#         return first_seasons[file_handling.return_cur_team()]
+#     except KeyError:
+#         pass
 
 def return_starting_seasons():
     return starting_seasons

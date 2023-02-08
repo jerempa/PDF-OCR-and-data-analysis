@@ -12,18 +12,19 @@ def convert_to_jpg(pdf_dict):
     #i = 0
     for team, f_statements in pdf_dict.items():
         images_list = []
-        try:
-            for file in f_statements:
-                path = f'Financial statements/{team}/{file}'
-                image = convert_from_path(path)
-                images_list.append(image)
-                #print(file)
-                #break
-                # i += 1
-                # if i == 2:
-                #     break
-        except (IOError, ValueError):
-            pass
+        if team != 'Forest Green Rovers':
+            try:
+                for file in f_statements:
+                    path = f'Financial statements/{team}/{file}'
+                    image = convert_from_path(path)
+                    images_list.append(image)
+                    #print(file)
+                    #break
+                    # i += 1
+                    # if i == 2:
+                    #     break
+            except (IOError, ValueError):
+                pass
         images_dict[team] = images_list
     return images_dict #loop through the dict and convert pdfs to jpg
 
