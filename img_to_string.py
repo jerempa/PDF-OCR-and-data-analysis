@@ -16,7 +16,7 @@ def ocr_result_to_txt(img):
     #print(os.getcwd())
     current_team = file_handling.return_cur_team()
     #print(os.getcwd(), current_team, correct_seasons.return_correct_season())
-    correct_season = correct_seasons.return_teams_starting_season()
+    correct_season = correct_seasons.return_teams_season()
     #print(current_team, correct_season)
     if os.path.basename(os.getcwd()) == current_team:
         f = open(f'{current_team} {correct_season}.txt', 'a', encoding='utf-8')

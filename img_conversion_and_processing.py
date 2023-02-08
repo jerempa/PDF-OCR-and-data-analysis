@@ -34,6 +34,8 @@ def image_processing(images_dict):
             for img in images:
                 processed_images_list = []
                 for index, image in enumerate(img):
+                    if index <= 6:
+                        continue
                     kernel = np.ones((1, 1), np.uint8)
                     image = np.array(image)
                     image = cv2.dilate(image, kernel, iterations=1)
@@ -45,13 +47,14 @@ def image_processing(images_dict):
                     processed_images_list.append(image)
                     img_to_string.ocr_result_to_txt(image)
                 processed_images[team] = np.vstack(processed_images_list)
-                starting_season = correct_seasons.return_teams_starting_season()
+                starting_season = correct_seasons.return_teams_season()
+                merge_images(processed_images, starting_season)
                 correct_seasons.get_correct_dates(starting_season)
     return processed_images
 
-def merge_images(images):
+def merge_images(images, season):
     for team in images.keys():
         merged_image = Image.fromarray(images[team])
-        f_statement_season = correct_seasons.return_first_season()
-        #print(merged_image)
-        file_handling.create_dir_for_images(merged_image, team, f_statement_season)
+        correct_seasons.get_correct_dates(season)
+        file_handling.create_dir_for_images(merged_image, team, season)
+        season = correct_seasons.return_teams_season()
