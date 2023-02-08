@@ -5,6 +5,7 @@ import cv2
 import os
 from PIL import Image
 from datetime import datetime, timedelta
+import file_handling
 
 starting_seasons = {'Forest Green Rovers': '2010-2011'}
 
@@ -12,17 +13,17 @@ def main():
     #images = convert_from_path('Season 2010-2011 FGR.pdf')
     #test_image = images[7]
     #print(os.getcwd())
-    files_to_convert = get_filenames()
-    images_dict = convert_to_jpg(files_to_convert)
-    processed_images = image_processing(images_dict)
+    #files_to_convert = get_filenames('Financial statements')
+    #images_dict = convert_to_jpg(files_to_convert)
+    #processed_images = image_processing(images_dict)
     #merged_financial_statement = merge_images(processed_images)
     #ocr_result_to_txt()
 
-def get_filenames():
+def get_filenames(folder):
     team_and_files = dict()
-    for directory in os.listdir('Financial statements'):
+    for directory in os.listdir(folder):
         files = []
-        dir = os.path.join('Financial statements', directory)
+        dir = os.path.join(folder, directory)
         if os.path.isdir(dir):
             global current_team
             current_team = directory
