@@ -13,8 +13,11 @@ def get_filenames(folder):
                 if os.path.isfile(file):
                     files.append(filename)
             team_and_files[directory] = files
-    return team_and_files, current_team #loop through dir that has team sub-dirs, add their files to a dict
+    return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
+
+def return_cur_team():
+    return current_team
 # def get_filenames(folder):
 #     team_and_files = dict()
 #     for directory in os.listdir(folder):

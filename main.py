@@ -5,34 +5,36 @@ import cv2
 import os
 from PIL import Image
 from datetime import datetime, timedelta
+
 import file_handling
+import img_conversion_and_processing
 
 starting_seasons = {'Forest Green Rovers': '2010-2011'}
 
 def main():
-    #images = convert_from_path('Season 2010-2011 FGR.pdf')
-    #test_image = images[7]
-    #print(os.getcwd())
+    files_to_convert = file_handling.get_filenames('Financial statements')
+    global current_team
+    current_team = file_handling.return_cur_team()
     #files_to_convert = get_filenames('Financial statements')
     #images_dict = convert_to_jpg(files_to_convert)
     #processed_images = image_processing(images_dict)
     #merged_financial_statement = merge_images(processed_images)
     #ocr_result_to_txt()
 
-def get_filenames(folder):
-    team_and_files = dict()
-    for directory in os.listdir(folder):
-        files = []
-        dir = os.path.join(folder, directory)
-        if os.path.isdir(dir):
-            global current_team
-            current_team = directory
-            for filename in os.listdir(dir):
-                file = os.path.join(dir, filename)
-                if os.path.isfile(file):
-                    files.append(filename)
-            team_and_files[directory] = files
-    return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
+# def get_filenames(folder):
+#     team_and_files = dict()
+#     for directory in os.listdir(folder):
+#         files = []
+#         dir = os.path.join(folder, directory)
+#         if os.path.isdir(dir):
+#             global current_team
+#             current_team = directory
+#             for filename in os.listdir(dir):
+#                 file = os.path.join(dir, filename)
+#                 if os.path.isfile(file):
+#                     files.append(filename)
+#             team_and_files[directory] = files
+#     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
 def convert_to_jpg(pdf_dict):
