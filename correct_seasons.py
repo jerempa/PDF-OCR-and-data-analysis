@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
 import file_handling
 
-correct_season = str()
+first_season = str()
 starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
 
 def get_correct_dates(date_str):
     start_year, end_year = [int(x) for x in date_str.split("-")]
     #start_date = datetime(start_year, 1, 1)
     end_date = datetime(end_year, 12, 31)
+    if date_str == starting_seasons[file_handling.return_cur_team()]:
+        first_season = date_str
 
     new_start_date = end_date
     new_end_date = end_date + timedelta(days=365)
@@ -22,8 +24,8 @@ def get_correct_dates(date_str):
 
     #return new_date_str
 
-def return_correct_season():
-    return correct_season
+def return_first_season():
+    return first_season
 
 def return_starting_seasons():
     return starting_seasons

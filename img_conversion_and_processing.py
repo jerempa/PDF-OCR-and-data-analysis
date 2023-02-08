@@ -5,6 +5,7 @@ import cv2
 
 import correct_seasons
 import img_to_string
+import file_handling
 
 def convert_to_jpg(pdf_dict):
     images_dict = dict()
@@ -47,3 +48,10 @@ def image_processing(images_dict):
                 starting_season = correct_seasons.return_teams_starting_season()
                 correct_seasons.get_correct_dates(starting_season)
     return processed_images
+
+def merge_images(images):
+    for team in images.keys():
+        merged_image = Image.fromarray(images[team])
+        f_statement_season = correct_seasons.return_first_season()
+        #print(merged_image)
+        file_handling.create_dir_for_images(merged_image, team, f_statement_season)

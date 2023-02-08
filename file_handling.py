@@ -56,3 +56,31 @@ def create_dir_for_txt():
 #         if os.path.isfile(file):
 #             files.append(filename)
 #     return files
+
+def create_dir_for_images(image, team, f_statement_season):
+    if os.path.basename(os.getcwd()) == team:
+        os.chdir('..')
+        if os.path.basename(os.getcwd()) == 'Financial statements in txt':
+            os.chdir('..')
+    try:
+        os.mkdir(f'{os.getcwd()}\Processed images')
+        os.chdir(f'{os.getcwd()}\Processed images')
+        save_files(image, team, f_statement_season)
+        os.chdir('..')
+    except FileExistsError:
+        os.chdir(f'{os.getcwd()}\Processed images')
+        save_files(image, team, f_statement_season)
+        os.chdir('..')
+
+def save_files(image, team, f_statement_season):
+    #f_statement_season = starting_seasons[team]
+    try:
+        os.mkdir(f'{os.getcwd()}\{team}')
+        os.chdir(f'{os.getcwd()}\{team}')
+        image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        os.chdir('..')
+    except FileExistsError:
+        os.chdir(f'{os.getcwd()}\{team}')
+        image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
+        os.chdir('..')
+    #get_correct_dates(team, f_statement_season)
