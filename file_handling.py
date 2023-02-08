@@ -73,7 +73,6 @@ def create_dir_for_images(image, team, f_statement_season):
         os.chdir('..')
 
 def save_files(image, team, f_statement_season):
-    #f_statement_season = starting_seasons[team]
     try:
         os.mkdir(f'{os.getcwd()}\{team}')
         os.chdir(f'{os.getcwd()}\{team}')
