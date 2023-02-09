@@ -19,8 +19,12 @@ def ocr_result_to_txt(img):
     correct_season = correct_seasons.return_teams_season()
     #print(current_team, correct_season)
     if os.path.basename(os.getcwd()) == current_team:
-        f = open(f'{current_team} {correct_season}.txt', 'a', encoding='utf-8')
-        f.write(pytesseract.image_to_string(img))
-        f.close()
+        filename = f'{current_team} {correct_season}.txt'
+        if os.path.exists(filename):
+            pass
+        else:
+            f = open(f'{current_team} {correct_season}.txt', 'a', encoding='utf-8')
+            f.write(pytesseract.image_to_string(img))
+            f.close()
     file_handling.create_dir_for_txt()
     #os.chdir(f'{os.getcwd()}\Financial Statements in txt')

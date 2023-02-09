@@ -12,7 +12,7 @@ def convert_to_jpg(pdf_dict):
     #i = 0
     for team, f_statements in pdf_dict.items():
         images_list = []
-        if team != 'Forest Green Rovers':
+        if team != 'Forest Green Rovers' and team != 'Ipswich Town':
             try:
                 for file in f_statements:
                     path = f'Financial statements/{team}/{file}'
@@ -34,17 +34,16 @@ def image_processing(images_dict):
         if team != 'Forest Green Rovers':
             for img in images:
                 processed_images_list = []
-
                 for index, image in enumerate(img):
                     if index <= 6:
                         continue
-                    process_image(image)
+                    image = process_image(image)
                     processed_images_list.append(image)
                     img_to_string.ocr_result_to_txt(image)
 
                 processed_images[team] = np.vstack(processed_images_list)
                 starting_season = correct_seasons.return_teams_season()
-                merge_images(processed_images, starting_season)
+                #merge_images(processed_images, starting_season)
                 correct_seasons.get_correct_dates(starting_season)
     return processed_images
 
@@ -57,6 +56,8 @@ def process_image(image):
     image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
     # test_image = cv2.medianBlur(test_image, 3)
     image = cv2.GaussianBlur(image, (3, 3), 0)
+
+    return image
 
 def merge_images(images, season):
     for team in images.keys():
