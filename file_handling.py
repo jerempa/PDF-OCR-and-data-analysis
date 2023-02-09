@@ -1,4 +1,5 @@
 import os
+import correct_seasons
 
 def get_filenames(folder):
     team_and_files = dict()
@@ -27,6 +28,8 @@ def create_dir_for_txt(current_team):
     try:
         if os.path.basename(os.getcwd()) == current_team:
             pass
+        elif os.path.basename(os.getcwd()) in correct_seasons.return_starting_seasons():
+            os.chdir('..')
         elif os.path.basename(os.getcwd()) == 'Financial statements in txt':
             try:
                 os.mkdir(f'{os.getcwd()}/{current_team}')

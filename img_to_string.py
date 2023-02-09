@@ -19,6 +19,7 @@ def ocr_result_to_txt(img, current_team):
     correct_season = correct_seasons.return_teams_season(current_team)
     #print(current_team, correct_season)
     if os.path.basename(os.getcwd()) == current_team:
+        print(current_team, correct_season)
         f = open(f'{current_team} {correct_season}.txt', 'a', encoding='utf-8')
         f.write(pytesseract.image_to_string(img))
         f.close()

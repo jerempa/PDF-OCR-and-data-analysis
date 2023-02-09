@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-import file_handling
+#import file_handling
 
 #first_season = str()
 starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000',
