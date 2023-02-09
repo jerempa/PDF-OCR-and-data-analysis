@@ -34,24 +34,29 @@ def image_processing(images_dict):
         if team != 'Forest Green Rovers':
             for img in images:
                 processed_images_list = []
+
                 for index, image in enumerate(img):
                     if index <= 6:
                         continue
-                    kernel = np.ones((1, 1), np.uint8)
-                    image = np.array(image)
-                    image = cv2.dilate(image, kernel, iterations=1)
-                    kernel = np.ones((1, 1), np.uint8)
-                    image = cv2.erode(image, kernel, iterations=1)
-                    image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
-                    # test_image = cv2.medianBlur(test_image, 3)
-                    image = cv2.GaussianBlur(image, (3, 3), 0)
+                    process_image(image)
                     processed_images_list.append(image)
                     img_to_string.ocr_result_to_txt(image)
+
                 processed_images[team] = np.vstack(processed_images_list)
                 starting_season = correct_seasons.return_teams_season()
                 merge_images(processed_images, starting_season)
                 correct_seasons.get_correct_dates(starting_season)
     return processed_images
+
+def process_image(image):
+    kernel = np.ones((1, 1), np.uint8)
+    image = np.array(image)
+    image = cv2.dilate(image, kernel, iterations=1)
+    kernel = np.ones((1, 1), np.uint8)
+    image = cv2.erode(image, kernel, iterations=1)
+    image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+    # test_image = cv2.medianBlur(test_image, 3)
+    image = cv2.GaussianBlur(image, (3, 3), 0)
 
 def merge_images(images, season):
     for team in images.keys():
