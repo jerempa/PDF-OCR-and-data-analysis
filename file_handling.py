@@ -6,8 +6,8 @@ def get_filenames(folder):
         files = []
         dir = os.path.join(folder, directory)
         if os.path.isdir(dir):
-            global current_team
-            current_team = directory
+            #global current_team
+            #current_team = directory
             #if directory != 'Forest Green Rovers':
             for filename in os.listdir(dir):
                 file = os.path.join(dir, filename)
@@ -17,15 +17,15 @@ def get_filenames(folder):
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
-def return_cur_team():
-    return current_team
+# def return_cur_team():
+#     return current_team
 
-def create_dir_for_txt():
+def create_dir_for_txt(current_team):
     #print(os.path.basename(os.getcwd()), os.getcwd())
     #print(starting_seasons[current_team], os.getcwd())
     #print(return_cur_team(), os.getcwd())
     try:
-        if os.path.basename(os.getcwd()) == return_cur_team():
+        if os.path.basename(os.getcwd()) == current_team:
             pass
         elif os.path.basename(os.getcwd()) == 'Financial statements in txt':
             try:
@@ -73,7 +73,6 @@ def create_dir_for_images(image, team, f_statement_season):
         os.chdir('..')
 
 def save_files(image, team, f_statement_season):
-    print(image, team)
     try:
         os.mkdir(f'{os.getcwd()}\{team}')
         os.chdir(f'{os.getcwd()}\{team}')

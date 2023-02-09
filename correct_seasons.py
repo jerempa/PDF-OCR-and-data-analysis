@@ -2,10 +2,11 @@ from datetime import datetime, timedelta
 import file_handling
 
 #first_season = str()
-starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
+starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000',
+                    'Blackpool FC': '1999-2000', 'QPR': '2002-2003'}
 #first_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
 
-def get_correct_dates(date_str):
+def get_correct_dates(date_str, current_team):
     #global first_season
     start_year, end_year = [int(x) for x in date_str.split("-")]
     #start_date = datetime(start_year, 1, 1)
@@ -19,7 +20,7 @@ def get_correct_dates(date_str):
 
     new_date_str = new_start_date.strftime("%Y") + "-" + new_end_date.strftime("%Y")
     try:
-        starting_seasons[file_handling.return_cur_team()] = new_date_str
+        starting_seasons[current_team] = new_date_str
     except KeyError:
         pass
     #print(new_date_str)
@@ -36,8 +37,8 @@ def get_correct_dates(date_str):
 def return_starting_seasons():
     return starting_seasons
 
-def return_teams_season():
+def return_teams_season(current_team):
     try:
-        return starting_seasons[file_handling.return_cur_team()]
+        return starting_seasons[current_team]
     except KeyError:
         pass

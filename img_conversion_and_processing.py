@@ -29,23 +29,24 @@ def convert_to_jpg(pdf_dict):
     return images_dict #loop through the dict and convert pdfs to jpg
 
 def image_processing(images_dict):
-    processed_images = {}
+    #processed_images = {}
     for team, images in images_dict.items():
-        if team != 'Forest Green Rovers':
+        if team != 'Forest Green Rovers' or team != 'Ipswich town':
             for img in images:
                 processed_images_list = []
+                print(len(images))
                 for index, image in enumerate(img):
                     if index <= 6:
                         continue
                     image = process_image(image)
-                    processed_images_list.append(image)
-                    img_to_string.ocr_result_to_txt(image)
+                    #processed_images_list.append(image)
+                    img_to_string.ocr_result_to_txt(image, team)
 
-                processed_images[team] = np.vstack(processed_images_list)
-                starting_season = correct_seasons.return_teams_season()
+                #processed_images[team] = np.vstack(processed_images_list)
+                starting_season = correct_seasons.return_teams_season(team)
                 #merge_images(processed_images, starting_season)
-                correct_seasons.get_correct_dates(starting_season)
-    return processed_images
+                correct_seasons.get_correct_dates(starting_season, team)
+    #return processed_images
 
 def process_image(image):
     kernel = np.ones((1, 1), np.uint8)
