@@ -14,7 +14,7 @@ def convert_to_jpg(pdf_dict):
     #i = 0
     for team, f_statements in pdf_dict.items():
         images_list = []
-        if team != 'Forest Green Rovers' and team != 'Ipswich Town' and team != 'Blackpool FC':
+        if team != 'Forest Green Rovers' or team != 'Ipswich Town' or team != 'Blackpool FC' or team != 'QPR' or team != 'Leeds':
             try:
                 for file in f_statements:
                     path = f'Financial statements/{team}/{file}'
@@ -33,12 +33,12 @@ def convert_to_jpg(pdf_dict):
 def image_processing(images_dict):
     processed_images = {}
     for team, images in images_dict.items():
-        if team != 'Forest Green Rovers' or team != 'Ipswich town' or team != 'Blackpool FC':
+        if team != 'Forest Green Rovers' or team != 'Ipswich town' or team != 'Blackpool FC' or team != 'QPR' or team != 'Leeds':
             for img in images:
                 processed_images_list = []
                 for index, image in enumerate(img):
-                    if index <= 5:
-                        continue
+                    # if index <= 4:
+                    #     continue
                     filtering = filter_pages(image)
                     if filtering:
                         image = process_image(image)
@@ -59,13 +59,13 @@ def filter_pages(image):
     # f.write(pytesseract.image_to_data(image))
     # f.close()
     pala_criteria1 = data['text'].str.lower().str.contains('turnover').any()
-    pala_criteria2 = data['text'].str.lower().str.contains('gross').any()
-    #pala_criteria3 = data['text'].str.lower().str.contains('interest').any()
+    #pala_criteria2 = data['text'].str.lower().str.contains('gross').any()
+    pala_criteria3 = data['text'].str.lower().str.contains('revenue').any()
     pala_criteria4 = data['text'].str.lower().str.contains('profit').any()
 
-    balance_sheet_criteria1 = data['text'].str.lower().str.contains('debtors').any()
+    balance_sheet_criteria1 = data['text'].str.lower().str.contains('balance').any()
     balance_sheet_criteria2 = data['text'].str.lower().str.contains('share').any()
-    balance_sheet_criteria3 = data['text'].str.lower().str.contains('capital').any()
+    balance_sheet_criteria3 = data['text'].str.lower().str.contains('assets').any()
 
     attachment_criteria1 = data['text'].str.lower().str.contains('wages').any()
     attachment_criteria2 = data['text'].str.lower().str.contains('salaries').any()
@@ -76,7 +76,7 @@ def filter_pages(image):
     #print(balance_sheet_criteria3, balance_sheet_criteria2, balance_sheet_criteria1)
 
 
-    if (pala_criteria1 and pala_criteria2 and pala_criteria4) \
+    if ((pala_criteria1 or pala_criteria3) and pala_criteria4) \
             or (balance_sheet_criteria1 and balance_sheet_criteria2 and balance_sheet_criteria3)\
             or ((attachment_criteria1 or attachment_criteria2) and attachment_criteria3 and attachment_criteria4):
         return True
