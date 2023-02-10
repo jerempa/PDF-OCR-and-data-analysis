@@ -35,14 +35,16 @@ def file_reading(file, season, team):
         string_with_spaces1 = " ".join(line[:3])
 
         try:
+            this_year_value = line[len(line) - 2]
+            last_year_value = line[len(line) - 1]
+            this_year_value = this_year_value.replace('(', '').replace(')', '')
+            last_year_value = last_year_value.replace('(', '').replace(')', '')
             if string_with_spaces in keywords:
-                print(line, string_with_spaces)
-                #print(string_with_spaces1, string_with_spaces)
-                this_year_value = line[len(line) - 2]
-                last_year_value = line[len(line) - 1]
-                this_year_value = this_year_value.replace('(', '').replace(')', '')
-                last_year_value = last_year_value.replace('(', '').replace(')', '')
                 add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value)
+            elif string_with_spaces1 in keywords:
+                add_to_dict(data, team, this_year, last_year, string_with_spaces1, this_year_value, last_year_value)
+            elif line[0] in keywords:
+                add_to_dict(data, team, this_year, last_year, line[0], this_year_value, last_year_value)
         except IndexError:
             pass
         #print(line)
