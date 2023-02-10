@@ -35,10 +35,13 @@ def file_reading(file, season, team):
         string_with_spaces1 = " ".join(line[:3])
 
         try:
-            this_year_value = line[len(line) - 2]
-            last_year_value = line[len(line) - 1]
-            this_year_value = this_year_value.replace('(', '').replace(')', '')
-            last_year_value = last_year_value.replace('(', '').replace(')', '')
+            # this_year_value = line[len(line) - 2]
+            # last_year_value = line[len(line) - 1]
+            # this_year_value = this_year_value.replace('(', '').replace(')', '')
+            # last_year_value = last_year_value.replace('(', '').replace(')', '')
+            values = determine_values(line)
+            this_year_value = values[0]
+            last_year_value = values[1]
             if string_with_spaces in keywords:
                 add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value)
             elif string_with_spaces1 in keywords:
@@ -50,6 +53,15 @@ def file_reading(file, season, team):
         #print(line)
     print(data)
     file.close()
+
+def determine_values(line):
+    this_year_value = line[len(line) - 2]
+    last_year_value = line[len(line) - 1]
+    this_year_value = this_year_value.replace('(', '').replace(')', '')
+    last_year_value = last_year_value.replace('(', '').replace(')', '')
+
+    return this_year_value, last_year_value
+
 
 def add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value):
     if team in data:
