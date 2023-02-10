@@ -35,10 +35,6 @@ def file_reading(file, season, team):
         string_with_spaces1 = " ".join(line[:3])
 
         try:
-            # this_year_value = line[len(line) - 2]
-            # last_year_value = line[len(line) - 1]
-            # this_year_value = this_year_value.replace('(', '').replace(')', '')
-            # last_year_value = last_year_value.replace('(', '').replace(')', '')
             values = determine_values(line)
             this_year_value = values[0]
             last_year_value = values[1]
