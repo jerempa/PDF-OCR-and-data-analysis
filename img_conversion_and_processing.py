@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import pytesseract
 import pandas as pd
+import csv
 
 import correct_seasons
 import img_to_string
@@ -21,7 +22,7 @@ def convert_to_jpg(pdf_dict):
                     image = convert_from_path(path)
                     images_list.append(image)
                     #print(file)
-                    #break
+                    break
                     # i += 1
                     # if i == 2:
                     #     break
@@ -32,6 +33,84 @@ def convert_to_jpg(pdf_dict):
 
 def image_processing(images_dict):
     processed_images = {}
+    path = f'Financial statements/Leeds/Season 2020-2021 Leeds.pdf'
+    image = convert_from_path(path)
+    image = image[13]
+    image = process_image(image)
+    data = pytesseract.image_to_data(image, output_type='data.frame')
+
+    texts = data["text"]
+    lefts = data["left"]
+    tops = data["top"]
+    #widths = data["width"]
+    #heights = data["height"]
+
+    #sorted_data = sorted(zip(texts, lefts, tops, widths, heights), key=lambda x: (x[2], x[1]))
+    sorted_data = sorted(zip(texts, lefts, tops), key=lambda x: (x[2], x[1]))
+
+
+    with open("output10.csv", "w", encoding="windows-1252") as file:
+        writer = csv.writer(file)
+        #writer.writerow(["Text", "Left", "Top", "Width", "Height"])
+        current_top = -1
+        current_left = -1
+        row = []
+        tolerance = 12
+        for text, left, top in sorted_data:
+            # print(text, type(text))
+            # if text == 'nan':
+            #     print("nice")
+            if str(text) == "nan":
+                continue
+            if current_top == -1 or abs(top - current_top) > tolerance:
+                if row:
+                    #row = sorted(row, key=lambda x: lefts[texts.index(x)])
+                    # try:
+                    #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
+                    # except TypeError:
+                    #     pass
+                    row = sorted(row, key=lambda x: x[1])
+                    writer.writerow([x[0] for x in row])
+                    #writer.writerow(row)
+                    #print(row)
+                    #writer.writerow(sorted(row, key=lambda x: lefts[texts.index(x)]))
+                row = []
+                current_top = top
+            #print(text, left)
+            row.append((text, left))
+            # try:
+            #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
+            # except TypeError:
+            #     pass
+        if row:
+            # try:
+            #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
+            # except TypeError:
+            #     pass
+            row = sorted(row, key=lambda x: x[1])
+            writer.writerow([x[0] for x in row])
+            #row = sorted(row, key=lambda x: lefts[texts.index(x)])
+            #writer.writerow(row)
+            #writer.writerow(sorted(row, key=lambda x: lefts[texts.index(x)]))
+
+            #     if row:
+            #         row = sorted(row, key=lambda x: x[0])
+            #         writer.writerow([text for text in row])
+            #         row = []
+            #     current_top = top
+            #     current_left = left
+            # row.append(text)
+            # if row:
+            #     row = sorted(row, key=lambda x: x[0])
+            #     writer.writerow([text for text in row])
+
+    # with open("output1.csv", "w") as file:
+    #     writer = csv.writer(file)
+    #     writer.writerow(["Text", "Left", "Top", "Width", "Height"])
+    #     for text, left, top, width, height in sorted_data:
+    #         writer.writerow([text])
+
+    print('nice')
     for team, images in images_dict.items():
         if team != 'Forest Green Rovers' or team != 'Ipswich town' or team != 'Blackpool FC' or team != 'QPR' or team != 'Leeds':
             for img in images:
@@ -42,7 +121,8 @@ def image_processing(images_dict):
                     filtering = filter_pages(image)
                     if filtering:
                         image = process_image(image)
-                        img_to_string.ocr_result_to_txt(image, team)
+                        #img_to_string.ocr_result_to_txt(image, team)
+                    break
 
                 #try:
                 #processed_images[team] = np.vstack(processed_images_list)
