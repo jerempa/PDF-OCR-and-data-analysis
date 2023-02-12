@@ -6,15 +6,17 @@ def get_filenames(folder):
     for directory in os.listdir(folder):
         files = []
         dir = os.path.join(folder, directory)
-        if os.path.isdir(dir):
-            #global current_team
-            #current_team = directory
-            #if directory != 'Forest Green Rovers':
-            for filename in os.listdir(dir):
-                file = os.path.join(dir, filename)
-                if os.path.isfile(file):
-                    files.append(filename)
-            team_and_files[directory] = files
+        #print(directory)
+        if directory == 'Blackpool FC' or directory == 'Ipswich Town':
+            if os.path.isdir(dir):
+                #global current_team
+                #current_team = directory
+                #if directory != 'Forest Green Rovers':
+                for filename in os.listdir(dir):
+                    file = os.path.join(dir, filename)
+                    if os.path.isfile(file):
+                        files.append(filename)
+                team_and_files[directory] = files
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 

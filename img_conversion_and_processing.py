@@ -11,18 +11,19 @@ import img_to_string
 import file_handling
 
 def convert_to_jpg(pdf_dict):
+    print(pdf_dict)
     images_dict = dict()
     #i = 0
     for team, f_statements in pdf_dict.items():
         images_list = []
-        if team != 'Forest Green Rovers' or team != 'Ipswich Town' or team != 'Blackpool FC' or team != 'QPR' or team != 'Leeds':
+        if team != 'Forest Green Rovers' or team != 'Ipswich Town' or team != 'Blackpool FC':
             try:
                 for file in f_statements:
                     path = f'Financial statements/{team}/{file}'
                     image = convert_from_path(path)
                     images_list.append(image)
+                    #break
                     #print(file)
-                    break
                     # i += 1
                     # if i == 2:
                     #     break
@@ -33,86 +34,8 @@ def convert_to_jpg(pdf_dict):
 
 def image_processing(images_dict):
     processed_images = {}
-    path = f'Financial statements/Leeds/Season 2020-2021 Leeds.pdf'
-    image = convert_from_path(path)
-    image = image[13]
-    image = process_image(image)
-    data = pytesseract.image_to_data(image, output_type='data.frame')
-
-    texts = data["text"]
-    lefts = data["left"]
-    tops = data["top"]
-    #widths = data["width"]
-    #heights = data["height"]
-
-    #sorted_data = sorted(zip(texts, lefts, tops, widths, heights), key=lambda x: (x[2], x[1]))
-    sorted_data = sorted(zip(texts, lefts, tops), key=lambda x: (x[2], x[1]))
-
-
-    with open("output10.csv", "w", encoding="windows-1252") as file:
-        writer = csv.writer(file)
-        #writer.writerow(["Text", "Left", "Top", "Width", "Height"])
-        current_top = -1
-        current_left = -1
-        row = []
-        tolerance = 12
-        for text, left, top in sorted_data:
-            # print(text, type(text))
-            # if text == 'nan':
-            #     print("nice")
-            if str(text) == "nan":
-                continue
-            if current_top == -1 or abs(top - current_top) > tolerance:
-                if row:
-                    #row = sorted(row, key=lambda x: lefts[texts.index(x)])
-                    # try:
-                    #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
-                    # except TypeError:
-                    #     pass
-                    row = sorted(row, key=lambda x: x[1])
-                    writer.writerow([x[0] for x in row])
-                    #writer.writerow(row)
-                    #print(row)
-                    #writer.writerow(sorted(row, key=lambda x: lefts[texts.index(x)]))
-                row = []
-                current_top = top
-            #print(text, left)
-            row.append((text, left))
-            # try:
-            #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
-            # except TypeError:
-            #     pass
-        if row:
-            # try:
-            #     row = sorted(row, key=lambda x: lefts[texts.index(x)])
-            # except TypeError:
-            #     pass
-            row = sorted(row, key=lambda x: x[1])
-            writer.writerow([x[0] for x in row])
-            #row = sorted(row, key=lambda x: lefts[texts.index(x)])
-            #writer.writerow(row)
-            #writer.writerow(sorted(row, key=lambda x: lefts[texts.index(x)]))
-
-            #     if row:
-            #         row = sorted(row, key=lambda x: x[0])
-            #         writer.writerow([text for text in row])
-            #         row = []
-            #     current_top = top
-            #     current_left = left
-            # row.append(text)
-            # if row:
-            #     row = sorted(row, key=lambda x: x[0])
-            #     writer.writerow([text for text in row])
-
-    # with open("output1.csv", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["Text", "Left", "Top", "Width", "Height"])
-    #     for text, left, top, width, height in sorted_data:
-    #         writer.writerow([text])
-
-    print('nice')
     for team, images in images_dict.items():
-        if team != 'Forest Green Rovers' or team != 'Ipswich town' or team != 'Blackpool FC' or team != 'QPR' or team != 'Leeds':
+        if team != 'Forest Green Rovers' or team != 'QPR' or team != 'Leeds':
             for img in images:
                 processed_images_list = []
                 for index, image in enumerate(img):
@@ -121,8 +44,10 @@ def image_processing(images_dict):
                     filtering = filter_pages(image)
                     if filtering:
                         image = process_image(image)
+                        data_for_formatting = formatting_data(image)
+                        img_to_string.ocr_result_to_csv(data_for_formatting, team)
                         #img_to_string.ocr_result_to_txt(image, team)
-                    break
+                    #break
 
                 #try:
                 #processed_images[team] = np.vstack(processed_images_list)
@@ -135,32 +60,62 @@ def image_processing(images_dict):
 
 def filter_pages(image):
     data = pytesseract.image_to_data(image, output_type='data.frame')
-    # f = open('testi6.txt', 'a', encoding='utf-8')
-    # f.write(pytesseract.image_to_data(image))
-    # f.close()
-    pala_criteria1 = data['text'].str.lower().str.contains('turnover').any()
-    #pala_criteria2 = data['text'].str.lower().str.contains('gross').any()
-    pala_criteria3 = data['text'].str.lower().str.contains('revenue').any()
-    pala_criteria4 = data['text'].str.lower().str.contains('profit').any()
 
-    balance_sheet_criteria1 = data['text'].str.lower().str.contains('balance').any()
-    balance_sheet_criteria2 = data['text'].str.lower().str.contains('share').any()
-    balance_sheet_criteria3 = data['text'].str.lower().str.contains('assets').any()
+    pala_criteria1 = None
+    pala_criteria3 = None
+    pala_criteria4 = None
+    pala_criteria6 = None
 
-    attachment_criteria1 = data['text'].str.lower().str.contains('wages').any()
-    attachment_criteria2 = data['text'].str.lower().str.contains('salaries').any()
-    attachment_criteria3 = data['text'].str.lower().str.contains('pension').any()
-    attachment_criteria4 = data['text'].str.lower().str.contains('payroll').any()
+    balance_sheet_criteria1 = None
+
+    attachment_criteria1 = None
+    attachment_criteria2 = None
+    attachment_criteria3 = None
+    attachment_criteria4 = None
+    try:
+        pala_criteria1 = data['text'].str.lower().str.contains('turnover').any()
+        # #pala_criteria2 = data['text'].str.lower().str.contains('gross').any()
+        pala_criteria3 = data['text'].str.lower().str.contains('revenue').any()
+        pala_criteria4 = data['text'].str.lower().str.contains('profit').any()
+        pala_criteria6 = data['text'].str.lower().str.contains('loss').any()
+        pala_criteria5 = data['text'].str.lower().str.contains('interest').any()
+
+        balance_sheet_criteria1 = data['text'].str.lower().str.contains('stocks').any()
+        #balance_sheet_criteria2 = data['text'].str.lower().str.contains('assets').any()
+        # balance_sheet_criteria2 = data['text'].str.lower().str.contains('share').any()
+        # balance_sheet_criteria3 = data['text'].str.lower().str.contains('debtors').any()
+
+        attachment_criteria1 = data['text'].str.lower().str.contains('wages').any()
+        attachment_criteria2 = data['text'].str.lower().str.contains('salaries').any()
+        attachment_criteria3 = data['text'].str.lower().str.contains('pension').any()
+        attachment_criteria4 = data['text'].str.lower().str.contains('payroll').any()
+    except AttributeError:
+        pass
+
+    # pound_sign = data['text'].str.lower().str.contains('£').any()
+    # note = data['text'].str.lower().str.contains('note').any()
+    # profit = data['text'].str.lower().str.contains('profit').any()
 
     #print(pala_criteria4, pala_criteria3, pala_criteria2, pala_criteria1)
     #print(balance_sheet_criteria3, balance_sheet_criteria2, balance_sheet_criteria1)
 
 
-    if ((pala_criteria1 or pala_criteria3) and pala_criteria4) \
-            or (balance_sheet_criteria1 and balance_sheet_criteria2 and balance_sheet_criteria3)\
+    if ((pala_criteria4 or pala_criteria6) and (pala_criteria1 or pala_criteria3)) \
+            or (balance_sheet_criteria1)\
             or ((attachment_criteria1 or attachment_criteria2) and attachment_criteria3 and attachment_criteria4):
         return True
     return False
+
+def formatting_data(image):
+    data = pytesseract.image_to_data(image, output_type='data.frame')
+
+    texts = data["text"]
+    lefts = data["left"]
+    tops = data["top"]
+
+    sorted_data = sorted(zip(texts, lefts, tops), key=lambda x: (x[2], x[1]))
+
+    return sorted_data
 
 def process_image(image):
     kernel = np.ones((1, 1), np.uint8)
