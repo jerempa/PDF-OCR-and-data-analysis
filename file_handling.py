@@ -7,7 +7,7 @@ def get_filenames(folder):
         files = []
         dir = os.path.join(folder, directory)
         #print(directory)
-        if directory == 'Huddersfield':
+        if directory == 'Huddersfield' or directory == 'Brighton':
             if os.path.isdir(dir):
                 #global current_team
                 #current_team = directory

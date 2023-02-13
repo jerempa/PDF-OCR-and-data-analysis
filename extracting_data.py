@@ -44,7 +44,7 @@ balance_sheet_keywords = [
     "called up share capital",
     "share premium account",
     "unrealised profit reserve",
-    "profit and loss account",
+    #"profit and loss account",
     "shareholders deficit"
 ]
 
@@ -88,8 +88,12 @@ def file_reading(team_and_files):
     #file = file.readlines()
     #print(latest_year, former_year)
     data = {}
+    done_teams = []
     for team, team_directory in team_and_files.items():
         #print(team)
+        print(os.path.basename(os.getcwd()))
+        if os.path.basename(os.getcwd()) in done_teams:
+            os.chdir('../..')
         os.chdir(f'{os.getcwd()}/Financial statements in csv/{team}')
         for csv_file in team_directory:
             #print(os.getcwd())
@@ -97,7 +101,6 @@ def file_reading(team_and_files):
             this_year = years.split('-')[1]
             last_year = years.split('-')[0]
             with open(csv_file, "r") as file:
-                print("nice")
                 reader = csv.reader(file, delimiter=",")
                 for row in reader:
                     for i in range(1, len(row) + 1):
@@ -112,6 +115,7 @@ def file_reading(team_and_files):
                                 add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
                         except IndexError:
                             pass
+            done_teams.append(team)
     print(data)
     #file.close()
 
@@ -145,17 +149,17 @@ def determine_values(line):
 def add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value):
     if team in data:
         if this_year not in data[team]:
-            data[team][this_year] = {}
             data[team][last_year] = {}
+            data[team][this_year] = {}
         if string_with_spaces not in data[team][this_year]:
-            data[team][this_year][string_with_spaces] = this_year_value
             data[team][last_year][string_with_spaces] = last_year_value
+            data[team][this_year][string_with_spaces] = this_year_value
         # except KeyError:
         #     data[team][this_year] = this_year_value
         #     data[team][last_year] = last_year_value
     else:
-        data[team] = {this_year: {string_with_spaces: this_year_value},
-                      last_year: {string_with_spaces: last_year_value}}
+        data[team] = {last_year: {string_with_spaces: last_year_value},
+                      this_year: {string_with_spaces: this_year_value}}
     return data
 
 def return_csv_file():
