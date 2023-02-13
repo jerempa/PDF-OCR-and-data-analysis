@@ -8,7 +8,7 @@ def ocr_result_to_txt(img, current_team):
     #print(os.getcwd(), current_team)
     #print(starting_seasons[current_team], os.getcwd())
     #print(os.path.basename(os.getcwd()))
-    # if os.path.basename(os.getcwd()) == 'Financial statements in txt':
+    # if os.path.basename(os.getcwd()) == 'Financial statements in csv':
     #     try:
     #         os.mkdir(f'{os.getcwd()}/{current_team}')
     #         os.chdir(f'{os.getcwd()}/{current_team}')

@@ -7,7 +7,7 @@ def get_filenames(folder):
         files = []
         dir = os.path.join(folder, directory)
         #print(directory)
-        if directory == 'Blackpool FC' or directory == 'Ipswich Town':
+        if directory == 'Huddersfield':
             if os.path.isdir(dir):
                 #global current_team
                 #current_team = directory
@@ -32,17 +32,17 @@ def create_dir_for_txt(current_team):
             pass
         elif os.path.basename(os.getcwd()) in correct_seasons.return_starting_seasons():
             os.chdir('..')
-        elif os.path.basename(os.getcwd()) == 'Financial statements in txt':
+        elif os.path.basename(os.getcwd()) == 'Financial statements in csv':
             try:
                 os.mkdir(f'{os.getcwd()}/{current_team}')
                 os.chdir(f'{os.getcwd()}/{current_team}')
             except FileExistsError:
                 os.chdir(f'{os.getcwd()}/{current_team}')
         else:
-            os.mkdir(f'{os.getcwd()}/Financial statements in txt')
-            os.chdir(f'{os.getcwd()}/Financial statements in txt')
+            os.mkdir(f'{os.getcwd()}/Financial statements in csv')
+            os.chdir(f'{os.getcwd()}/Financial statements in csv')
     except FileExistsError:
-        os.chdir(f'{os.getcwd()}/Financial statements in txt') #changing and making directories, depending on where the user is
+        os.chdir(f'{os.getcwd()}/Financial statements in csv') #changing and making directories, depending on where the user is
 # def get_filenames(folder):
 #     team_and_files = dict()
 #     for directory in os.listdir(folder):
@@ -65,7 +65,7 @@ def create_dir_for_txt(current_team):
 def create_dir_for_images(image, team, f_statement_season):
     if os.path.basename(os.getcwd()) == team:
         os.chdir('..')
-        if os.path.basename(os.getcwd()) == 'Financial statements in txt':
+        if os.path.basename(os.getcwd()) == 'Financial statements in csv':
             os.chdir('..')
     try:
         os.mkdir(f'{os.getcwd()}\Processed images')
