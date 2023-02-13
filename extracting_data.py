@@ -30,30 +30,43 @@ balance_sheet_keywords = [
     #"fixed assets",
     "intangible assets",
     "tangible assets",
+    "investments",
+    "other investments",
     #"current assets",
     "stocks",
+    "debtors",
     "debtors: due within one year",
     "debtors: due after more than one year",
     "cash at bank and in hand",
     "creditors: amounts falling due within one year",
     "net current liabilities",
+    "net current assets",
     "total assets less current liabilities",
     "creditors: amounts falling due after more than one year",
     "net liabilities",
     #"capital and reserves",
     "called up share capital",
+    "capital redemption reserve",
+    "share premium",
+    "retained earnings",
+    "minority interests",
     "share premium account",
     "unrealised profit reserve",
     #"profit and loss account",
-    "shareholders deficit"
+    "shareholders deficit",
+    "total equity"
 ]
 
 pala_keywords = ['turnover', 'revenue', 'cost of sales', 'gross profit', 'gross loss', 'gross profit/loss',
-                 'administrative expenses', 'other operating income', 'profit/(loss) before taxation',
+                 'administrative expenses', 'other operating income', 'profit on ordinary activities before taxation'
+                 'loss on ordinary activities before taxation', 'profit/(loss) before taxation',
                  'operating profit', 'profit before taxation', 'loss before taxation',
                  'operating loss', 'operating profit/loss' 'interest receivable and similar income',
                  'interest payable and similar expenses', 'tax on profit', 'tax on loss', 'tax on profit/loss'
-                 'profit for the financial period', 'loss for the financial period', 'profit/(loss) for the financial period']
+                 'profit for the financial period', 'loss for the financial period', 'profit/(loss) for the financial period',
+                'profit for the period', 'loss for the period', 'profit/(loss) for the period',
+                 'profit for the year', 'loss for the year', 'profit/(loss) for the year',
+                 'profit for the financial year', 'loss for the financial year', 'profit/(loss) for the financial year']
 
 
 
