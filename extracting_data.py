@@ -4,32 +4,56 @@ import os
 import file_handling
 import csv
 
-balance_sheet_dict = {
-    "Fixed assets": None,
-    "Intangible assets": None,
-    "Tangible assets": None,
-    "Current assets": None,
-    "Stocks": None,
-    "Debtors: due within one year": None,
-    "Debtors: due after more than one year": None,
-    "Cash at bank and in hand": None,
-    "Creditors: amounts falling due within one year": None,
-    "Net current liabilities": None,
-    "Total assets less current liabilities": None,
-    "Creditors: amounts falling due after more than one year": None,
-    "Net liabilities": None,
-    "Capital and reserves": None,
-    "Called up share capital": None,
-    "Share premium account": None,
-    "Unrealised profit reserve": None,
-    "Profit and loss account": None,
-    "Shareholders deficit": None
-}
+# balance_sheet_dict = {
+#     "Fixed assets": None,
+#     "Intangible assets": None,
+#     "Tangible assets": None,
+#     "Current assets": None,
+#     "Stocks": None,
+#     "Debtors: due within one year": None,
+#     "Debtors: due after more than one year": None,
+#     "Cash at bank and in hand": None,
+#     "Creditors: amounts falling due within one year": None,
+#     "Net current liabilities": None,
+#     "Total assets less current liabilities": None,
+#     "Creditors: amounts falling due after more than one year": None,
+#     "Net liabilities": None,
+#     "Capital and reserves": None,
+#     "Called up share capital": None,
+#     "Share premium account": None,
+#     "Unrealised profit reserve": None,
+#     "Profit and loss account": None,
+#     "Shareholders deficit": None
+# }
+
+balance_sheet_keywords = [
+    #"fixed assets",
+    "intangible assets",
+    "tangible assets",
+    #"current assets",
+    "stocks",
+    "debtors: due within one year",
+    "debtors: due after more than one year",
+    "cash at bank and in hand",
+    "creditors: amounts falling due within one year",
+    "net current liabilities",
+    "total assets less current liabilities",
+    "creditors: amounts falling due after more than one year",
+    "net liabilities",
+    #"capital and reserves",
+    "called up share capital",
+    "share premium account",
+    "unrealised profit reserve",
+    "profit and loss account",
+    "shareholders deficit"
+]
 
 pala_keywords = ['turnover', 'revenue', 'cost of sales', 'gross profit', 'gross loss', 'gross profit/loss',
-                 'administrative expenses', 'other operating income', 'profit/(loss)', 'operating profit',
-                 'operating loss', 'operating profit/loss' 'interest receivable and', 'interest payable and', 'tax on',
-                 'profit for the', 'loss for the', 'profit/loss for the']
+                 'administrative expenses', 'other operating income', 'profit/(loss) before taxation',
+                 'operating profit', 'profit before taxation', 'loss before taxation',
+                 'operating loss', 'operating profit/loss' 'interest receivable and similar income',
+                 'interest payable and similar expenses', 'tax on profit', 'tax on loss', 'tax on profit/loss'
+                 'profit for the financial period', 'loss for the financial period', 'profit/(loss) for the financial period']
 
 
 
@@ -43,6 +67,7 @@ def reg_exp_extraction():
     #print(team_and_files)
     #print(os.getcwd())
     #f = open(f'{os.getcwd()}/Financial statements in txt/Leeds/Leeds 2020-2021.csv', 'r')
+    #print(team_and_files)
     file_reading(f'{os.getcwd()}/Financial statements in txt/Leeds/Leeds 2020-2021.csv', '2020-2021', 'Leeds')
     # os.chdir(f'{os.getcwd()}/Financial statements in txt')
     # for team, file in team_and_files.items():
@@ -62,25 +87,29 @@ def file_reading(csv_file, season, team):
     with open(csv_file, "r") as file:
         reader = csv.reader(file, delimiter=",")
         for row in reader:
-            string_with_spaces = " ".join(row[:2]).lower()
-            string_with_spaces1 = " ".join(row[:3]).lower()
+            for i in range(1, len(row) + 1):
+                keyword = " ".join(row[:i]).lower()
+            # string_with_spaces = " ".join(row[:2]).lower()
+            # string_with_spaces1 = " ".join(row[:3]).lower()
             #print(string_with_spaces1, string_with_spaces)
-            try:
-                #print(row[0])
-                values = determine_values(row)
-                this_year_value = values[0]
-                last_year_value = values[1]
-                if string_with_spaces in pala_keywords:
-                    add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value)
-                elif string_with_spaces1 in pala_keywords:
-                    add_to_dict(data, team, this_year, last_year, string_with_spaces1, this_year_value, last_year_value)
-                elif row[0].lower() in pala_keywords:
-                #print(line)
-                    add_to_dict(data, team, this_year, last_year, row[0].lower(), this_year_value, last_year_value)
-                # if row[0].lower() == 'turnover':
-                #     print(row)
-            except IndexError:
-                pass
+                try:
+                    #print(row[0])
+                    values = determine_values(row)
+                    this_year_value = values[0]
+                    last_year_value = values[1]
+                    if keyword in pala_keywords:
+                        add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
+                    elif keyword in balance_sheet_keywords:
+                        add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
+                    # elif string_with_spaces1 in pala_keywords:
+                    #     add_to_dict(data, team, this_year, last_year, string_with_spaces1, this_year_value, last_year_value)
+                    # elif row[0].lower() in pala_keywords:
+                    # #print(line)
+                    #     add_to_dict(data, team, this_year, last_year, row[0].lower(), this_year_value, last_year_value)
+                    # if row[0].lower() == 'turnover':
+                    #     print(row)
+                except IndexError:
+                    pass
     # for index, line in enumerate(file):
     #     line = line.strip()
     #     line = line.lower()
@@ -109,7 +138,7 @@ def file_reading(csv_file, season, team):
     #     except IndexError:
     #         pass
         #print(line)
-    #print(data)
+    print(data)
     #file.close()
 
 def determine_values(line):
@@ -119,18 +148,21 @@ def determine_values(line):
     this_year_value = this_year_value.replace('(', '').replace(')', '')
     last_year_value = last_year_value.replace('(', '').replace(')', '')
 
-    this_year_value = this_year_value.replace('"', '').replace('"', '')
-    last_year_value = last_year_value.replace('"', '').replace('"', '')
+    this_year_value = this_year_value.replace('"', '')
+    last_year_value = last_year_value.replace('"', '')
 
-
-    try:
-        this_year_value = int(this_year_value)
-        last_year_value = int(last_year_value)
-
-
-        #return True
-    except ValueError:
-        pass
+    # this_year_value = this_year_value.replace(',', '')
+    # last_year_value = last_year_value.replace(',', '')
+    #
+    #
+    # try:
+    #     this_year_value = int(this_year_value)
+    #     last_year_value = int(last_year_value)
+    #
+    #
+    #     #return True
+    # except ValueError:
+    #     pass
 
     return this_year_value, last_year_value
 
