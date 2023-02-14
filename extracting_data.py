@@ -81,11 +81,13 @@ def main():
     data = file_reading(team_and_files)
     # print(data['Brighton'])
     data = data['Brighton']
-    # for year, year_data in data.items():
-    #     #print("Year:", year)
-    #     for key, value in year_data.items():
-    #         #pass
-    #         #print(key, ":", value)
+    for year, year_data in data.items():
+        #print("Year:", year)
+        for key, value in year_data.items():
+            #pass
+            #print(key)
+            print(year, key, ":", value)
+            #print(key, ":", value)
 
 
 def file_reading(team_and_files):
@@ -101,27 +103,29 @@ def file_reading(team_and_files):
             last_year = years.split('-')[0]
             process_csv_file(data, team, this_year, last_year, csv_file, pala_keywords + balance_sheet_keywords)
             done_teams.append(team)
-    print(data)
     return data
 
 
 def process_csv_file(data, team, this_year, last_year, csv_file, keywords):
     with open(csv_file, "r") as file:
         reader = csv.reader(file, delimiter=",")
-        for row in reader:
-            for i in range(1, len(row) + 1):
-                keyword = " ".join(row[:i]).lower()
-                try:
-                    values = determine_values(row)
-                    this_year_value = values[0]
-                    last_year_value = values[1]
-                    if keyword in keywords:
-                        # try:
-                        #     this_year_value = int(this_year_value)
-                        #     last_year_value =
-                        add_to_dict(data, team, int(this_year), int(last_year), keyword, this_year_value, last_year_value)
-                except IndexError:
-                    pass
+        try:
+            for row in reader:
+                for i in range(1, len(row) + 1):
+                    keyword = " ".join(row[:i]).lower()
+                    try:
+                        values = determine_values(row)
+                        this_year_value = values[0]
+                        last_year_value = values[1]
+                        if keyword in keywords:
+                            # try:
+                            #     this_year_value = int(this_year_value)
+                            #     last_year_value =
+                            add_to_dict(data, team, int(this_year), int(last_year), keyword, this_year_value, last_year_value)
+                    except IndexError:
+                        pass
+        except UnicodeError:
+            pass
 
 
 def determine_values(line):
@@ -150,30 +154,23 @@ def determine_values(line):
     return this_year_value, last_year_value
 
 
-def add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_value, last_year_value):
-    #print(this_year, last_year, string_with_spaces, this_year_value, last_year_value)
-    # this_year = int(this_year)
-    # last_year = int(last_year)
+def add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value):
     if team in data:
-        #print(data[team])
-        #print(this_year, this_year in data[team], last_year, last_year in data[team])
         if this_year not in data[team]:
-            # data[team][last_year] = {string_with_spaces: last_year_value}
-            # data[team][this_year] = {string_with_spaces: this_year_value}
             data[team][last_year] = {}
             data[team][this_year] = {}
-        # data[team][last_year][string_with_spaces] = last_year_value
-        # data[team][this_year][string_with_spaces] = this_year_value
-        # elif this_year not in data[team] and last_year in data[team]:
-        #     data[team][last_year][string_with_spaces] = last_year_value
-        #print(data[team])
-        #print(type(this_year))
-        if string_with_spaces not in data[team][this_year] and string_with_spaces not in data[team][last_year]:
-            data[team][last_year][string_with_spaces] = last_year_value
-            data[team][this_year][string_with_spaces] = this_year_value
+        #print(keyword)
+        if keyword not in data[team][this_year] and keyword not in data[team][last_year]:
+            data[team][last_year][keyword] = last_year_value
+            data[team][this_year][keyword] = this_year_value
+        if keyword == 'turnover':
+            if ',' in this_year_value:
+                data[team][this_year][keyword] = this_year_value
+            if ',' in last_year_value:
+                data[team][last_year][keyword] = last_year_value #checking if the turnover value has been found from the profit and loss account
     else:
-        data[team] = {last_year: {string_with_spaces: last_year_value},
-                      this_year: {string_with_spaces: this_year_value}}
+        data[team] = {last_year: {keyword: last_year_value},
+                      this_year: {keyword: this_year_value}}
     return data
 
 # main()
