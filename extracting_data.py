@@ -69,41 +69,14 @@ pala_keywords = ['turnover', 'revenue', 'cost of sales', 'gross profit', 'gross 
                  'profit for the financial year', 'loss for the financial year', 'profit/(loss) for the financial year']
 
 
-
-
-
-# def main():
-#     reg_exp_extraction()
-
 def main():
     team_and_files = file_handling.get_filenames('Financial statements in csv')
-    #print(team_and_files)
-    #print(os.getcwd())
-    file = return_csv_file()
-    # for team, files in team_and_files.items():
-    #     print(team)
-    #f = open(f'{os.getcwd()}/Financial statements in csv/Leeds/Leeds 2020-2021.csv', 'r')
-    #print(team_and_files)
-    #file_reading(f'{os.getcwd()}/Financial statements in csv/Leeds/Leeds 2020-2021.csv', '2020-2021', 'Leeds', team_and_files)
-    file_reading(team_and_files)
-    # os.chdir(f'{os.getcwd()}/Financial statements in csv')
-    # for team, file in team_and_files.items():
-    #     os.chdir(f'{os.getcwd()}/{team}')
-    #     for files in file:
-    #         f = open(files, 'r')
-    #         file_reading(f)
-        #print(team)
-        #print(os.getcwd())
+    data = file_reading(team_and_files)
 
 def file_reading(team_and_files):
-    # this_year = season.split('-')[1]
-    # last_year = season.split('-')[0]
-    #file = file.readlines()
-    #print(latest_year, former_year)
     data = {}
     done_teams = []
     for team, team_directory in team_and_files.items():
-        #print(team)
         print(os.path.basename(os.getcwd()))
         if os.path.basename(os.getcwd()) in done_teams:
             os.chdir('../..')
@@ -115,7 +88,7 @@ def file_reading(team_and_files):
             process_csv_file(data, team, this_year, last_year, csv_file, pala_keywords + balance_sheet_keywords)
             done_teams.append(team)
     print(data)
-    #file.close()
+    return data
 
 def process_csv_file(data, team, this_year, last_year, csv_file, keywords):
     with open(csv_file, "r") as file:
@@ -167,16 +140,9 @@ def add_to_dict(data, team, this_year, last_year, string_with_spaces, this_year_
         if string_with_spaces not in data[team][this_year]:
             data[team][last_year][string_with_spaces] = last_year_value
             data[team][this_year][string_with_spaces] = this_year_value
-        # except KeyError:
-        #     data[team][this_year] = this_year_value
-        #     data[team][last_year] = last_year_value
     else:
         data[team] = {last_year: {string_with_spaces: last_year_value},
                       this_year: {string_with_spaces: this_year_value}}
     return data
-
-def return_csv_file():
-    team_and_files = file_handling.get_filenames('Financial statements in csv')
-    print(team_and_files)
 
 #main()

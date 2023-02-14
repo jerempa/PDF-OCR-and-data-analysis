@@ -5,15 +5,11 @@ def get_filenames(folder):
     team_and_files = dict()
     for directory in os.listdir(folder):
         files = []
-        dir = os.path.join(folder, directory)
-        #print(directory)
+        dire = os.path.join(folder, directory)
         if directory == 'Huddersfield' or directory == 'Brighton':
-            if os.path.isdir(dir):
-                #global current_team
-                #current_team = directory
-                #if directory != 'Forest Green Rovers':
-                for filename in os.listdir(dir):
-                    file = os.path.join(dir, filename)
+            if os.path.isdir(dire):
+                for filename in os.listdir(dire):
+                    file = os.path.join(dire, filename)
                     if os.path.isfile(file):
                         files.append(filename)
                 team_and_files[directory] = files
@@ -24,9 +20,6 @@ def get_filenames(folder):
 #     return current_team
 
 def create_dir_for_txt(current_team):
-    #print(os.path.basename(os.getcwd()), os.getcwd())
-    #print(starting_seasons[current_team], os.getcwd())
-    #print(return_cur_team(), os.getcwd())
     try:
         if os.path.basename(os.getcwd()) == current_team:
             pass
