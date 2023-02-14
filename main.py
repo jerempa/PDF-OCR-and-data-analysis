@@ -10,7 +10,7 @@ def main():
     #current_team = file_handling.return_cur_team()
     #images_dict = img_conversion_and_processing.convert_to_jpg(files_to_convert)
     #img_conversion_and_processing.image_processing(images_dict)
-    extracting_data.reg_exp_extraction()
+    extracting_data.main()
     #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images)
     #ocr_result_to_txt()
 

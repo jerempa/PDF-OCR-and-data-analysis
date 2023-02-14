@@ -75,7 +75,7 @@ pala_keywords = ['turnover', 'revenue', 'cost of sales', 'gross profit', 'gross 
 # def main():
 #     reg_exp_extraction()
 
-def reg_exp_extraction():
+def main():
     team_and_files = file_handling.get_filenames('Financial statements in csv')
     #print(team_and_files)
     #print(os.getcwd())
@@ -109,28 +109,28 @@ def file_reading(team_and_files):
             os.chdir('../..')
         os.chdir(f'{os.getcwd()}/Financial statements in csv/{team}')
         for csv_file in team_directory:
-            #print(os.getcwd())
             years = csv_file[len(team):len(csv_file)-4]
             this_year = years.split('-')[1]
             last_year = years.split('-')[0]
-            with open(csv_file, "r") as file:
-                reader = csv.reader(file, delimiter=",")
-                for row in reader:
-                    for i in range(1, len(row) + 1):
-                        keyword = " ".join(row[:i]).lower()
-                        try:
-                            values = determine_values(row)
-                            this_year_value = values[0]
-                            last_year_value = values[1]
-                            if keyword in pala_keywords:
-                                add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
-                            elif keyword in balance_sheet_keywords:
-                                add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
-                        except IndexError:
-                            pass
+            process_csv_file(data, team, this_year, last_year, csv_file, pala_keywords + balance_sheet_keywords)
             done_teams.append(team)
     print(data)
     #file.close()
+
+def process_csv_file(data, team, this_year, last_year, csv_file, keywords):
+    with open(csv_file, "r") as file:
+        reader = csv.reader(file, delimiter=",")
+        for row in reader:
+            for i in range(1, len(row) + 1):
+                keyword = " ".join(row[:i]).lower()
+                try:
+                    values = determine_values(row)
+                    this_year_value = values[0]
+                    last_year_value = values[1]
+                    if keyword in keywords:
+                        add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value)
+                except IndexError:
+                    pass
 
 def determine_values(line):
     this_year_value = line[len(line) - 2]
