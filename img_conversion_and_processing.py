@@ -1,3 +1,5 @@
+import os
+
 from pdf2image import convert_from_path
 from PIL import Image
 import numpy as np
@@ -11,54 +13,64 @@ import img_to_string
 import file_handling
 
 def convert_to_jpg(pdf_dict):
-    print(pdf_dict)
+    #print(pdf_dict)
     images_dict = dict()
     #i = 0
+    #print("testi")
     for team, f_statements in pdf_dict.items():
         images_list = []
-        if team != 'Forest Green Rovers' or team != 'Ipswich Town' or team != 'Blackpool FC':
-            try:
-                for file in f_statements:
-                    path = f'Financial statements/{team}/{file}'
-                    image = convert_from_path(path)
-                    images_list.append(image)
-                    #break
-                    #print(file)
-                    # i += 1
-                    # if i == 2:
-                    #     break
-            except (IOError, ValueError):
-                pass
+        #season = correct_seasons.return_teams_season(team)
+        try:
+            for file in f_statements:
+                #print(os.getcwd())
+                path = f'Financial statements/{team}/{file}'
+                image = convert_from_path(path)
+                #print(image)
+                images_list.append(image)
+                season = file[7:len(file) - 5 - len(team)]
+                # merge_images(processed_images, starting_season)
+                file_handling.create_dir_for_images(image, team, season)
+                #season = correct_seasons.get_correct_dates(season, team)
+                #break
+                #print("okay")
+                #break
+                #print(file)
+                # i += 1
+                # if i == 2:
+                #     break
+        except (IOError, ValueError):
+            pass
         images_dict[team] = images_list
+    print("testi1")
     return images_dict #loop through the dict and convert pdfs to jpg
 
 def image_processing(images_dict):
     processed_images = {}
     for team, images in images_dict.items():
-        if team != 'Forest Green Rovers' or team != 'QPR' or team != 'Leeds':
-            for img in images:
-                processed_images_list = []
-                for index, image in enumerate(img):
-                    # if index <= 4:
-                    #     continue
-                    filtering = filter_pages(image)
-                    if filtering:
-                        image = process_image(image)
-                        data_for_formatting = formatting_data(image)
-                        img_to_string.ocr_result_to_csv(data_for_formatting, team)
-                        #img_to_string.ocr_result_to_txt(image, team)
-                    #break
+        for img in images:
+            processed_images_list = []
+            for index, image in enumerate(img):
+                # if index <= 4:
+                #     continue
+                filtering = filter_pages(image)
+                if filtering:
+                    image = process_image(image)
+                    data_for_formatting = formatting_data(image)
+                    img_to_string.ocr_result_to_csv(data_for_formatting, team)
+                    #img_to_string.ocr_result_to_txt(image, team)
+                #break
 
-                #try:
-                #processed_images[team] = np.vstack(processed_images_list)
-                starting_season = correct_seasons.return_teams_season(team)
-                #merge_images(processed_images, starting_season)
-                correct_seasons.get_correct_dates(starting_season, team)
-                # except ValueError:
-                #     pass
+            #try:
+            #processed_images[team] = np.vstack(processed_images_list)
+            starting_season = correct_seasons.return_teams_season(team)
+            #merge_images(processed_images, starting_season)
+            correct_seasons.get_correct_dates(starting_season, team)
+            # except ValueError:
+            #     pass
     return processed_images
 
 def filter_pages(image):
+    print("filter")
     data = pytesseract.image_to_data(image, output_type='data.frame')
 
     pala_criteria1 = None
@@ -67,6 +79,7 @@ def filter_pages(image):
     pala_criteria6 = None
 
     balance_sheet_criteria1 = None
+    balance_sheet_criteria2 = None
 
     attachment_criteria1 = None
     attachment_criteria2 = None
@@ -83,7 +96,7 @@ def filter_pages(image):
         balance_sheet_criteria1 = data['text'].str.lower().str.contains('stocks').any()
         #balance_sheet_criteria2 = data['text'].str.lower().str.contains('assets').any()
         # balance_sheet_criteria2 = data['text'].str.lower().str.contains('share').any()
-        # balance_sheet_criteria3 = data['text'].str.lower().str.contains('debtors').any()
+        balance_sheet_criteria2 = data['text'].str.lower().str.contains('debtors').any()
 
         attachment_criteria1 = data['text'].str.lower().str.contains('wages').any()
         attachment_criteria2 = data['text'].str.lower().str.contains('salaries').any()
@@ -91,6 +104,7 @@ def filter_pages(image):
         attachment_criteria4 = data['text'].str.lower().str.contains('payroll').any()
     except AttributeError:
         pass
+    print("filter1")
 
     # pound_sign = data['text'].str.lower().str.contains('£').any()
     # note = data['text'].str.lower().str.contains('note').any()
@@ -101,7 +115,7 @@ def filter_pages(image):
 
 
     if ((pala_criteria4 or pala_criteria6) and (pala_criteria1 or pala_criteria3)) \
-            or (balance_sheet_criteria1)\
+            or (balance_sheet_criteria1 and balance_sheet_criteria2)\
             or ((attachment_criteria1 or attachment_criteria2) and attachment_criteria3 and attachment_criteria4):
         return True
     return False
@@ -118,6 +132,7 @@ def formatting_data(image):
     return sorted_data
 
 def process_image(image):
+    print("process")
     kernel = np.ones((1, 1), np.uint8)
     image = np.array(image)
     image = cv2.dilate(image, kernel, iterations=1)
@@ -126,6 +141,7 @@ def process_image(image):
     image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
     # test_image = cv2.medianBlur(test_image, 3)
     image = cv2.GaussianBlur(image, (3, 3), 0)
+    print("process1")
 
     return image
 
@@ -133,5 +149,5 @@ def merge_images(images, season):
     for team in images.keys():
         merged_image = Image.fromarray(images[team])
         correct_seasons.get_correct_dates(season)
-        file_handling.create_dir_for_images(merged_image, team, season)
+        file_handling.create_dir_for_processed_images(merged_image, team, season)
         season = correct_seasons.return_teams_season()

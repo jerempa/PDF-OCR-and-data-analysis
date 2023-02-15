@@ -55,12 +55,14 @@ balance_sheet_keywords = [
     # "profit and loss account",
     "shareholders deficit",
     "total equity",
-    'shareholders funds'
+    'shareholders funds',
+    'net shareholder funds'
 ]
 
 pala_keywords = ['turnover', 'revenue', 'cost of sales', 'gross profit', 'gross loss', 'gross profit/loss',
                  'administrative expenses', 'other operating income', 'profit on ordinary activities before taxation'
                                                                       'loss on ordinary activities before taxation',
+                 'administrative and operational costs',
                  'profit/(loss) before taxation',
                  'operating profit', 'profit before taxation', 'loss before taxation',
                  'loss on ordinary activities before taxation', 'profit on ordinary activities before taxation',
