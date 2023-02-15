@@ -83,13 +83,13 @@ def main():
     data = file_reading(team_and_files)
     # print(data['Brighton'])
     data = data['Brighton']
-    for year, year_data in data.items():
-        #print("Year:", year)
-        for key, value in year_data.items():
-            #pass
-            #print(key)
-            print(year, key, ":", value)
-            #print(key, ":", value)
+    # for year, year_data in data.items():
+    #     #print("Year:", year)
+    #     for key, value in year_data.items():
+    #         #pass
+    #         #print(key)
+    #         print(year, key, ":", value)
+    #         #print(key, ":", value)
 
 
 def file_reading(team_and_files):
@@ -105,7 +105,7 @@ def file_reading(team_and_files):
             last_year = years.split('-')[0]
             process_csv_file(data, team, this_year, last_year, csv_file, pala_keywords + balance_sheet_keywords)
             done_teams.append(team)
-    return data
+    return data #loop through files and call another function
 
 
 def process_csv_file(data, team, this_year, last_year, csv_file, keywords):
@@ -127,7 +127,7 @@ def process_csv_file(data, team, this_year, last_year, csv_file, keywords):
                     except IndexError:
                         pass
         except UnicodeError:
-            pass
+            pass #process the csv files and add correct values to a dict
 
 
 def determine_values(line):
@@ -153,7 +153,7 @@ def determine_values(line):
     # except ValueError:
     #     pass
 
-    return this_year_value, last_year_value
+    return this_year_value, last_year_value #process the given input, remove unnecessary characters
 
 
 def add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last_year_value):
@@ -173,6 +173,6 @@ def add_to_dict(data, team, this_year, last_year, keyword, this_year_value, last
     else:
         data[team] = {last_year: {keyword: last_year_value},
                       this_year: {keyword: this_year_value}}
-    return data
+    return data #add the given data to a nested dict
 
 # main()

@@ -19,29 +19,20 @@ def convert_to_jpg(pdf_dict):
     #print("testi")
     for team, f_statements in pdf_dict.items():
         images_list = []
-        #season = correct_seasons.return_teams_season(team)
         try:
             for file in f_statements:
-                #print(os.getcwd())
                 path = f'Financial statements/{team}/{file}'
                 image = convert_from_path(path)
-                #print(image)
                 images_list.append(image)
-                season = file[7:len(file) - 5 - len(team)]
-                # merge_images(processed_images, starting_season)
-                file_handling.create_dir_for_images(image, team, season)
-                #season = correct_seasons.get_correct_dates(season, team)
+                #season = file[7:len(file) - 5 - len(team)]
+                #file_handling.create_dir_for_images(image, team, season)
                 #break
-                #print("okay")
-                #break
-                #print(file)
                 # i += 1
                 # if i == 2:
                 #     break
         except (IOError, ValueError):
             pass
         images_dict[team] = images_list
-    print("testi1")
     return images_dict #loop through the dict and convert pdfs to jpg
 
 def image_processing(images_dict):
@@ -70,7 +61,6 @@ def image_processing(images_dict):
     return processed_images
 
 def filter_pages(image):
-    print("filter")
     data = pytesseract.image_to_data(image, output_type='data.frame')
 
     pala_criteria1 = None
@@ -104,8 +94,6 @@ def filter_pages(image):
         attachment_criteria4 = data['text'].str.lower().str.contains('payroll').any()
     except AttributeError:
         pass
-    print("filter1")
-
     # pound_sign = data['text'].str.lower().str.contains('£').any()
     # note = data['text'].str.lower().str.contains('note').any()
     # profit = data['text'].str.lower().str.contains('profit').any()
@@ -132,7 +120,6 @@ def formatting_data(image):
     return sorted_data
 
 def process_image(image):
-    print("process")
     kernel = np.ones((1, 1), np.uint8)
     image = np.array(image)
     image = cv2.dilate(image, kernel, iterations=1)
@@ -141,7 +128,6 @@ def process_image(image):
     image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
     # test_image = cv2.medianBlur(test_image, 3)
     image = cv2.GaussianBlur(image, (3, 3), 0)
-    print("process1")
 
     return image
 
