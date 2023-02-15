@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+import numpy as np
 
 
 def scatter_chart(data):
@@ -12,7 +13,7 @@ def scatter_chart(data):
     for year, year_data in data.items():
         #print(year, year_data)
         for key, value in year_data.items():
-            if key == 'turnover':
+            if key == 'turnover' or key == 'revenue':
                 turnover2.append(value)
                 value = value.replace(',', '')
                 try:
@@ -23,13 +24,23 @@ def scatter_chart(data):
                     years.append(year)
                 except ValueError:
                     pass
-    #print(turnover, years)
-    #print(turnover2)
-    #plt.scatter(years, turnover)
     fig, ax = plt.subplots()
-    ax.scatter(years, turnover)
+    ax.set_ylim(0, 155000000)
+    ax.set_xlim(1999, 2022)
 
-    # Format the y-axis labels
+    red_threshold = [1999, 2011.5]
+    orange_threshold = [2011.5, 2017.5]
+    green_threshold = [2017.5, 2022]
+    color1 = '#FF4136'  #red
+    color2 = '#FF851B'  #orange
+    color3 = '#2ECC40'  #green
+
+    ax.plot(years, turnover, color='blue')
+
+    ax.axvspan(red_threshold[0], red_threshold[1], color=color1, alpha=0.2)
+    ax.axvspan(orange_threshold[0], orange_threshold[1], color=color2, alpha=0.2)
+    ax.axvspan(green_threshold[0], green_threshold[1], color=color3, alpha=0.2)
+
     def format_func(value1, tick_number):
         return "{:,}".format(value1)
 
@@ -38,4 +49,6 @@ def scatter_chart(data):
     plt.xlabel("Year")
     plt.ylabel("Turnover")
     plt.title("Turnover over 20 years")
+
+    #ax.set_facecolor('white')
     plt.show()
