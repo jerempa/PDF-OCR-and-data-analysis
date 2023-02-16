@@ -125,6 +125,8 @@ def create_df_from_dict(teams_dict):
     # pd.set_option('display.max_rows', None)
     print(df)
 
+    return df
+
 # def loop_through_history_data(rows):
 #     season_list = []
 #     league_tier_list = []

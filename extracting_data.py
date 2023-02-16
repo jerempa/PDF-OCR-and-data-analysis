@@ -56,6 +56,7 @@ balance_sheet_keywords = [
     "shareholders deficit",
     "total equity",
     'shareholders funds',
+    "shareholders' funds",
     'net shareholder funds'
 ]
 
