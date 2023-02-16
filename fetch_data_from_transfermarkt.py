@@ -12,6 +12,9 @@ headers = {'User-Agent':
 
 teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC' 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
 
+all_seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13',
+               '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
+
 def get_request():
     url_bpl = 'https://www.transfermarkt.com/quickselect/teams/GB1'
     url_champ = 'https://www.transfermarkt.com/quickselect/teams/GB2'
@@ -40,6 +43,7 @@ def get_request():
     for res in test:
         teams_dict = parse_league_and_position(res.json())
         test1.append(teams_dict)
+    print(test1)
     for dic in test1:
         if dic:
             print(create_df_from_dict(dic))
@@ -77,10 +81,15 @@ def parse_league_and_position(res):
                 'Goals': [],
                 'Goal difference': [],
                 'Rank': [],
-                'Manager': []
+                'Manager': [],
+                # 'Total spectators': [],
+                # 'Average attendance': []
             }
             #seasons = pageSoup.find_all('td', {'class': 'zentriert'})
-            for season in rows:
+            attendance_info = parse_attendance(team, data['link'])
+            total_spectators = attendance_info[0]
+            avg_attendance = attendance_info[1]
+            for index, season in enumerate(rows):
                 cols = season.find_all('td')
                 data = [td.text for td in cols]
                 season = data[0]
@@ -98,9 +107,41 @@ def parse_league_and_position(res):
                 except IndexError:
                     pass
                 if season[0] == '9' or season[0] == '8':
+                    #print(team_data)
+                    if len(team_data['Season']) != len(all_seasons):
+                        team_data = add_missing_seasons(team_data)
+                    print(len(team_data), len(total_spectators), len(avg_attendance))
+                    #team_data['Total spectators'] = total_spectators
+                    #team_data['Average attendance'] = avg_attendance
                     break
             teams_dict[team] = team_data
     return teams_dict
+
+def parse_attendance(team, link):
+    url = f'{base_url}{link}'
+    params = url.split('/')
+    params[4] = 'besucherzahlenentwicklung'
+    updated_url = '/'.join(params)
+    test_res = requests.get(updated_url, headers=headers)
+    pageSoup = BeautifulSoup(test_res.content, 'html.parser')
+    table = pageSoup.find('table', class_='items')
+    rows = table.find_all('tr')[1:]
+    total_spec = []
+    avg_attendance = []
+    for season in rows:
+        cols = season.find_all('td')
+        data = [td.text for td in cols]
+        total_spec.append(data[len(data) - 2])
+        avg_attendance.append(data[-1])
+        if data[0][0:2] == '99':
+            break
+    #print(total_spec, avg_attendance)
+    return total_spec, avg_attendance
+    # print(data)
+    # test_res = requests.get(updated_url, headers=headers)
+    # pageSoup = BeautifulSoup(test_res.content, 'html.parser')
+    # table = pageSoup.find('table', class_='items')
+    # rows = table.find_all('tr')[1:]
 
 def create_df_from_dict(teams_dict):
     team_data = []
@@ -121,6 +162,60 @@ def create_df_from_dict(teams_dict):
     # pd.set_option('display.max_columns', None)
     # pd.set_option('display.max_rows', None)
     #print(df)
+
+def add_missing_seasons(data):
+    new_dict = {}
+    for key in data:
+        new_dict[key] = []
+
+    for season in all_seasons:
+        if season not in data['Season']:
+            new_dict['Season'].append(season)
+            for key in data:
+                if key != 'Season':
+                    new_dict[key].append(None)
+        else:
+            index = data['Season'].index(season)
+            for key in data:
+                new_dict[key].append(data[key][index])
+
+    return new_dict
+    #print(data)
+    # for key, seasons in data.items():
+    #     if key == 'Season':
+    #         #print(seasons)
+    #         for index, season in enumerate(seasons):
+    #             #print(season, all_seasons[index], index, len(all_seasons))
+    #             if season != all_seasons[index]:
+    #                 data[key].insert(index, all_seasons[index])
+    #                 # for var, value in data.items():
+    #                 #     print(var, value)
+    #                 #     if var != 'Season':
+    #                 #         data[key].insert(index, None)
+    #                 #print(data[key])
+    #             if season not in all_seasons:
+    #                 data[key].remove(season)
+    #             index += 1
+    # print(data['Season'])
+
+
+# def check_for_missing_seasons(data, last_season):
+#     print(data, last_season)
+#     try:
+#         #print(int(last_season[0:2]), last_season, int(data[0][0:2]), data[0])
+#         if int(last_season[0:2]) - 1 != int(data[0][0:2]):
+#             # print("nice")
+#             first_season = int(last_season[0:2]) - 1
+#             second_season = int(last_season[0:2])
+#             seasons = f'{str(first_season)}/{str(second_season)}'
+#             #print(first_season, second_season)
+#             #print(seasons)
+#             #team_data['Season'].append(seasons)
+#             return True
+#         print('false')
+#         return False
+#     except TypeError:
+#         return False
 
 
 
