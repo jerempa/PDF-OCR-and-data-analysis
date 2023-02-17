@@ -5,7 +5,7 @@ import cv2
 import pytesseract
 
 import correct_seasons
-import img_to_string
+from optimal_char_recognition import img_to_string
 from file_operations import file_handling
 
 
