@@ -110,9 +110,9 @@ def parse_league_and_position(res):
                     #print(team_data)
                     if len(team_data['Season']) != len(all_seasons):
                         team_data = add_missing_seasons(team_data)
-                    print(len(team_data), len(total_spectators), len(avg_attendance))
-                    #team_data['Total spectators'] = total_spectators
-                    #team_data['Average attendance'] = avg_attendance
+                    #print(len(team_data['Season']), len(total_spectators), len(avg_attendance))
+                    team_data['Total spectators'] = total_spectators
+                    team_data['Average attendance'] = avg_attendance
                     break
             teams_dict[team] = team_data
     return teams_dict
@@ -122,26 +122,32 @@ def parse_attendance(team, link):
     params = url.split('/')
     params[4] = 'besucherzahlenentwicklung'
     updated_url = '/'.join(params)
+
     test_res = requests.get(updated_url, headers=headers)
     pageSoup = BeautifulSoup(test_res.content, 'html.parser')
     table = pageSoup.find('table', class_='items')
     rows = table.find_all('tr')[1:]
+
     total_spec = []
     avg_attendance = []
-    for season in rows:
-        cols = season.find_all('td')
+
+    for index, row in enumerate(rows):
+        cols = row.find_all('td')
         data = [td.text for td in cols]
-        total_spec.append(data[len(data) - 2])
-        avg_attendance.append(data[-1])
-        if data[0][0:2] == '99':
+        season = data[0]
+        if season in all_seasons and season == all_seasons[index]:
+            total_spec.append(data[len(data) - 2])
+            avg_attendance.append(data[-1])
+        try:
+            if season != all_seasons[index]:
+                #print("testi", season, link)
+                total_spec.append(None)
+                avg_attendance.append(None)
+        except IndexError:
+            pass
+        if (data[0][0:2] == '99' or data[0][0] == '9' or data[0][0] == '8') and len(avg_attendance) == len(all_seasons):
             break
-    #print(total_spec, avg_attendance)
     return total_spec, avg_attendance
-    # print(data)
-    # test_res = requests.get(updated_url, headers=headers)
-    # pageSoup = BeautifulSoup(test_res.content, 'html.parser')
-    # table = pageSoup.find('table', class_='items')
-    # rows = table.find_all('tr')[1:]
 
 def create_df_from_dict(teams_dict):
     team_data = []
@@ -180,86 +186,4 @@ def add_missing_seasons(data):
                 new_dict[key].append(data[key][index])
 
     return new_dict
-    #print(data)
-    # for key, seasons in data.items():
-    #     if key == 'Season':
-    #         #print(seasons)
-    #         for index, season in enumerate(seasons):
-    #             #print(season, all_seasons[index], index, len(all_seasons))
-    #             if season != all_seasons[index]:
-    #                 data[key].insert(index, all_seasons[index])
-    #                 # for var, value in data.items():
-    #                 #     print(var, value)
-    #                 #     if var != 'Season':
-    #                 #         data[key].insert(index, None)
-    #                 #print(data[key])
-    #             if season not in all_seasons:
-    #                 data[key].remove(season)
-    #             index += 1
-    # print(data['Season'])
 
-
-# def check_for_missing_seasons(data, last_season):
-#     print(data, last_season)
-#     try:
-#         #print(int(last_season[0:2]), last_season, int(data[0][0:2]), data[0])
-#         if int(last_season[0:2]) - 1 != int(data[0][0:2]):
-#             # print("nice")
-#             first_season = int(last_season[0:2]) - 1
-#             second_season = int(last_season[0:2])
-#             seasons = f'{str(first_season)}/{str(second_season)}'
-#             #print(first_season, second_season)
-#             #print(seasons)
-#             #team_data['Season'].append(seasons)
-#             return True
-#         print('false')
-#         return False
-#     except TypeError:
-#         return False
-
-
-
-# def loop_through_history_data(rows):
-#     season_list = []
-#     league_tier_list = []
-#     win_list = []
-#     draw_list = []
-#     lost_list = []
-#     goals_and_conceded_goals_list = []
-#     gd_list = []
-#     rank_list = []
-#     manager_list = []
-#     for season in rows:
-#         cols = season.find_all('td')
-#         data = [td.text for td in cols]
-#         try:
-#             season = data[0]
-#             season_list.append(season)
-#
-#             league_tier = data[3]
-#             league_tier_list.append(league_tier)
-#
-#             wins = data[4]
-#             win_list.append(wins)
-#
-#             draws = data[5]
-#             draw_list.append(draws)
-#
-#             losses = data[6]
-#             lost_list.append(losses)
-#
-#             scored_conceded = data[7]
-#             goals_and_conceded_goals_list.append(scored_conceded)
-#
-#             gd = data[8]
-#             gd_list.append(gd)
-#
-#             rank = data[10]
-#             rank_list.append(rank)
-#
-#             manager = data[11]
-#             manager_list.append(manager)
-#         except IndexError:
-#             pass
-#
-#     return
