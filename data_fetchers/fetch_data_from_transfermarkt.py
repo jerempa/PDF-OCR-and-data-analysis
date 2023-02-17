@@ -39,6 +39,7 @@ def get_request():
 
     urls = [response_bpl, response_champ, response_l1, response_l2]
     league_level_dicts = []
+    #teams_dict = parse_league_and_position(response_champ.json())
 
     for res in urls:
         teams_dict = parse_league_and_position(res.json())
@@ -84,6 +85,11 @@ def parse_league_and_position(res):
             attendance_info = parse_attendance(team, data['link'])
             total_spectators = attendance_info[0]
             avg_attendance = attendance_info[1]
+
+            transfer_values = parse_transfer_values(data['link'])
+            arrivals = transfer_values[0]
+            departures = transfer_values[1]
+
             for index, season in enumerate(rows):
                 cols = season.find_all('td')
                 data = [td.text for td in cols]
@@ -105,8 +111,13 @@ def parse_league_and_position(res):
                     break
             if len(team_data['Season']) != len(all_seasons):
                 team_data = add_missing_seasons(team_data)
+
             team_data['Total spectators'] = total_spectators
             team_data['Average attendance'] = avg_attendance
+
+            team_data['Arrivals'] = arrivals
+            team_data['Departures'] = departures
+
             teams_dict[team] = team_data
     return teams_dict
 
@@ -140,8 +151,44 @@ def parse_attendance(team, link):
             pass
         if (data[0][0:2] == '99' or data[0][0] == '9' or data[0][0] == '8') and len(avg_attendance) == len(all_seasons):
             break
-    #print(avg_attendance)
     return total_spec, avg_attendance
+
+def parse_transfer_values(link):
+    #print("jee")
+    url = f'{base_url}{link}'
+    params = url.split('/')
+    params[4] = 'alletransfers'
+    updated_url = '/'.join(params)
+
+    test_res = requests.get(updated_url, headers=headers)
+    pageSoup = BeautifulSoup(test_res.content, 'html.parser')
+    transfers = pageSoup.find_all('td', class_=['redtext rechts hauptlink', 'greentext rechts hauptlink'])
+    arrivals = []
+    departures = []
+   # bought_players = pageSoup.find_all('th', class_='rechts')
+    #bought_players = pageSoup.find_all('div', class_='row')
+    #for spend in bought_players:
+    #print(transfers)
+    #data = [td.text for td in bought_players]
+    #for index, row in enumerate(transfers):
+    data = [td.text for td in transfers]
+    #print(data)
+    for index, transfer_sum in enumerate(data):
+        if (len(arrivals) == len(all_seasons)) and len(arrivals) == len(departures):
+            break
+        if index % 2 == 0:
+            arrivals.append(transfer_sum)
+        else:
+            departures.append(transfer_sum)
+    return arrivals, departures
+    #print(len(arrivals), len(departures))
+    # if data == 'Transfer sum':
+    #     print(data)
+    #print(data)
+    #table = pageSoup.find('table', class_='items')
+    #rows = table.find_all('tr')[1:]
+
+        #return total_spec, avg_attendance
 
 def create_df_from_dict(teams_dict):
     team_data = []
