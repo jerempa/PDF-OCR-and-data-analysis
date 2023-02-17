@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
+from file_operations import file_handling
+
 #https://www.transfermarkt.com/quickselect/teams/GB2
 #https://www.transfermarkt.com/quickselect/teams/GB1
 #https://www.transfermarkt.com/quickselect/teams/GB3
@@ -38,12 +40,23 @@ def get_request():
     response_l2 = requests.get(url_l2, headers=headers)
 
     urls = [response_bpl, response_champ, response_l1, response_l2]
-    league_level_dicts = []
-    #teams_dict = parse_league_and_position(response_champ.json())
+    # league_level_dicts = []
+    # #teams_dict = parse_league_and_position(response_champ.json())
+    #
+    # for res in urls:
+    #     teams_dict = parse_league_and_position(res.json())
+    #     league_level_dicts.append(teams_dict)
+    #
+    # return league_level_dicts
 
-    for res in urls:
-        teams_dict = parse_league_and_position(res.json())
-        league_level_dicts.append(teams_dict)
+    league_level_dicts = file_handling.return_scraped_data_dict()
+
+
+    #return league_level_dicts
+    # teams_dict
+    # create_df_from_dict()
+
+    #return league_level_dicts
     for league_level in league_level_dicts:
         if league_level:
             print(create_df_from_dict(league_level))
@@ -154,7 +167,6 @@ def parse_attendance(team, link):
     return total_spec, avg_attendance
 
 def parse_transfer_values(link):
-    #print("jee")
     url = f'{base_url}{link}'
     params = url.split('/')
     params[4] = 'alletransfers'
@@ -165,14 +177,8 @@ def parse_transfer_values(link):
     transfers = pageSoup.find_all('td', class_=['redtext rechts hauptlink', 'greentext rechts hauptlink'])
     arrivals = []
     departures = []
-   # bought_players = pageSoup.find_all('th', class_='rechts')
-    #bought_players = pageSoup.find_all('div', class_='row')
-    #for spend in bought_players:
-    #print(transfers)
-    #data = [td.text for td in bought_players]
-    #for index, row in enumerate(transfers):
     data = [td.text for td in transfers]
-    #print(data)
+
     for index, transfer_sum in enumerate(data):
         if (len(arrivals) == len(all_seasons)) and len(arrivals) == len(departures):
             break
@@ -181,14 +187,6 @@ def parse_transfer_values(link):
         else:
             departures.append(transfer_sum)
     return arrivals, departures
-    #print(len(arrivals), len(departures))
-    # if data == 'Transfer sum':
-    #     print(data)
-    #print(data)
-    #table = pageSoup.find('table', class_='items')
-    #rows = table.find_all('tr')[1:]
-
-        #return total_spec, avg_attendance
 
 def create_df_from_dict(teams_dict):
     team_data = []
