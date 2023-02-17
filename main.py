@@ -1,9 +1,5 @@
 import file_handling
-import img_conversion_and_processing
-import extracting_data
-import data_visualization
-import debt_visualization
-import fetch_data_from_transfermarkt
+from data_fetchers import fetch_data_from_transfermarkt
 
 
 def main():
