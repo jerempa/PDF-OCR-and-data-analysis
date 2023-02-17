@@ -1,6 +1,6 @@
 import os
 import pytesseract
-import file_handling
+from file_operations import file_handling
 import correct_seasons
 import csv
 

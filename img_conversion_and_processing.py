@@ -1,16 +1,13 @@
-import os
-
 from pdf2image import convert_from_path
 from PIL import Image
 import numpy as np
 import cv2
 import pytesseract
-import pandas as pd
-import csv
 
 import correct_seasons
 import img_to_string
-import file_handling
+from file_operations import file_handling
+
 
 def convert_to_jpg(pdf_dict):
     #print(pdf_dict)

@@ -21,7 +21,7 @@ def get_filenames(folder):
 
 def create_img_dicts():
     image_dict = dict()
-    for team in os.listdir('Financial statements jpg'):
+    for team in os.listdir('../Financial statements jpg'):
         path = os.path.join(os.getcwd(), f'Financial statements jpg/{team}')
         if os.path.isdir(path):
             seasons_list = []
@@ -41,7 +41,7 @@ def create_dir_for_txt(current_team):
         if os.path.basename(os.getcwd()) == current_team:
             pass
         elif os.path.basename(os.getcwd()) in correct_seasons.return_starting_seasons():
-            os.chdir('..')
+            os.chdir('../..')
         elif os.path.basename(os.getcwd()) == 'Financial statements in csv':
             try:
                 os.mkdir(f'{os.getcwd()}/{current_team}')
@@ -81,11 +81,11 @@ def create_dir_for_images(image_arr, team, f_statement_season):
         os.mkdir(f'{os.getcwd()}\Financial statements jpg')
         os.chdir(f'{os.getcwd()}\Financial statements jpg')
         create_dir_for_teams(image_arr, team, f_statement_season)
-        os.chdir('..')
+        os.chdir('../..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}\Financial statements jpg')
         create_dir_for_teams(image_arr, team, f_statement_season)
-        os.chdir('..') #create financial statements jpg dir and ch to it
+        os.chdir('../..') #create financial statements jpg dir and ch to it
 
 def create_dir_for_teams(image_arr, team, f_statement_season):
     # if os.path.basename(os.getcwd()) == team:
@@ -96,11 +96,11 @@ def create_dir_for_teams(image_arr, team, f_statement_season):
         os.mkdir(f'{os.getcwd()}\{team}')
         os.chdir(f'{os.getcwd()}\{team}')
         save_images(image_arr, team, f_statement_season)
-        os.chdir('..')
+        os.chdir('../..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}\{team}')
         save_images(image_arr, team, f_statement_season)
-        os.chdir('..') #create team dir inside financial statement jpg and ch to it
+        os.chdir('../..') #create team dir inside financial statement jpg and ch to it
 
 def save_images(image_arr, team, f_statement_season):
     try:
@@ -111,7 +111,7 @@ def save_images(image_arr, team, f_statement_season):
                 img.save(f'{team} financial statement {f_statement_season} page {index + 1}.jpg', 'JPEG')
         except OSError:
             pass
-        os.chdir('..')
+        os.chdir('../..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}/{f_statement_season}')
         try:
@@ -119,22 +119,22 @@ def save_images(image_arr, team, f_statement_season):
                 img.save(f'{team} financial statement {f_statement_season} page {index + 1}.jpg', 'JPEG')
         except OSError:
             pass
-        os.chdir('..') #create img files inside correct dir
+        os.chdir('../..') #create img files inside correct dir
 
 def create_dir_for_processed_images(image, team, f_statement_season):
     if os.path.basename(os.getcwd()) == team:
-        os.chdir('..')
+        os.chdir('../..')
         if os.path.basename(os.getcwd()) == 'Financial statements in csv':
-            os.chdir('..')
+            os.chdir('../..')
     try:
         os.mkdir(f'{os.getcwd()}\Processed images')
         os.chdir(f'{os.getcwd()}\Processed images')
         save_processed_images(image, team, f_statement_season)
-        os.chdir('..')
+        os.chdir('../..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}\Processed images')
         save_processed_images(image, team, f_statement_season)
-        os.chdir('..') #create a directory for processed images
+        os.chdir('../..') #create a directory for processed images
 
 def save_processed_images(image, team, f_statement_season):
     try:
@@ -144,12 +144,12 @@ def save_processed_images(image, team, f_statement_season):
             image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
         except OSError:
             pass
-        os.chdir('..')
+        os.chdir('../..')
     except FileExistsError:
         os.chdir(f'{os.getcwd()}\{team}')
         try:
             image.save(f'{team} financial statement {f_statement_season}.jpg', 'JPEG')
         except OSError:
             pass
-        os.chdir('..')
+        os.chdir('../..')
     #save processed images inside correct directory

@@ -1,6 +1,4 @@
-import file_handling
-import extracting_data
-from data_fetchers import fetch_data_from_transfermarkt
+from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import *
 
 
@@ -17,7 +15,7 @@ def main():
     #img_conversion_and_processing.image_processing(images_dict)
     #extracting_data.main()
     data = extracting_data.file_reading(team_and_files)
-    #data_visualization.scatter_chart(data)
+    data_visualization.scatter_chart(data)
     debt_visualization.scatter_chart(data)
     #fetch_data_from_transfermarkt.get_request()
     #debt_visualization.scatter_chart(data)
