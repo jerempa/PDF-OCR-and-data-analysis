@@ -10,7 +10,7 @@ base_url = 'https://www.transfermarkt.com'
 headers = {'User-Agent':
                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
 
-teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC' 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
+teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
 
 all_seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13',
                '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
@@ -37,16 +37,15 @@ def get_request():
     response_l1 = requests.get(url_l1, headers=headers)
     response_l2 = requests.get(url_l2, headers=headers)
 
-    test = [response_bpl, response_champ, response_l1, response_l2]
-    test1 = []
+    urls = [response_bpl, response_champ, response_l1, response_l2]
+    league_level_dicts = []
 
-    for res in test:
+    for res in urls:
         teams_dict = parse_league_and_position(res.json())
-        test1.append(teams_dict)
-    print(test1)
-    for dic in test1:
-        if dic:
-            print(create_df_from_dict(dic))
+        league_level_dicts.append(teams_dict)
+    for league_level in league_level_dicts:
+        if league_level:
+            print(create_df_from_dict(league_level))
 
 
     #print(response_bpl.status_code, response_bpl, response_bpl.text)
@@ -55,8 +54,6 @@ def get_request():
     # print(response_l2.status_code, response_l2, response_l2.text)
 
 def parse_league_and_position(res):
-    #print(type(res), res)
-    #print(headers)
     text = 'platzierungen'
     teams_dict = {}
     for data in res:
@@ -82,8 +79,6 @@ def parse_league_and_position(res):
                 'Goal difference': [],
                 'Rank': [],
                 'Manager': [],
-                # 'Total spectators': [],
-                # 'Average attendance': []
             }
             #seasons = pageSoup.find_all('td', {'class': 'zentriert'})
             attendance_info = parse_attendance(team, data['link'])
@@ -107,13 +102,11 @@ def parse_league_and_position(res):
                 except IndexError:
                     pass
                 if season[0] == '9' or season[0] == '8':
-                    #print(team_data)
-                    if len(team_data['Season']) != len(all_seasons):
-                        team_data = add_missing_seasons(team_data)
-                    #print(len(team_data['Season']), len(total_spectators), len(avg_attendance))
-                    team_data['Total spectators'] = total_spectators
-                    team_data['Average attendance'] = avg_attendance
                     break
+            if len(team_data['Season']) != len(all_seasons):
+                team_data = add_missing_seasons(team_data)
+            team_data['Total spectators'] = total_spectators
+            team_data['Average attendance'] = avg_attendance
             teams_dict[team] = team_data
     return teams_dict
 
@@ -135,18 +128,19 @@ def parse_attendance(team, link):
         cols = row.find_all('td')
         data = [td.text for td in cols]
         season = data[0]
+        #print(data, link)
         if season in all_seasons and season == all_seasons[index]:
             total_spec.append(data[len(data) - 2])
             avg_attendance.append(data[-1])
         try:
             if season != all_seasons[index]:
-                #print("testi", season, link)
                 total_spec.append(None)
                 avg_attendance.append(None)
         except IndexError:
             pass
         if (data[0][0:2] == '99' or data[0][0] == '9' or data[0][0] == '8') and len(avg_attendance) == len(all_seasons):
             break
+    #print(avg_attendance)
     return total_spec, avg_attendance
 
 def create_df_from_dict(teams_dict):
@@ -162,11 +156,14 @@ def create_df_from_dict(teams_dict):
 
     # except ValueError:
     #     pass
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.width', 1000)
+
 
     return df
 
-    # pd.set_option('display.max_columns', None)
-    # pd.set_option('display.max_rows', None)
+
     #print(df)
 
 def add_missing_seasons(data):
