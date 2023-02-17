@@ -1,5 +1,7 @@
 import file_handling
+import extracting_data
 from data_fetchers import fetch_data_from_transfermarkt
+from data_visualization_and_analysis import *
 
 
 def main():
@@ -14,9 +16,10 @@ def main():
     #images_dict = file_handling.create_img_dicts()
     #img_conversion_and_processing.image_processing(images_dict)
     #extracting_data.main()
-    # data = extracting_data.file_reading(team_and_files)
-    # data_visualization.scatter_chart(data)
-    fetch_data_from_transfermarkt.get_request()
+    data = extracting_data.file_reading(team_and_files)
+    #data_visualization.scatter_chart(data)
+    debt_visualization.scatter_chart(data)
+    #fetch_data_from_transfermarkt.get_request()
     #debt_visualization.scatter_chart(data)
     #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images)
     #ocr_result_to_txt()
