@@ -1,5 +1,5 @@
 from file_operations import file_handling, extracting_data
-from data_visualization_and_analysis import *
+from data_visualization_and_analysis import data_visualization, debt_visualization, values_for_analysis, league_level_charts
 from data_fetchers import fetch_data_from_transfermarkt, df_operations
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
@@ -21,7 +21,10 @@ def main():
     # debt_visualization.scatter_chart(data)
     #values = fetch_data_from_transfermarkt.get_request()
     #print(values)
-    df_operations.print_df()
+    #df_operations.print_df()
+    league_level_charts.line_plot()
+    #values_for_analysis.league_tier_throughout_years()
+    #df_operations.return_attendance_percentage('Brighton & Hove Albion', None)
     #ori = file_handling.return_scraped_data_dict()
     #file_handling.reverse_lists(ori)
     #file_handling.write_scraped_data_to_file(values)

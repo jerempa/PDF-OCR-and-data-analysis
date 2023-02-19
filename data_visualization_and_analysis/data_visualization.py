@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 
+from data_fetchers import df_operations
+
 teams = ['Blackpool FC', 'Brighton', 'Huddersfield', 'Hull', 'Ipswich Town', 'Leeds', 'QPR']
 
 def scatter_chart(data):
