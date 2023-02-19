@@ -1,6 +1,7 @@
-# PDF-reader
+# PDF-OCR-and-data-analysis
 
 ## Brief
 
-Program for reading financial statement PDF's. I will get data [here](https://find-and-update.company-information.service.gov.uk/) for my Bachelor's thesis so I thought
-I will automate the process a bit instead of manualling going through them and getting e.g. companies' turnover. Also, this repo is probably going to include data analysis which is also a part of my thesis.
+Contents of this repo will be tightly related to my Bachelor's thesis. I will get data [here](https://find-and-update.company-information.service.gov.uk/) for my Bachelor's thesis. Therefore I'll automate the process of getting the numbers from the financial statements. Done by OCR and the help of Tesseract.
+
+In addition, this repo includes files for fetching data [here](https://www.transfermarkt.com/) through HTTP-requests, for instance getting squad value and average attendance throughout the years. All of these values will be the base of data visualization and analysis that are going to be utilized in my thesis.
