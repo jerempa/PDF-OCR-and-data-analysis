@@ -1,6 +1,6 @@
 from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import *
-from data_fetchers import fetch_data_from_transfermarkt
+from data_fetchers import fetch_data_from_transfermarkt, df_operations
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
 
@@ -19,8 +19,11 @@ def main():
     # data = extracting_data.file_reading(team_and_files)
     # data_visualization.scatter_chart(data)
     # debt_visualization.scatter_chart(data)
-    values = fetch_data_from_transfermarkt.get_request()
+    #values = fetch_data_from_transfermarkt.get_request()
     #print(values)
+    df_operations.print_df()
+    #ori = file_handling.return_scraped_data_dict()
+    #file_handling.reverse_lists(ori)
     #file_handling.write_scraped_data_to_file(values)
     #debt_visualization.scatter_chart(data)
     #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images)

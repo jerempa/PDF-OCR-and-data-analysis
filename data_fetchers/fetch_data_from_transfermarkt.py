@@ -40,16 +40,17 @@ def get_request():
     response_l2 = requests.get(url_l2, headers=headers)
 
     urls = [response_bpl, response_champ, response_l1, response_l2]
-    # league_level_dicts = []
+    #parse_league_and_position(response_champ.json())
+    league_level_dicts = []
     # #teams_dict = parse_league_and_position(response_champ.json())
-    #
+
     # for res in urls:
     #     teams_dict = parse_league_and_position(res.json())
     #     league_level_dicts.append(teams_dict)
     #
     # return league_level_dicts
-
-    league_level_dicts = file_handling.return_scraped_data_dict()
+    #
+    # league_level_dicts = file_handling.return_scraped_data_dict()
 
 
     #return league_level_dicts
@@ -57,9 +58,9 @@ def get_request():
     # create_df_from_dict()
 
     #return league_level_dicts
-    for league_level in league_level_dicts:
-        if league_level:
-            print(create_df_from_dict(league_level))
+    # for league_level in league_level_dicts:
+    #     if league_level:
+    #         print(create_df_from_dict(league_level))
 
 
     #print(response_bpl.status_code, response_bpl, response_bpl.text)
@@ -95,6 +96,12 @@ def parse_league_and_position(res):
                 'Manager': [],
             }
             #seasons = pageSoup.find_all('td', {'class': 'zentriert'})
+            squad_info = parse_squad_info(data['id'], data['link'])
+            avg_age = squad_info[0]
+            squad_value = squad_info[1]
+            avg_squad_value = squad_info[2]
+
+            #break
             attendance_info = parse_attendance(team, data['link'])
             total_spectators = attendance_info[0]
             avg_attendance = attendance_info[1]
@@ -102,6 +109,9 @@ def parse_league_and_position(res):
             transfer_values = parse_transfer_values(data['link'])
             arrivals = transfer_values[0]
             departures = transfer_values[1]
+
+
+            #print(data)
 
             for index, season in enumerate(rows):
                 cols = season.find_all('td')
@@ -131,6 +141,10 @@ def parse_league_and_position(res):
             team_data['Arrivals'] = arrivals
             team_data['Departures'] = departures
 
+            team_data['Average squad age'] = avg_age
+            team_data['Squad market value'] = squad_value
+            team_data['Average squad market value'] = avg_squad_value
+
             teams_dict[team] = team_data
     return teams_dict
 
@@ -140,8 +154,8 @@ def parse_attendance(team, link):
     params[4] = 'besucherzahlenentwicklung'
     updated_url = '/'.join(params)
 
-    test_res = requests.get(updated_url, headers=headers)
-    pageSoup = BeautifulSoup(test_res.content, 'html.parser')
+    req = requests.get(updated_url, headers=headers)
+    pageSoup = BeautifulSoup(req.content, 'html.parser')
     table = pageSoup.find('table', class_='items')
     rows = table.find_all('tr')[1:]
 
@@ -172,8 +186,8 @@ def parse_transfer_values(link):
     params[4] = 'alletransfers'
     updated_url = '/'.join(params)
 
-    test_res = requests.get(updated_url, headers=headers)
-    pageSoup = BeautifulSoup(test_res.content, 'html.parser')
+    req = requests.get(updated_url, headers=headers)
+    pageSoup = BeautifulSoup(req.content, 'html.parser')
     transfers = pageSoup.find_all('td', class_=['redtext rechts hauptlink', 'greentext rechts hauptlink'])
     arrivals = []
     departures = []
@@ -187,6 +201,55 @@ def parse_transfer_values(link):
         else:
             departures.append(transfer_sum)
     return arrivals, departures
+
+def parse_squad_info(team_id, link):
+    url = f'{base_url}{link}'
+    params = url.split('/')
+    team = params[3]
+    # squad_value = pageSoup.find_all('div', class_='box')
+    new_url = f'{base_url}/{team}/kader/verein/{team_id}/plus/0/galerie/0?saison_id'
+
+    squad_avg_age_by_season = []
+    squad_market_value_by_season = []
+    squad_avg_market_value_by_season = []
+
+    for year in range(1999, 2023):
+        updated_url = f'{new_url}/{year}'
+        req = requests.get(updated_url, headers=headers)
+        pageSoup = BeautifulSoup(req.content, 'html.parser')
+        #print(pageSoup.find('option', selected=True)['value'])
+        if pageSoup.find('option', selected=True)['value'] == '2022':
+            alternative_url = f'{new_url}={year}'
+            req = requests.get(alternative_url, headers=headers)
+            pageSoup = BeautifulSoup(req.content, 'html.parser')
+        #print(updated_url)
+        tfoot_rows = pageSoup.find_all('tfoot')[0].find_all('tr')
+        squad_info = tfoot_rows[-1]
+        #print(squad_info)
+        data = [td.text for td in squad_info]
+        #print(data)
+
+        avg_age = data[3]
+        squad_value = data[5]
+        avg_squad_value = data[7]
+
+        squad_avg_age_by_season.append(avg_age)
+        if squad_value != '-':
+            squad_market_value_by_season.append(squad_value)
+            squad_avg_market_value_by_season.append(avg_squad_value)
+        else:
+            squad_market_value_by_season.append(None)
+            squad_avg_market_value_by_season.append(None)
+    #print(len(squad_market_value_by_season), len(all_seasons))
+    #print(new_url)
+    squad_avg_age_by_season.reverse()
+    squad_market_value_by_season.reverse()
+    squad_avg_market_value_by_season.reverse()
+
+    return squad_avg_age_by_season, squad_market_value_by_season, squad_avg_market_value_by_season
+    #params[4] = 'besucherzahlenentwicklung'
+    #updated_url = '/'.join(params)
+
 
 def create_df_from_dict(teams_dict):
     team_data = []
