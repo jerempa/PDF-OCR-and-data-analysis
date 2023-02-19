@@ -156,13 +156,13 @@ def save_processed_images(image, team, f_statement_season):
     #save processed images inside correct directory
 
 def write_scraped_data_to_file(data):
-    with open('scraped_data.txt2', 'w') as f:
+    with open('scraped_data3.txt', 'w') as f:
         json.dump(data, f) #write the scraping output to a file to avoid making unnecessary requests
 
 def return_scraped_data_dict():
     teams_dict = None
     try:
-        with open('scraped_data2.txt', 'r') as f:
+        with open('scraped_data.txt3', 'r') as f:
             data = f.read()
             teams_dict = json.loads(data)
     except IOError:

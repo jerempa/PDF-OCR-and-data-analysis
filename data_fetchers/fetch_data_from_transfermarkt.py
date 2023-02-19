@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 
 from file_operations import file_handling
+from data_fetchers import df_operations
 
 #https://www.transfermarkt.com/quickselect/teams/GB2
 #https://www.transfermarkt.com/quickselect/teams/GB1
@@ -44,11 +45,11 @@ def get_request():
     league_level_dicts = []
     # #teams_dict = parse_league_and_position(response_champ.json())
 
-    # for res in urls:
-    #     teams_dict = parse_league_and_position(res.json())
-    #     league_level_dicts.append(teams_dict)
-    #
-    # return league_level_dicts
+    for res in urls:
+        teams_dict = parse_league_and_position(res.json())
+        league_level_dicts.append(teams_dict)
+
+    return league_level_dicts
     #
     # league_level_dicts = file_handling.return_scraped_data_dict()
 
@@ -96,15 +97,19 @@ def parse_league_and_position(res):
                 'Manager': [],
             }
             #seasons = pageSoup.find_all('td', {'class': 'zentriert'})
+
+            attendance_info = parse_attendance(team, data['link'])
+            total_spectators = attendance_info[0]
+            avg_attendance = attendance_info[1]
+            attendance_percentage = attendance_info[2]
+            #break
+
             squad_info = parse_squad_info(data['id'], data['link'])
             avg_age = squad_info[0]
             squad_value = squad_info[1]
             avg_squad_value = squad_info[2]
 
             #break
-            attendance_info = parse_attendance(team, data['link'])
-            total_spectators = attendance_info[0]
-            avg_attendance = attendance_info[1]
 
             transfer_values = parse_transfer_values(data['link'])
             arrivals = transfer_values[0]
@@ -137,6 +142,7 @@ def parse_league_and_position(res):
 
             team_data['Total spectators'] = total_spectators
             team_data['Average attendance'] = avg_attendance
+            team_data['Average attendance / capacity %'] = attendance_percentage
 
             team_data['Arrivals'] = arrivals
             team_data['Departures'] = departures
@@ -176,9 +182,12 @@ def parse_attendance(team, link):
                 avg_attendance.append(None)
         except IndexError:
             pass
-        if (data[0][0:2] == '99' or data[0][0] == '9' or data[0][0] == '8') and len(avg_attendance) == len(all_seasons):
+        if (data[0][0:2] == '99' or data[0][0] == '9' or data[0][0] == '8' or data[0][0] == '7') and len(avg_attendance) == len(all_seasons):
             break
-    return total_spec, avg_attendance
+    attendance_percentage = df_operations.return_attendance_percentage(team, avg_attendance)
+    #print(len(attendance_percentage), attendance_percentage, len(total_spec))
+
+    return total_spec, avg_attendance, attendance_percentage
 
 def parse_transfer_values(link):
     url = f'{base_url}{link}'
@@ -200,6 +209,7 @@ def parse_transfer_values(link):
             arrivals.append(transfer_sum)
         else:
             departures.append(transfer_sum)
+
     return arrivals, departures
 
 def parse_squad_info(team_id, link):
@@ -247,32 +257,7 @@ def parse_squad_info(team_id, link):
     squad_avg_market_value_by_season.reverse()
 
     return squad_avg_age_by_season, squad_market_value_by_season, squad_avg_market_value_by_season
-    #params[4] = 'besucherzahlenentwicklung'
-    #updated_url = '/'.join(params)
 
-
-def create_df_from_dict(teams_dict):
-    team_data = []
-    for team, data in teams_dict.items():
-        team_df = pd.DataFrame(data)
-        team_df['Team'] = team
-        team_df = team_df[['Team'] + list(data.keys())]
-        team_data.append(team_df)
-    #print(team_data)
-    # try:
-    df = pd.concat(team_data).reset_index(drop=True)
-
-    # except ValueError:
-    #     pass
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.width', 1000)
-
-
-    return df
-
-
-    #print(df)
 
 def add_missing_seasons(data):
     new_dict = {}
