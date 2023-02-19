@@ -11,10 +11,20 @@ def league_tier_throughout_years(team):
     # for league_level in league_level_dicts:
     #     if league_level:
     #         bpl_df = df_operations.create_df_from_dict(league_level)
-    bpl_df = df_operations.create_df_from_dict(league_level_dicts[0])
-    print(bpl_df)
-    mask = bpl_df['Team'] == team
-    team_df = bpl_df.loc[mask, ['Season', 'League level', 'Average attendance', 'Average attendance / capacity %',
+    #print(len(league_level_dicts))
+   # print(df_operations.create_df_from_dict(league_level_dicts[0]))
+    #print(df_operations.create_df_from_dict(league_level_dicts[0])['Team'])
+    team_df = None
+    for i in range(0, len(league_level_dicts) - 1):
+        if team in df_operations.create_df_from_dict(league_level_dicts[i])['Team'].values:
+            team_df = df_operations.create_df_from_dict(league_level_dicts[i])
+
+    #print(bpl_df)
+    #print(df_operations.create_df_from_dict(league_level_dicts[1]))
+
+
+    mask = team_df['Team'] == team
+    team_df = team_df.loc[mask, ['Season', 'League level', 'Average attendance', 'Average attendance / capacity %',
                                 'Rank', 'Arrivals', 'Squad market value', 'Average squad market value']]
     df = team_df.copy()
     df = df.dropna()
@@ -30,7 +40,7 @@ def league_tier_throughout_years(team):
 
 def season_to_year(season):
     suffix = season[:2]
-    if suffix == '99':
+    if suffix == '99' or suffix[0] == '8' or suffix[0] == '7':
         year = int('19' + suffix)
     else:
         year = int('20' + suffix)

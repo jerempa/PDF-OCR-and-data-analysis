@@ -4,16 +4,18 @@ import numpy as np
 
 from data_fetchers import df_operations
 from data_visualization_and_analysis import values_for_analysis
+#https://matplotlib.org/stable/gallery/color/named_colors.html
 
-#teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-teams = ['Brighton & Hove Albion', 'Leeds United']
+teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
+#teams = ['Brighton & Hove Albion', 'Leeds United']
 years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
-color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'red', None: 'white'}
+color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
 background_color = {
     'First Tier': '#C5E5A5',
     'Second Tier': '#FFF2CC',
-    'Third Tier': '#FFC7CE'
+    'Third Tier': '#FFC7CE',
+    'Fourth Tier': 'orange'
 }
 
 def line_plot():
@@ -38,6 +40,11 @@ def line_plot():
                 start_year = level_df['Year'].min()
                 end_year = level_df['Year'].max()
                 ax.axvspan(start_year - 0.5, end_year + 0.5, facecolor=background_color[level], alpha=0.5)
+
+            handles = [plt.Rectangle((0, 0), 1, 1, color=background_color[level], alpha=0.5) for level in
+                       background_color]
+            labels = list(background_color.keys())
+            ax.legend(handles, labels)
 
             df.plot(x='Year', y=value, ax=ax, color='black')
             ax.set_xlim(2000, 2025)
