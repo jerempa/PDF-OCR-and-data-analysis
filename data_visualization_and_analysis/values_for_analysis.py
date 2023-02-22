@@ -65,14 +65,14 @@ def market_values_to_float(value, year):
             #print(value)
             value = value.replace('k', '')
             #adjust_market_values_to_inflation(value)
-            return float(float(value) / 1000)
+            return round(float(float(value) / 1000), 2)
     except AttributeError:
         pass
 
     if year and value:
         value = adjust_market_values_to_inflation(float(value), year)
     try:
-        return float(value)
+        return round(float(value), 2)
     except TypeError:
         return value
 
