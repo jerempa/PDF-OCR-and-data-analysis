@@ -1,5 +1,6 @@
 from file_operations import file_handling, extracting_data
-from data_visualization_and_analysis import data_visualization, debt_visualization, values_for_analysis, league_level_charts, calculations
+from data_visualization_and_analysis import data_visualization, debt_visualization,\
+    values_for_analysis, league_level_charts, calculations, add_missing_rows_to_df
 from data_fetchers import fetch_data_from_transfermarkt, df_operations
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
@@ -23,7 +24,8 @@ def main():
     #print(values)
     #df_operations.print_df()
     #league_level_charts.line_plot()
-    calculations.main()
+    #calculations.main()
+    add_missing_rows_to_df.main()
     #calculations.show_average_attendace_to_capacity()
     #values_for_analysis.league_tier_throughout_years()
     #df_operations.return_attendance_percentage('Brighton & Hove Albion', None)
