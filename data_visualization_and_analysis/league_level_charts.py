@@ -33,30 +33,30 @@ def line_plot():
         #y_axis_values = {'Average attendance'}
 
 
-        for value in y_axis_values:
-            fig, ax = plt.subplots()
-            for level in df['League level'].unique():
-                level_df = df[df['League level'] == level]
-                start_year = level_df['Year'].min()
-                end_year = level_df['Year'].max()
-                ax.axvspan(start_year - 0.5, end_year + 0.5, facecolor=background_color[level], alpha=0.5)
+        # for value in y_axis_values:
+        #     fig, ax = plt.subplots()
+        #     for level in df['League level'].unique():
+        #         level_df = df[df['League level'] == level]
+        #         start_year = level_df['Year'].min()
+        #         end_year = level_df['Year'].max()
+        #         ax.axvspan(start_year - 0.5, end_year + 0.5, facecolor=background_color[level], alpha=0.5)
+        #
+        #     handles = [plt.Rectangle((0, 0), 1, 1, color=background_color[level], alpha=0.5) for level in
+        #                background_color]
+        #     labels = list(background_color.keys())
+        #     ax.legend(handles, labels)
+        #
+        #     df.plot(x='Year', y=value, ax=ax, color='black')
+        #     ax.set_xlim(2000, 2025)
+        #     ax.set_ylim(0, df[value].max() + df[value].max() / 10)
+        #
+        #     plt.title(f'{team} {value} by season')
+        #     plt.xlabel('Year')
+        #     plt.ylabel(value)
+        #
+        #     plt.show()
 
-            handles = [plt.Rectangle((0, 0), 1, 1, color=background_color[level], alpha=0.5) for level in
-                       background_color]
-            labels = list(background_color.keys())
-            ax.legend(handles, labels)
-
-            df.plot(x='Year', y=value, ax=ax, color='black')
-            ax.set_xlim(2000, 2025)
-            ax.set_ylim(0, df[value].max() + df[value].max() / 10)
-
-            plt.title(f'{team} {value} by season')
-            plt.xlabel('Year')
-            plt.ylabel(value)
-
-            plt.show()
-
-        bar_chart(df)
+        # bar_chart(df)
 
 def bar_chart(df):
     bar_width = 0.8

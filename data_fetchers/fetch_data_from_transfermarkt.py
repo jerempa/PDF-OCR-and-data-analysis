@@ -144,12 +144,12 @@ def parse_league_and_position(res):
             team_data['Average attendance'] = avg_attendance
             team_data['Average attendance / capacity %'] = attendance_percentage
 
-            team_data['Arrivals'] = arrivals
-            team_data['Departures'] = departures
+            team_data['Arrivals M€'] = arrivals
+            team_data['Departures M€'] = departures
 
             team_data['Average squad age'] = avg_age
-            team_data['Squad market value'] = squad_value
-            team_data['Average squad market value'] = avg_squad_value
+            team_data['Squad market value M€'] = squad_value
+            team_data['Average squad market value M€'] = avg_squad_value
 
             teams_dict[team] = team_data
     return teams_dict
