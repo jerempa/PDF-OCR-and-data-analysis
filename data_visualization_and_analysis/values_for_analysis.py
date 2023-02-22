@@ -33,7 +33,7 @@ def league_tier_throughout_years(team):
     df['Year'] = df['Season'].apply(season_to_year)
 
     #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
-    df['Squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value'], None), axis=1)
+    df['Squad market value'] = df.apply(lambda row: market_values_to_float(row['Squad market value'], None), axis=1)
     df['Infl adjusted squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value'], row['Year']), axis=1)
 
     #df['Average squad market value'] = df['Average squad market value'].apply(market_values_to_float)
@@ -57,7 +57,7 @@ def season_to_year(season):
     return year
 
 def market_values_to_float(value, year):
-   # print(value, year)
+    #print(value, year)
     try:
         value = value.replace('€', '').replace('m', '')
 
@@ -69,10 +69,12 @@ def market_values_to_float(value, year):
     except AttributeError:
         pass
 
-    if year:
+    if year and value:
         value = adjust_market_values_to_inflation(float(value), year)
-
-    return value
+    try:
+        return float(value)
+    except TypeError:
+        return value
 
 def adjust_market_values_to_inflation(market_value, year):
     CPI_values = {'2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,

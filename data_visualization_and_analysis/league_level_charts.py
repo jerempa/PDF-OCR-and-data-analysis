@@ -27,13 +27,15 @@ def line_plot():
     for team in teams:
 
         df = values_for_analysis.league_tier_throughout_years(team)
-        #print(df)
-        y_axis_values = ['Average attendance', 'Arrivals', 'Squad market value', 'Average squad market value']
+        print(df.head())
+        y_axis_values = ['Average attendance', 'Arrivals', 'Squad market value', 'Infl adjusted squad market value M€',
+                         'Average squad market value', 'Infl adjusted avg squad market value M€', 'Infl adjusted arrivals M€']
         #print(df['Arrivals'].max())
         #y_axis_values = {'Average attendance'}
 
 
         # for value in y_axis_values:
+        #     #print(value)
         #     fig, ax = plt.subplots()
         #     for level in df['League level'].unique():
         #         level_df = df[df['League level'] == level]
@@ -54,11 +56,11 @@ def line_plot():
         #     plt.xlabel('Year')
         #     plt.ylabel(value)
         #
-        #     plt.show()
+        #     #plt.show()
+        #
+        #bar_chart(df, team)
 
-        # bar_chart(df)
-
-def bar_chart(df):
+def bar_chart(df, team):
     bar_width = 0.8
     opacity = 0.8
 
@@ -69,7 +71,7 @@ def bar_chart(df):
         df_tier = df[df['League level'] == tier]
         ax.bar(df_tier['Year'], df_tier['Average attendance / capacity %'], bar_width, alpha=opacity, color=color_map[tier], label=tier)
 
-    ax.set_title('Average Attendance / Capacity % by Year')
+    ax.set_title(f'{team} Average Attendance / Capacity % by Year')
     ax.set_xlabel('Year')
     ax.set_ylabel('Average Attendance / Capacity %')
 
