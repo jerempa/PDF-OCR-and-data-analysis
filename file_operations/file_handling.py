@@ -155,6 +155,16 @@ def save_processed_images(image, team, f_statement_season):
         os.chdir('../..')
     #save processed images inside correct directory
 
+def save_pdfs(pdf, team, season):
+    filename = f'Season {season} {team}'
+    save_path = f'{os.getcwd()}/Financial statements/{team}'
+    full_path = f'{save_path}/{filename}'
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    #print(full_path)
+    #print(pdf, team, season)
+    with open(f'{full_path}.pdf', 'wb') as f:
+        f.write(pdf)
+
 def write_scraped_data_to_file(data):
     with open('scraped_data3.txt', 'w') as f:
         json.dump(data, f) #write the scraping output to a file to avoid making unnecessary requests
