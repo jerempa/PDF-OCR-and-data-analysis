@@ -1,7 +1,7 @@
 from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import data_visualization, debt_visualization,\
     values_for_analysis, league_level_charts, calculations, add_missing_rows_to_df
-from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs
+from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
 
@@ -30,7 +30,9 @@ def main():
 
     #league_level_charts.line_plot() #plotting transfermarkt data
 
-    calculations.main() #calculations of of dataframes
+    fetch_data_from_worldfootball.get_request()
+
+    #calculations.main() #calculations of of dataframes
 
     #add_missing_rows_to_df.main() #add manually missing rows to df (not ready yet)
 

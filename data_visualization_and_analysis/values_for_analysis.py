@@ -27,7 +27,7 @@ def league_tier_throughout_years(team):
     team_df = team_df.loc[mask, ['Season', 'League level', 'Average attendance', 'Average attendance / capacity %',
                                 'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
     df = team_df.copy()
-    df = df.dropna()
+    #df = df.dropna()
 
     df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
     df['Year'] = df['Season'].apply(season_to_year)
