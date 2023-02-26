@@ -38,8 +38,8 @@ def image_processing(images_dict):
         for img in images:
             processed_images_list = []
             for index, image in enumerate(img):
-                # if index <= 4:
-                #     continue
+                # if index <= 8:
+             #       continue
                 filtering = filter_pages(image)
                 if filtering:
                     image = process_image(image)
@@ -67,6 +67,7 @@ def filter_pages(image):
 
     balance_sheet_criteria1 = None
     balance_sheet_criteria2 = None
+    balance_sheet_criteria3 = None
 
     attachment_criteria1 = None
     attachment_criteria2 = None
@@ -81,6 +82,7 @@ def filter_pages(image):
         pala_criteria5 = data['text'].str.lower().str.contains('interest').any()
 
         balance_sheet_criteria1 = data['text'].str.lower().str.contains('stocks').any()
+        balance_sheet_criteria3 = data['text'].str.lower().str.contains('stock').any()
         #balance_sheet_criteria2 = data['text'].str.lower().str.contains('assets').any()
         # balance_sheet_criteria2 = data['text'].str.lower().str.contains('share').any()
         balance_sheet_criteria2 = data['text'].str.lower().str.contains('debtors').any()
@@ -100,7 +102,7 @@ def filter_pages(image):
 
 
     if ((pala_criteria4 or pala_criteria6) and (pala_criteria1 or pala_criteria3)) \
-            or (balance_sheet_criteria1 and balance_sheet_criteria2)\
+            or ((balance_sheet_criteria1 or balance_sheet_criteria3) and balance_sheet_criteria2)\
             or ((attachment_criteria1 or attachment_criteria2) and attachment_criteria3 and attachment_criteria4):
         return True
     return False

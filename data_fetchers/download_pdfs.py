@@ -3,8 +3,28 @@ from bs4 import BeautifulSoup
 
 from file_operations import file_handling
 
-links_and_teams = {'Charlton': 'https://find-and-update.company-information.service.gov.uk/company/01788466/filing-history'}
-#links_and_teams = {'Charlton': 'https://find-and-update.company-information.service.gov.uk/company/01788466/filing-history', 'Blackburn': 'https://find-and-update.company-information.service.gov.uk/company/00053482/filing-history'}
+
+links_and_teams = {'Coventry': 'https://find-and-update.company-information.service.gov.uk/company/01788466/filing-history',
+                   #'Coventry1': 'https://find-and-update.company-information.service.gov.uk/company/03056875/filing-history',
+                   'Bolton': 'https://find-and-update.company-information.service.gov.uk/company/00335699/filing-history',
+                   #'Bolton1': 'https://find-and-update.company-information.service.gov.uk/company/11761052/filing-history',
+                   #'Shef United': 'https://find-and-update.company-information.service.gov.uk/company/06963761/filing-history',
+                   'Shef United': 'https://find-and-update.company-information.service.gov.uk/company/00396956/filing-history',
+                   'Bournemouth': 'https://find-and-update.company-information.service.gov.uk/company/02393821/filing-history',
+                   'Brentford': 'https://find-and-update.company-information.service.gov.uk/company/03642327/filing-history'}
+# links_and_teams = {'Coventry': 'https://find-and-update.company-information.service.gov.uk/company/01788466/filing-history',
+#                    'Coventry1': 'https://find-and-update.company-information.service.gov.uk/company/03056875/filing-history',
+#                    'Bolton': 'https://find-and-update.company-information.service.gov.uk/company/00335699/filing-history',
+#                    'Bolton1': 'https://find-and-update.company-information.service.gov.uk/company/11761052/filing-history',
+#                    'Shef United': 'https://find-and-update.company-information.service.gov.uk/company/06963761/filing-history',
+#                    'Shef United1': 'https://find-and-update.company-information.service.gov.uk/company/00396956/filing-history',
+#                    'Bournemouth': 'https://find-and-update.company-information.service.gov.uk/company/02393821/filing-history',
+#                    'Brentford': 'https://find-and-update.company-information.service.gov.uk/company/03642327/filing-history'}
+# links_and_teams = {'Charlton': 'https://find-and-update.company-information.service.gov.uk/company/01788466/filing-history',
+# 'Blackburn': 'https://find-and-update.company-information.service.gov.uk/company/00053482/filing-history', 'Sunderland': 'https://find-and-update.company-information.service.gov.uk/company/00049116/filing-history',
+#                    'Wolves': 'https://find-and-update.company-information.service.gov.uk/company/01989823/filing-history',
+#                    'Swansea': 'https://find-and-update.company-information.service.gov.uk/company/00123414/filing-history',
+#                    'Norwich': 'https://find-and-update.company-information.service.gov.uk/company/00154044/filing-history'}
 
 
 

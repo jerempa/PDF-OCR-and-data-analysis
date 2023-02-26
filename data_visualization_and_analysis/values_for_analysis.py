@@ -25,7 +25,7 @@ def league_tier_throughout_years(team):
 
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, ['Season', 'League level', 'Average attendance', 'Average attendance / capacity %',
-                                'Rank', 'Arrivals', 'Squad market value', 'Average squad market value']]
+                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
     df = team_df.copy()
     df = df.dropna()
 
@@ -33,17 +33,17 @@ def league_tier_throughout_years(team):
     df['Year'] = df['Season'].apply(season_to_year)
 
     #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
-    df['Squad market value'] = df.apply(lambda row: market_values_to_float(row['Squad market value'], None), axis=1)
-    df['Infl adjusted squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value'], row['Year']), axis=1)
+    df['Squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], None), axis=1)
+    df['Infl adjusted squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], row['Year']), axis=1)
 
     #df['Average squad market value'] = df['Average squad market value'].apply(market_values_to_float)
 
-    df['Average squad market value'] = df.apply(lambda row: market_values_to_float(row['Average squad market value'], None), axis=1)
-    df['Infl adjusted avg squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value'], row['Year']), axis=1)
+    df['Average squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], None), axis=1)
+    df['Infl adjusted avg squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], row['Year']), axis=1)
 
     #df['Arrivals'] = df['Arrivals'].apply(market_values_to_float)
-    df['Arrivals'] = df.apply(lambda row: market_values_to_float(row['Arrivals'], None), axis=1)
-    df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals'], row['Year']), axis=1)
+    df['Arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], None), axis=1)
+    df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
 
     return df
 

@@ -1,7 +1,11 @@
 import os
-import correct_seasons
 from PIL import Image
 import json
+import csv
+
+import correct_seasons
+
+teams = ['Coventry']
 
 def get_filenames(folder):
     team_and_files = dict()
@@ -9,11 +13,13 @@ def get_filenames(folder):
         files = []
         dire = os.path.join(folder, directory)
         if os.path.isdir(dire):
-            for filename in os.listdir(dire):
-                file = os.path.join(dire, filename)
-                if os.path.isfile(file):
-                    files.append(filename)
-            team_and_files[directory] = files
+            if directory in teams:
+                for filename in os.listdir(dire):
+                    file = os.path.join(dire, filename)
+                    if os.path.isfile(file):
+                        files.append(filename)
+                team_and_files[directory] = files
+    print(team_and_files)
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
@@ -165,14 +171,28 @@ def save_pdfs(pdf, team, season):
     with open(f'{full_path}.pdf', 'wb') as f:
         f.write(pdf)
 
+def calculations_to_csv(data):
+    print(data)
+    with open("team_data.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+
+        #writer.writerow(["Team", "Premier League Median", "Premier League Average", "Championship Median", "Championship Average", "League One Median", "League One Average"])
+        if f.tell() == 0:
+            writer.writerow(["Average attendance / capacity %"])
+
+        writer.writerow(data)
+        #writer.writerow([item for pair in data for item in pair])
+        # for row in data:
+        #     writer.writerow(row)
+
 def write_scraped_data_to_file(data):
-    with open('scraped_data3.txt', 'w') as f:
+    with open('scraped_data4.txt', 'w') as f:
         json.dump(data, f) #write the scraping output to a file to avoid making unnecessary requests
 
 def return_scraped_data_dict():
     teams_dict = None
     try:
-        with open('scraped_data.txt3', 'r') as f:
+        with open('scraped_data4.txt', 'r') as f:
             data = f.read()
             teams_dict = json.loads(data)
     except IOError:
