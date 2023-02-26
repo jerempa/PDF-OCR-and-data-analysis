@@ -6,31 +6,46 @@ from optimal_char_recognition import img_conversion_and_processing, img_to_strin
 
 
 def main():
-    #files_to_convert = file_handling.get_filenames('Financial statements')
     #team_and_files = file_handling.get_filenames('Financial statements in csv')
-    #images_dict = img_conversion_and_processing.convert_to_jpg(files_to_convert)
+
+    # files_to_convert = file_handling.get_filenames('Financial statements')
+    # images_dict = img_conversion_and_processing.convert_to_jpg(files_to_convert)
+    # img_conversion_and_processing.image_processing(images_dict) #writing pdf info to csv
+
     #images_dict = file_handling.create_img_dicts()
-    #img_conversion_and_processing.image_processing(images_dict)
-    download_pdfs.download_financial_statements()
-    #extracting_data.main()
+
+    #download_pdfs.download_financial_statements() #download pdfs from web
+
+    #extracting_data.main() #extract financial statement data from csv
+
     # data = extracting_data.file_reading(team_and_files)
     # data_visualization.scatter_chart(data)
     # debt_visualization.scatter_chart(data)
-    #values = fetch_data_from_transfermarkt.get_request()
-    #print(values)
-    #df_operations.print_df()
-    #league_level_charts.line_plot()
-    #calculations.main()
-    #add_missing_rows_to_df.main()
-    #calculations.show_average_attendace_to_capacity()
-    #values_for_analysis.league_tier_throughout_years()
+
+    #values = fetch_data_from_transfermarkt.get_request() #fetch data from transfermarkt
+
+    #df_operations.print_df() #print the transfermarkt dataframes
+
+    #file_handling.return_scraped_data_dict_attendances()
+
+    #league_level_charts.line_plot() #plotting transfermarkt data
+
+    calculations.main() #calculations of of dataframes
+
+    #add_missing_rows_to_df.main() #add manually missing rows to df (not ready yet)
+
+    #calculations.show_average_attendace_to_capacity() #calculations of of dataframes
+
+    #values_for_analysis.league_tier_throughout_years() #cleanse the dataframe values
+
     #df_operations.return_attendance_percentage('Brighton & Hove Albion', None)
-    #ori = file_handling.return_scraped_data_dict()
-    #file_handling.reverse_lists(ori)
-    #file_handling.write_scraped_data_to_file(values)
-    #debt_visualization.scatter_chart(data)
-    #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images)
-    #ocr_result_to_txt()
+
+    #file_handling.write_scraped_data_to_file(values) #write df data to file to avoid unnecessary requests
+
+    #debt_visualization.scatter_chart(data) #data visualization (not ready)
+
+    #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images) #merge images to one file
+
 
 
 main()
