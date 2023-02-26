@@ -13,8 +13,8 @@ def main():
     for team in teams:
         df = values_for_analysis.league_tier_throughout_years(team)
         #print(df)
-        show_average_attendace_to_capacity(df, team)
-        #bought_players_avg_and_median(df, team)
+        #show_average_attendace_to_capacity(df, team)
+        bought_players_avg_and_median(df, team)
         #squad_value_avg_median(df, team)
         #avg_squad_value_avg_median(df, team)
 
@@ -47,13 +47,13 @@ def show_average_attendace_to_capacity(df, team):
     data.append(league_one_median)
     data.append(league_one_avg)
 
-    file_handling.calculations_to_csv(data)
+    file_handling.calculations_to_csv("Average attendance / capacity %", data)
 
 def bought_players_avg_and_median(df, team):
     premier_league_arrivals = []
     championship_arrivals = []
     league_one_arrivals = []
-    print(f'\n{team}')
+    #print(f'\n{team}')
     for index, row in df.iterrows():
         if row['Year'] > 1990:
             if row['League level'] == 'First Tier':
@@ -62,19 +62,24 @@ def bought_players_avg_and_median(df, team):
                 championship_arrivals.append(row['Infl adjusted arrivals M€'])
             elif row['League level'] == 'Third Tier':
                 league_one_arrivals.append(row['Infl adjusted arrivals M€'])
-    #print(premier_league_arrivals, championship_arrivals, league_one_arrivals)
-    try:
-        print(f'Median Premier League: {round(statistics.median(premier_league_arrivals), 2)} M€'
-              f' Median Championship: {round(statistics.median(championship_arrivals), 2)} M€')
-              #f' Median League One: {round(statistics.median(league_one_arrivals), 2)} M€')
-    except statistics.StatisticsError:
-        pass
-    try:
-        print(f'Average Premier League: {round(sum(premier_league_arrivals) / len(premier_league_arrivals), 2)} M€'
-              f' Average Championship: {round(sum(championship_arrivals) / len(championship_arrivals), 2)} M€')
-              #f' Average League One: {round(sum(league_one_arrivals) / len(league_one_arrivals), 2)} M€')
-    except ZeroDivisionError:
-        pass
+
+    data = []
+
+    premier_league_median, premier_league_avg = errors.median_avg_errors(premier_league_arrivals)
+    championship_median, championship_avg = errors.median_avg_errors(championship_arrivals)
+    league_one_median, league_one_avg = errors.median_avg_errors(league_one_arrivals)
+
+    data.append(team)
+    data.append(premier_league_median)
+    data.append(premier_league_avg)
+
+    data.append(championship_median)
+    data.append(championship_avg)
+
+    data.append(league_one_median)
+    data.append(league_one_avg)
+
+    file_handling.calculations_to_csv("team_data.csv", "Inflation adjusted arrivals", data)
 
 def squad_value_avd_median(df, team):
     premier_league_squad_value = []

@@ -171,19 +171,21 @@ def save_pdfs(pdf, team, season):
     with open(f'{full_path}.pdf', 'wb') as f:
         f.write(pdf)
 
-def calculations_to_csv(data):
-    print(data)
-    with open("team_data.csv", "a", newline="") as f:
-        writer = csv.writer(f)
+def calculations_to_csv(filename, type_of_data, data):
+    with open(filename, "a", newline="") as file:
+        writer = csv.writer(file)
 
-        #writer.writerow(["Team", "Premier League Median", "Premier League Average", "Championship Median", "Championship Average", "League One Median", "League One Average"])
-        if f.tell() == 0:
-            writer.writerow(["Average attendance / capacity %"])
+        #print(count_rows)
+        if file.tell() == 0 or (count_csv_rows(filename) % 20 == 0):
+            writer.writerow([type_of_data])
 
         writer.writerow(data)
-        #writer.writerow([item for pair in data for item in pair])
-        # for row in data:
-        #     writer.writerow(row)
+
+def count_csv_rows(filename):
+    with open(filename, 'r', newline='') as file:
+        reader = csv.reader(file)
+        count = sum(1 for row in reader)
+    return count
 
 def write_scraped_data_to_file(data):
     with open('scraped_data4.txt', 'w') as f:
