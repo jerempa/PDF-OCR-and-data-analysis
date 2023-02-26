@@ -35,15 +35,15 @@ def get_request():
     #
     # responses = [response_bpl, response_champ, response_l1, response_l2]
 
-    stadium_names = [{'Wolverhampton Wanderers': 'Molineux Stadium', 'Brighton & Hove Albion': 'Amex Stadium', 'Brighton & Hove Albion?': 'Falmer Stadium',
+    stadium_names = [{'Wolverhampton Wanderers': 'Molineux Stadium', 'Wolverhampton Wanderers?': 'Molineux', 'Brighton & Hove Albion': 'Amex Stadium', 'Brighton & Hove Albion?': 'Falmer Stadium',
                       'Leeds United': 'Elland Road', 'Southampton': "Saint Mary's", 'Southampton?': 'The Dell', 'Leicester City': 'King Power Stadium',
-                      'Leicester City?': 'Filbert Street', 'Nottingham Forest': 'City Ground', 'Brentford FC': 'Brentford Community Stadium'},
+                      'Leicester City?': 'Filbert Street', 'Nottingham Forest': 'City Ground', 'Brentford FC': 'Brentford Community Stadium', 'Brentford FC?': 'Griffin Park'},
                       {'Hull City': 'MKM Stadium', 'Hull City?': 'KC Stadium', 'Hull City!': 'KCOM Stadium', 'Huddersfield Town': 'John Smith’s Stadium',
                        'Blackpool FC': 'Bloomfield Road', 'Norwich City': 'Carrow Road', 'Wigan Athletic': 'DW Stadium',
                        'Wigan Athletic?': 'JJB Stadium',
                        'Queens Park Rangers': 'Loftus Road', 'Blackburn Rovers': 'Ewood Park'},
                      {'Derby County': 'Pride Park Stadium', 'Portsmouth FC': 'Fratton Park',
-                      'Bolton Wanderers': 'University of Bolton Stadium', 'Bolton Wanderers?': 'Reebok Stadium', 'Charlton Athletic': 'The Valley',
+                      'Bolton Wanderers': 'University of Bolton Stadium', 'Bolton Wanderers?': 'Reebok Stadium', 'Bolton Wanderers': 'Macron Stadium', 'Charlton Athletic': 'The Valley',
                       'Ipswich Town': 'Portman Road'}
                     ]
 
@@ -51,6 +51,7 @@ def get_request():
     #     stadium_name_dicts = parse_stadium_name(res.content)
     #     stadium_names.append(stadium_name_dicts)
 
+    #f =
 
     create_urls_for_fetching_capacities(stadium_names)
 
@@ -87,38 +88,40 @@ def create_urls_for_fetching_capacities(data):
     #url = f'{base_url}/venues'
     url = f'https://en.wikipedia.org/wiki/'
     #league_to_url = ['/eng-premier-league', '/eng-championship', '/eng-league-one', '/eng-league-two']
+    league_to_url = ['_Premier_League', 'EFL_Championship', 'EFL_League_One', 'EFL_League_Two']
     #league_to_url = ['/eng-premier-league']
     capacity_dict = {}
-    # for league in league_to_url:
-    #     temporary_url = url
-    #     temporary_url += league
-        #print(temporary_url)
     for season in all_seasons_full:
-        season = season.replace('/', '-')
-        temp_url = url
-        temp_url += f'{season}_Premier_League'
-        res = requests.get(temp_url, headers=headers)
-        soup = BeautifulSoup(res.content, 'html.parser')
-        for values in data:
-            for team, stadium in values.items():
-                team = team.replace('?', '').replace('!', '')
-                #stadium_td = soup.find_all('td', {'class': ['hell', 'dunkel']})
-                # stadium_td = soup.find_all('td')
-                # for index, row in enumerate(stadium_td):
-                #     if row.get_text() == stadium:
-                #         print(stadium, row[index + 2].get_text())
-                stadium_td = soup.find_all('td')
-                for index, row in enumerate(stadium_td):
-                    if row.get_text().strip() == stadium:
-                        capacity = stadium_td[index + 1].get_text().strip()
-                        try:
-                            if team in capacity_dict:
-                                capacity_dict[team][season] = capacity
-                            else:
-                                capacity_dict[team] = {season: capacity}
-                        except KeyError:
-                            pass
-                    #stadium_soup = BeautifulSoup(str(row), 'html.parser')
+        temporary_url = url
+        #temporary_url += league
+        #print(temporary_url)
+        for league in league_to_url:
+            season = season.replace('/', '-')
+            temp_url = temporary_url
+            temp_url += f'{season}_{league}'
+            #print(temp_url)
+            res = requests.get(temp_url, headers=headers)
+            soup = BeautifulSoup(res.content, 'html.parser')
+            for values in data:
+                for team, stadium in values.items():
+                    team = team.replace('?', '').replace('!', '')
+                    #stadium_td = soup.find_all('td', {'class': ['hell', 'dunkel']})
+                    # stadium_td = soup.find_all('td')
+                    # for index, row in enumerate(stadium_td):
+                    #     if row.get_text().lower() == stadium.lower():
+                    #         print(stadium, row[index + 2].get_text())
+                    stadium_td = soup.find_all('td')
+                    for index, row in enumerate(stadium_td):
+                        if row.get_text().strip().lower() == stadium.lower():
+                            capacity = stadium_td[index + 1].get_text().strip()
+                            try:
+                                if team in capacity_dict:
+                                    capacity_dict[team][season] = capacity
+                                else:
+                                    capacity_dict[team] = {season: capacity}
+                            except KeyError:
+                                pass
+                        #stadium_soup = BeautifulSoup(str(row), 'html.parser')
                     #stadium_soup = BeautifulSoup(str(stadium_td[i]), 'html.parser')
                     #td_tags = stadium_soup.find_all('td', {'class': ['hell', 'dunkel']})
                     # try:
