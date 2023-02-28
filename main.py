@@ -4,6 +4,8 @@ from data_visualization_and_analysis import data_visualization, debt_visualizati
 from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
+import json
+
 
 def main():
     #team_and_files = file_handling.get_filenames('Financial statements in csv')
@@ -30,7 +32,10 @@ def main():
 
     #league_level_charts.line_plot() #plotting transfermarkt data
 
-    fetch_data_from_worldfootball.get_request()
+    #fetch_data_from_worldfootball.get_request()
+
+    #df_operations.return_attendance_percentage(None, None)
+
 
     #calculations.main() #calculations of of dataframes
 

@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import json
 
 
 base_url = 'https://www.worldfootball.net'
@@ -22,6 +23,23 @@ all_seasons_full = ['2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '2017
                     '2014/15', '2013/14', '2012/13', '2011/12', '2010/11', '2009/10', '2008/09', '2007/08',
                     '2006/07', '2005/06', '2004/05', '2003/04', '2002/03', '2001/02', '2000/01', '1999/00']
 
+stadium_names = [{'Wolverhampton Wanderers': 'Molineux Stadium', 'Wolverhampton Wanderers?': 'Molineux',
+                  'Brighton & Hove Albion': 'Amex Stadium', 'Brighton & Hove Albion?': 'Falmer Stadium',
+                  'Leeds United': 'Elland Road', 'Southampton': "Saint Mary's", 'Southampton?': 'The Dell',
+                  'Leicester City': 'King Power Stadium',
+                  'Leicester City?': 'Filbert Street', 'Nottingham Forest': 'City Ground',
+                  'Brentford FC': 'Brentford Community Stadium', 'Brentford FC?': 'Griffin Park'},
+                 {'Hull City': 'MKM Stadium', 'Hull City?': 'KC Stadium', 'Hull City!': 'KCOM Stadium',
+                  'Huddersfield Town': 'John Smith’s Stadium',
+                  'Blackpool FC': 'Bloomfield Road', 'Norwich City': 'Carrow Road', 'Wigan Athletic': 'DW Stadium',
+                  'Wigan Athletic?': 'JJB Stadium',
+                  'Queens Park Rangers': 'Loftus Road', 'Blackburn Rovers': 'Ewood Park'},
+                 {'Derby County': 'Pride Park Stadium', 'Portsmouth FC': 'Fratton Park',
+                  'Bolton Wanderers': 'University of Bolton Stadium', 'Bolton Wanderers?': 'Reebok Stadium',
+                  'Bolton Wanderers!': 'Macron Stadium', 'Charlton Athletic': 'The Valley',
+                  'Ipswich Town': 'Portman Road'}
+                 ]
+
 def get_request():
     url_bpl = 'https://www.worldfootball.net/competition/eng-premier-league/'
     url_champ = 'https://www.worldfootball.net/competition/eng-championship/'
@@ -35,25 +53,12 @@ def get_request():
     #
     # responses = [response_bpl, response_champ, response_l1, response_l2]
 
-    stadium_names = [{'Wolverhampton Wanderers': 'Molineux Stadium', 'Wolverhampton Wanderers?': 'Molineux', 'Brighton & Hove Albion': 'Amex Stadium', 'Brighton & Hove Albion?': 'Falmer Stadium',
-                      'Leeds United': 'Elland Road', 'Southampton': "Saint Mary's", 'Southampton?': 'The Dell', 'Leicester City': 'King Power Stadium',
-                      'Leicester City?': 'Filbert Street', 'Nottingham Forest': 'City Ground', 'Brentford FC': 'Brentford Community Stadium', 'Brentford FC?': 'Griffin Park'},
-                      {'Hull City': 'MKM Stadium', 'Hull City?': 'KC Stadium', 'Hull City!': 'KCOM Stadium', 'Huddersfield Town': 'John Smith’s Stadium',
-                       'Blackpool FC': 'Bloomfield Road', 'Norwich City': 'Carrow Road', 'Wigan Athletic': 'DW Stadium',
-                       'Wigan Athletic?': 'JJB Stadium',
-                       'Queens Park Rangers': 'Loftus Road', 'Blackburn Rovers': 'Ewood Park'},
-                     {'Derby County': 'Pride Park Stadium', 'Portsmouth FC': 'Fratton Park',
-                      'Bolton Wanderers': 'University of Bolton Stadium', 'Bolton Wanderers?': 'Reebok Stadium', 'Bolton Wanderers': 'Macron Stadium', 'Charlton Athletic': 'The Valley',
-                      'Ipswich Town': 'Portman Road'}
-                    ]
-
     # for res in responses:
     #     stadium_name_dicts = parse_stadium_name(res.content)
     #     stadium_names.append(stadium_name_dicts)
 
-    #f =
 
-    create_urls_for_fetching_capacities(stadium_names)
+    #create_urls_for_fetching_capacities(stadium_names)
 
 
 

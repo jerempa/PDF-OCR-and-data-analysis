@@ -201,3 +201,29 @@ def return_scraped_data_dict():
         pass
 
     return teams_dict #return the values for making the df
+
+
+def return_stadium_capacities():
+    teams_dict = None
+    try:
+        with open('stadium_capacities1.txt', 'r') as f:
+            data = f.read()
+            data = data.replace("'", "\"")
+            try:
+                teams_dict = json.loads(data)
+            except json.decoder.JSONDecodeError as e:
+                print(data)
+                print("JSON syntax error: ", e)
+    except IOError:
+        pass
+
+    capacity_dict = {}
+
+    for key, value in teams_dict.items():
+        capacity_list = list()
+        for season, capacity in value.items():
+            capacity = int(capacity.replace(",", ""))
+            capacity_list.append(capacity)
+        capacity_dict[key] = capacity_list
+
+    return capacity_dict
