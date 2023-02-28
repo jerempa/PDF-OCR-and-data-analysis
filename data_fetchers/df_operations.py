@@ -63,6 +63,12 @@ def create_df_from_dict(teams_dict):
 
     return df
 
+
+def concat_dfs(df_list):
+    concat_df = pd.concat(df_list)
+
+    return concat_df
+
 # def create_bpl_df(teams_dict):
 #     #print(team_list)
 #     team_data = []

@@ -194,7 +194,7 @@ def write_scraped_data_to_file(data):
 def return_scraped_data_dict():
     teams_dict = None
     try:
-        with open('scraped_data4.txt', 'r') as f:
+        with open('scraped_data5.txt', 'r') as f:
             data = f.read()
             teams_dict = json.loads(data)
     except IOError:

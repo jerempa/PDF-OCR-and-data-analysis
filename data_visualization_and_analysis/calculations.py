@@ -1,8 +1,10 @@
 from data_visualization_and_analysis import values_for_analysis
 from error_handling import errors
 from file_operations import file_handling
+from data_fetchers import df_operations
 
 import statistics
+import pandas as pd
 
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Queens Park Rangers', 'Wigan Athletic',
@@ -14,21 +16,21 @@ teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester Ci
 #          'Southampton FC', 'Wigan Athletic', 'Wolverhampton Wanderers']
 
 def main():
-    #values_dict = {}
-    # team = teams[18]
-    # df = values_for_analysis.league_tier_throughout_years(team)
-    # print(team, df)
-    #show_average_attendace_to_capacity(df, team)
-    #bought_players_avg_and_median(df, team)
-    #squad_value_avg_median(df, team)
-    #avg_squad_value_avg_median(df, team)
+    dfs = []
     for team in teams:
         df = values_for_analysis.league_tier_throughout_years(team)
-        print(team, df)
-        #show_average_attendace_to_capacity(df, team)
-        #bought_players_avg_and_median(df, team)
-        #squad_value_avg_median(df, team)
-        #avg_squad_value_avg_median(df, team)
+        dfs.append(df)
+
+    concat_df = df_operations.concat_dfs(dfs)
+
+    #print(concat_df)
+    #print(concat_df)
+        #print(type(df))
+        #print(team, df)
+    #show_average_attendace_to_capacity(concat_df, "Total")
+    #bought_players_avg_and_median(concat_df, "Total")
+    #squad_value_avg_median(concat_df, "Total")
+    avg_squad_value_avg_median(concat_df, "Total")
 
 def show_average_attendace_to_capacity(df, team):
     premier_league_attendance = []
@@ -56,7 +58,7 @@ def show_average_attendace_to_capacity(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg)
 
 
-    file_handling.calculations_to_csv("team_data1.csv", "Average attendance / capacity %", data)
+    file_handling.calculations_to_csv("all_values.csv", "Average attendance / capacity %", data)
 
 def bought_players_avg_and_median(df, team):
     premier_league_arrivals = []
@@ -74,6 +76,8 @@ def bought_players_avg_and_median(df, team):
                 league_one_arrivals.append(row['Infl adjusted arrivals M€'])
             elif row['League level'] == 'Fourth Tier':
                 league_two_arrivals.append(row['Infl adjusted arrivals M€'])
+    #print(df)
+    #print(team, premier_league_arrivals, championship_arrivals, league_one_arrivals, league_two_arrivals)
 
 
     premier_league_median, premier_league_avg = errors.median_avg_errors(premier_league_arrivals)
@@ -84,7 +88,7 @@ def bought_players_avg_and_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data1.csv", "Inflation adjusted arrivals M€", data)
+    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted arrivals M€", data)
 
 def squad_value_avg_median(df, team):
     premier_league_squad_value = []
@@ -93,7 +97,7 @@ def squad_value_avg_median(df, team):
     league_two_squad_value = []
     #print(f'\n{team}')
     for index, row in df.iterrows():
-        if row['Year'] > 1990:
+        if row['Year'] > 2003: #don't take into account years that don't have values
             if row['League level'] == 'First Tier':
                 premier_league_squad_value.append(row['Infl adjusted squad market value M€'])
             elif row['League level'] == 'Second Tier':
@@ -111,7 +115,7 @@ def squad_value_avg_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data1.csv", "Inflation adjusted squad value M€", data)
+    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted squad value M€", data)
 
 def avg_squad_value_avg_median(df, team):
     premier_league_avg_squad_value = []
@@ -120,7 +124,7 @@ def avg_squad_value_avg_median(df, team):
     league_two_avg_squad_value = []
     #print(f'\n{team}')
     for index, row in df.iterrows():
-        if row['Year'] > 1990:
+        if row['Year'] > 2003: #don't take into account years that don't have values
             if row['League level'] == 'First Tier':
                 premier_league_avg_squad_value.append(row['Infl adjusted avg squad market value M€'])
             elif row['League level'] == 'Second Tier':
@@ -138,13 +142,14 @@ def avg_squad_value_avg_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data1.csv", "Inflation adjusted average squad value M€", data)
+    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted average squad value M€", data)
 
 
 def append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg):
     data = []
 
-    data.append(team)
+    if data != 'Total':
+        data.append(team)
     data.append(premier_league_median)
     data.append(premier_league_avg)
 

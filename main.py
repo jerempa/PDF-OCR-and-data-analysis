@@ -37,7 +37,7 @@ def main():
     #df_operations.return_attendance_percentage(None, None)
 
 
-    #calculations.main() #calculations of of dataframes
+    calculations.main() #calculations of of dataframes
 
     #add_missing_rows_to_df.main() #add manually missing rows to df (not ready yet)
 
