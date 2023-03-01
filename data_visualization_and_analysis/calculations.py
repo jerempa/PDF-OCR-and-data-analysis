@@ -144,11 +144,43 @@ def avg_squad_value_avg_median(df, team):
 
     file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted average squad value M€", data)
 
+def attendances_by_league_level(team):
+    team_df = values_for_analysis.league_tier_throughout_years(team)
+
+    #print(values_for_analysis.league_tier_throughout_years(team))
+
+    premier_league_spectators = []
+    championship_spectators = []
+    league_one_spectators = []
+    league_two_spectators = []
+
+    #print(f'\n{team}')
+    for index, row in team_df.iterrows():
+        if row['Year'] > 1995 and row['Year'] != 2020: #don't take into account years that don't have values and COVID year without spectators
+            if row['League level'] == 'First Tier':
+                premier_league_spectators.append(row['Total spectators'])
+            elif row['League level'] == 'Second Tier':
+                championship_spectators.append(row['Total spectators'])
+            elif row['League level'] == 'Third Tier':
+                league_one_spectators.append(row['Total spectators'])
+            elif row['League level'] == 'Fourth Tier':
+                league_two_spectators.append(row['Total spectators'])
+
+    premier_league_median, premier_league_avg = errors.median_avg_errors(premier_league_spectators)
+    championship_median, championship_avg = errors.median_avg_errors(championship_spectators)
+    league_one_median, league_one_avg = errors.median_avg_errors(league_one_spectators)
+    league_two_median, league_two_avg = errors.median_avg_errors(league_two_spectators)
+
+    data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
+                                 league_one_median, league_one_avg, league_two_median, league_two_avg)
+
+    print(data)
+
 
 def append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg):
     data = []
 
-    if data != 'Total':
+    if team != 'Total':
         data.append(team)
     data.append(premier_league_median)
     data.append(premier_league_avg)

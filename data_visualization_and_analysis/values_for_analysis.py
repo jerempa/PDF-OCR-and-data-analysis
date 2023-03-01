@@ -24,12 +24,13 @@ def league_tier_throughout_years(team):
 
 
     mask = team_df['Team'] == team
-    team_df = team_df.loc[mask, ['Season', 'League level', 'Average attendance', 'Average attendance / capacity %',
+    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %',
                                 'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
     df = team_df.copy()
     #df = df.dropna()
 
     df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
+    df['Total spectators'] = df['Total spectators'].str.replace(',', '').astype(int)
     df['Year'] = df['Season'].apply(season_to_year)
 
     #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
@@ -84,8 +85,8 @@ def adjust_market_values_to_inflation(market_value, year):
             adjusted_value = round(market_value * (CPI_values['2022']/value), 2)
             return float(adjusted_value)
 
-def average_attendances_by_league_level(team):
-    df_operations.return_team_df(team)
+# def average_attendances_by_league_level(team):
+#     team_df = df_operations.return_team_df(team)
     # df = file_handling.return_scraped_data_dict()
     #
     # for index, row in df.iterrows():

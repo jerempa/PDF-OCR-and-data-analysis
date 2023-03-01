@@ -1,6 +1,6 @@
 from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import data_visualization, debt_visualization,\
-    values_for_analysis, league_level_charts, calculations, add_missing_rows_to_df
+    values_for_analysis, league_level_charts, calculations, transfermarkt_data_visualization
 from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
@@ -31,7 +31,11 @@ def main():
     #file_handling.return_scraped_data_dict_attendances()
 
     #league_level_charts.line_plot() #plotting transfermarkt data
-    values_for_analysis.average_attendances_by_league_level("Leeds United")
+    #values_for_analysis.average_attendances_by_league_level("Leeds United")
+
+    #calculations.attendances_by_league_level("Leeds United")
+
+    transfermarkt_data_visualization.scatter_chart()
 
     #fetch_data_from_worldfootball.get_request()
 

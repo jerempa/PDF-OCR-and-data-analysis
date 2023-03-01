@@ -227,3 +227,23 @@ def return_stadium_capacities():
         capacity_dict[key] = capacity_list
 
     return capacity_dict
+
+def return_transfermarkt_values_from_csv(team, data_header):
+    with open("team_data4.csv", 'r', newline='') as file:
+        reader = csv.reader(file)
+        cur_header = str() #keeping up with what data is read atm
+        prem_median = float()
+        champ_median = float()
+        l1_median = float()
+        l2_median = float()
+        for row in reader:
+            if len(row) == 1:
+                cur_header = row[0]
+            if row[0] == team and data_header in cur_header:
+                prem_median = float(row[1])
+                champ_median = float(row[3])
+                l1_median = float(row[5])
+                l2_median = float(row[5])
+                return [l2_median, l1_median, champ_median, prem_median]
+            #print(row, cur_header)
+        #print(reader)
