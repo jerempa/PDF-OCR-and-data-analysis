@@ -4,6 +4,7 @@ import json
 import csv
 
 import correct_seasons
+from error_handling import errors
 
 teams = ['Coventry']
 
@@ -240,10 +241,10 @@ def return_transfermarkt_values_from_csv(team, data_header):
             if len(row) == 1:
                 cur_header = row[0]
             if row[0] == team and data_header in cur_header:
-                prem_median = float(row[1])
-                champ_median = float(row[3])
-                l1_median = float(row[5])
-                l2_median = float(row[5])
+                prem_median = errors.file_reading_value_errors(row[1])
+                champ_median = errors.file_reading_value_errors(row[3])
+                l1_median = errors.file_reading_value_errors(row[5])
+                l2_median = errors.file_reading_value_errors(row[7])
                 return [l2_median, l1_median, champ_median, prem_median]
             #print(row, cur_header)
         #print(reader)

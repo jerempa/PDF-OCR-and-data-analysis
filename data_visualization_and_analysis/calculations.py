@@ -3,8 +3,6 @@ from error_handling import errors
 from file_operations import file_handling
 from data_fetchers import df_operations
 
-import statistics
-import pandas as pd
 
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Queens Park Rangers', 'Wigan Athletic',

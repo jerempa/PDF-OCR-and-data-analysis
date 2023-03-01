@@ -10,3 +10,15 @@ def median_avg_errors(values):
     except ZeroDivisionError:
         avg = None
     return median, avg
+
+def file_reading_value_errors(value):
+    try:
+        value = float(value)
+        return value
+    except ValueError:
+        pass
+
+
+# def numpy_errors(slope, intercept):
+#     try:
+#         slope, intercept = np.polyfit(league_levels, values, 1)
