@@ -1,7 +1,7 @@
 from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import data_visualization, debt_visualization,\
     values_for_analysis, league_level_charts, calculations, transfermarkt_data_visualization
-from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball
+from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball, fetch_season_data_from_wiki
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
 import json
@@ -35,11 +35,14 @@ def main():
 
     #calculations.attendances_by_league_level("Leeds United")
 
-    transfermarkt_data_visualization.scatter_chart()
+    #transfermarkt_data_visualization.scatter_chart()
 
     #fetch_data_from_worldfootball.get_request()
 
+    fetch_season_data_from_wiki.get_request()
+
     #df_operations.return_attendance_percentage(None, None)
+
 
     #calculations.main() #calculations of of dataframes
 

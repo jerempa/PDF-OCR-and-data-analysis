@@ -27,6 +27,7 @@ def league_tier_throughout_years(team):
     team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %',
                                 'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
     df = team_df.copy()
+    #print(team, df)
     #df = df.dropna()
 
     df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
@@ -85,20 +86,6 @@ def adjust_market_values_to_inflation(market_value, year):
             adjusted_value = round(market_value * (CPI_values['2022']/value), 2)
             return float(adjusted_value)
 
-# def average_attendances_by_league_level(team):
-#     team_df = df_operations.return_team_df(team)
-    # df = file_handling.return_scraped_data_dict()
-    #
-    # for index, row in df.iterrows():
-    #     if row['Average attendance / capacity %'] > 2.00 and row['Year'] > 1990: #don't take into account covid year without spectators
-    #         if row['League level'] == 'First Tier':
-    #             premier_league_attendance.append(row['Average attendance / capacity %'])
-    #         elif row['League level'] == 'Second Tier':
-    #             championship_attendance.append(row['Average attendance / capacity %'])
-    #         elif row['League level'] == 'Third Tier':
-    #             league_one_attendance.append(row['Average attendance / capacity %'])
-    #         elif row['League level'] == 'Fourth Tier':
-    #             league_two_attendance.append(row['Average attendance / capacity %'])
 
 
 

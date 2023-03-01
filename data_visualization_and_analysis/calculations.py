@@ -17,9 +17,12 @@ def main():
     dfs = []
     for team in teams:
         df = values_for_analysis.league_tier_throughout_years(team)
+        print(team, df)
         dfs.append(df)
 
     concat_df = df_operations.concat_dfs(dfs)
+    #print(concat_df)
+
 
     #print(concat_df)
     #print(concat_df)
@@ -28,7 +31,7 @@ def main():
     #show_average_attendace_to_capacity(concat_df, "Total")
     #bought_players_avg_and_median(concat_df, "Total")
     #squad_value_avg_median(concat_df, "Total")
-    avg_squad_value_avg_median(concat_df, "Total")
+    #avg_squad_value_avg_median(concat_df, "Total")
 
 def show_average_attendace_to_capacity(df, team):
     premier_league_attendance = []
