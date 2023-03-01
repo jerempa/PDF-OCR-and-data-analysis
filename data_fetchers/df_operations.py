@@ -21,7 +21,6 @@ from file_operations import file_handling
 #Brighton before that 8,850
 
 
-
 def print_df():
     league_level_dicts = file_handling.return_scraped_data_dict()
 
@@ -36,9 +35,17 @@ def print_df():
     # create_df_from_dict()
 
     # return league_level_dicts
+    df_by_league_level = []
+    # bpl_df = create_df_from_dict(league_level_dicts[0])
+    # champ_df = create_df_from_dict(league_level_dicts[1])
+    # l1_df = create_df_from_dict(league_level_dicts[2])
     for league_level in league_level_dicts:
         if league_level:
-            print(create_df_from_dict(league_level))
+            df = create_df_from_dict(league_level)
+            df_by_league_level.append(df)
+
+    return df_by_league_level
+            #print(create_df_from_dict(league_level))
 
 def create_df_from_dict(teams_dict):
     team_data = []
@@ -69,26 +76,25 @@ def concat_dfs(df_list):
 
     return concat_df
 
-# def create_bpl_df(teams_dict):
-#     #print(team_list)
-#     team_data = []
-#     for team, data in teams_dict.items():
-#         team_df = pd.DataFrame(data)
-#         team_df['Team'] = team
-#         team_df = team_df[['Team'] + list(data.keys())]
-#         team_data.append(team_df)
-#     #print(team_data)
-#     # try:
-#     df = pd.concat(team_data).reset_index(drop=True)
-#
-#     # except ValueError:
-#     #     pass
-#     pd.set_option('display.max_columns', None)
-#     pd.set_option('display.max_rows', None)
-#     pd.set_option('display.width', 1000)
-#
-#
-#     return df
+def return_team_df(team):
+    #league_level_dicts = file_handling.return_scraped_data_dict()
+    df_list = print_df()
+    concat_df = concat_dfs(df_list)
+
+    #print(concat_df)
+    #print(bpl_df)
+
+    team_df = concat_df.loc[concat_df['Team'] == team]
+    print(team_df)
+
+    return team_df
+    # if team in df:
+    #     print(df)
+    #print(print_df())
+    # for i in league_level_dicts:
+    #     print(i)
+    #print(league_level_dicts)
+
 
 def return_attendance_percentage(team_name, avg_attendance_list):
     stadium_capacities_dict = file_handling.return_stadium_capacities()

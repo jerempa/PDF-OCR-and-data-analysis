@@ -31,13 +31,13 @@ def main():
     #file_handling.return_scraped_data_dict_attendances()
 
     #league_level_charts.line_plot() #plotting transfermarkt data
+    values_for_analysis.average_attendances_by_league_level("Leeds United")
 
     #fetch_data_from_worldfootball.get_request()
 
     #df_operations.return_attendance_percentage(None, None)
 
-
-    calculations.main() #calculations of of dataframes
+    #calculations.main() #calculations of of dataframes
 
     #add_missing_rows_to_df.main() #add manually missing rows to df (not ready yet)
 
