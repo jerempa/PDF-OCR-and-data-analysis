@@ -3,6 +3,9 @@ from error_handling import errors
 from file_operations import file_handling
 from data_fetchers import df_operations
 
+import numpy as np
+import statistics
+
 
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Queens Park Rangers', 'Wigan Athletic',
@@ -196,4 +199,26 @@ def append_values_to_data(team, premier_league_median, premier_league_avg, champ
     data.append(league_two_avg)
 
     return data
+
+def calculate_pearson_correlation_coefficient(x_values, y_values):
+    covariance = np.cov(x_values, y_values)[0][1]
+    stdev_x = statistics.stdev(x_values)
+    stdev_y = statistics.stdev(y_values)
+    pearson_correlation_coefficient = round(covariance / (stdev_x * stdev_y), 8)
+
+    return pearson_correlation_coefficient
+
+
+def calculate_r_squared(slope, intercept, x_values, y_values):
+    x_values = np.array(x_values)
+    y_values = np.array(y_values)
+
+    predicted_values = slope * x_values + intercept
+    residuals = y_values - predicted_values
+    ssr = np.sum(residuals ** 2)
+    mean_value = statistics.mean(y_values)
+    sst = np.sum((y_values - mean_value) ** 2)
+    r_squared = round(1 - (ssr / sst), 2)
+
+    return r_squared
 

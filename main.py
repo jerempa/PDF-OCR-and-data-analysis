@@ -28,35 +28,24 @@ def main():
 
     #df_operations.print_df() #print the transfermarkt dataframes
 
-    #file_handling.return_scraped_data_dict_attendances()
 
     #league_level_charts.line_plot() #plotting transfermarkt data
-    #values_for_analysis.average_attendances_by_league_level("Leeds United")
 
-    #calculations.attendances_by_league_level("Leeds United")
 
-    #transfermarkt_data_visualization.scatter_chart()
+    transfermarkt_data_visualization.scatter_chart()
 
     #fetch_data_from_worldfootball.get_request()
 
-    fetch_season_data_from_wiki.get_request()
+    #fetch_season_data_from_wiki.get_request()
 
     #df_operations.return_attendance_percentage(None, None)
 
 
     #calculations.main() #calculations of of dataframes
 
-    #add_missing_rows_to_df.main() #add manually missing rows to df (not ready yet)
-
     #calculations.show_average_attendace_to_capacity() #calculations of of dataframes
 
-    #values_for_analysis.league_tier_throughout_years() #cleanse the dataframe values
-
-    #df_operations.return_attendance_percentage('Brighton & Hove Albion', None)
-
     #file_handling.write_scraped_data_to_file(values) #write df data to file to avoid unnecessary requests
-
-    #debt_visualization.scatter_chart(data) #data visualization (not ready)
 
     #merged_financial_statement = img_conversion_and_processing.merge_images(processed_images) #merge images to one file
 
