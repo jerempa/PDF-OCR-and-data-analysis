@@ -30,6 +30,8 @@ y_axis_headers = ["Average attendance / capacity %", "Infl adjusted arrivals M�
 
 def scatter_chart():
     for header in y_axis_headers:
+        total_positions = []
+        total_values = []
         for team in teams:
             #league_levels = [1, 2, 3, 4]
             df = values_for_analysis.league_tier_throughout_years(team)
@@ -80,6 +82,66 @@ def scatter_chart():
             plt.title(f'Regression analysis league level & position and {header} {team}')
 
             #plt.show()
+
+
+def scatter_chart_for_all_values():
+    for header in y_axis_headers:
+        total_positions = []
+        total_values = []
+        for team in teams:
+            #league_levels = [1, 2, 3, 4]
+            df = values_for_analysis.league_tier_throughout_years(team)
+
+            league_pos = df['Position'].tolist()
+            values = df[header].tolist()
+
+
+            if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
+                league_pos = league_pos[:19]
+                values = values[:19] #ignore the none values that appear 1999-2004
+
+            #if header == "Average attendance / capacity %":
+            values.pop(2) #ignore COVID season
+            league_pos.pop(2)
+            #values = file_handling.return_transfermarkt_values_from_csv(team, header)
+
+            #ax.set_xlim(2000, 2022)
+            #ax.set_ylim(0, 50000)
+            # for i in league_pos:
+            #     total_positions.append(i)
+            # for j in values:
+            #     total_values.append(j)
+        # slope, intercept = np.polyfit(total_positions, total_values, 1)
+        # # covariance = np.cov(league_pos, values)[0][1]
+        # # stdev_x = statistics.stdev(league_pos)
+        # # stdev_y = statistics.stdev(values)
+        # # pearson_correlation_coefficient = round(covariance/(stdev_x * stdev_y), 8)
+        # pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
+        #
+        # r_squared = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
+        #
+        # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, total_positions, total_values)
+        #
+        # mean_squared_error = error_calculations[0]
+        # root_mean_squared_error = error_calculations[1]
+        # mean_absolute_error = error_calculations[2]
+        #
+        #
+        # #file_handling.calculations_to_csv("regression_results_without_covid_season.csv", header, ["Total", pearson_correlation_coefficient, r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+        #
+        # plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
+        #
+        #
+        # plt.scatter(total_positions, total_values)
+        #
+        #
+        #
+        # plt.xlabel('League position')
+        # plt.ylabel(header)
+        # plt.title(f'Regression analysis league level & position and {header} total')
+        #
+        # #plt.show()
+
 
 
 

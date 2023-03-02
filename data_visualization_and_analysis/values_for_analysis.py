@@ -1,8 +1,6 @@
 from file_operations import file_handling
 from data_fetchers import df_operations
 
-import pandas as pd
-
 
 def league_tier_throughout_years(team):
     league_level_dicts = file_handling.return_scraped_data_dict()
