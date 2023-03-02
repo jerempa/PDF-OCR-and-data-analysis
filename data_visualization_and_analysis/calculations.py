@@ -222,3 +222,15 @@ def calculate_r_squared(slope, intercept, x_values, y_values):
 
     return r_squared
 
+def calculate_mse_rmse_mae(slope, intercept, x_values, y_values):
+    x_values = np.array(x_values)
+    y_values = np.array(y_values)
+
+    predicted_values = slope * x_values + intercept
+    residuals = y_values - predicted_values
+
+    mse = np.mean(residuals ** 2)
+    rmse = round(np.sqrt(mse), 2)
+    mae = round(np.mean(np.abs(residuals)), 2)
+
+    return round(mse, 2), rmse, mae

@@ -59,8 +59,14 @@ def scatter_chart():
 
             r_squared = calculations.calculate_r_squared(slope, intercept, league_pos, values)
 
+            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
 
-            file_handling.calculations_to_csv("regression_results_without_covid_season.csv", header, [team, pearson_correlation_coefficient, r_squared])
+            mean_squared_error = error_calculations[0]
+            root_mean_squared_error = error_calculations[1]
+            mean_absolute_error = error_calculations[2]
+
+
+            file_handling.calculations_to_csv("regression_results_without_covid_season.csv", header, [team, pearson_correlation_coefficient, r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
             plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
