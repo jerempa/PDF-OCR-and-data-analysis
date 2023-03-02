@@ -83,16 +83,19 @@ def calculate_position(position, league_level):
     champ_team_count = 24
     l1_team_count = 24
     l2_team_count = 24
-    pos = 97 # there are 96 teams in abovementioned leagues so being first in first tier gets max value
+    pos = None
 
+    #print(position, type(position), league_level)
     if league_level == 'First Tier':
-        pos -= position
+        pos = 97 - position # there are 96 teams in abovementioned leagues so being first in first tier gets max value
     elif league_level == 'Second Tier':
-        pos -= prem_team_count - position
+        #print("nice", position, pos)
+        pos = 97 - prem_team_count - position
+        #print(pos)
     elif league_level == 'Third Tier':
-        pos -= prem_team_count - champ_team_count - position
-    elif league_level == 'Third Tier':
-        pos -= prem_team_count - champ_team_count - l1_team_count - position
+        pos = 97 - prem_team_count - champ_team_count - position
+    elif league_level == 'Fourth Tier':
+        pos = 97 - prem_team_count - champ_team_count - l1_team_count - position
 
     return pos
 
