@@ -35,6 +35,17 @@ def get_request():
         team_info = parse_league_position(res.content, team.replace('_', ' '))
         info_list.append(team_info)
 
+    ranks = {}
+
+    for i in info_list:
+        for key, value in i.items():
+            rank_list = []
+            for season, rank in value.items():
+                rank_list.append(str(rank))
+            rank_list.reverse()
+            ranks[key] = rank_list #the information fetched isn't 100 %, however, manually checked before adding to df
+    #print(json.dumps(ranks))
+
 def parse_league_position(res, team):
     team_and_rank = {}
     soup = BeautifulSoup(res, 'html.parser')
