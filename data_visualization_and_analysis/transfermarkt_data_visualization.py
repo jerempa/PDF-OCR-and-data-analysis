@@ -30,33 +30,36 @@ def scatter_chart():
     for header in y_axis_headers:
         for team in teams:
             league_levels = [1, 2, 3, 4]
-            values = file_handling.return_transfermarkt_values_from_csv(team, header)
-            #ax.set_xlim(2000, 2022)
-            #ax.set_ylim(0, 50000)
-            if None in values:
-                index = values.index(None)
-                values.remove(None)
-                league_levels.pop(index)
-            if None not in values:
-                slope, intercept = np.polyfit(league_levels, values, 1)
-                covariance = np.cov(league_levels, values)[0][1]
-                stdev_x = statistics.stdev(league_levels)
-                stdev_y = statistics.stdev(values)
-                pearson_correlation_coefficient = round(covariance/(stdev_x * stdev_y), 8)
-                #print(team, header, pearson_correlation_coefficient)
-                #print(round(slope, 2), round(intercept, 2), team)
-                file_handling.calculations_to_csv("regression_results.csv", header, [team, pearson_correlation_coefficient])
+            values = values_for_analysis.league_tier_throughout_years(team)
 
-                plt.plot(league_levels, slope * np.array(league_levels) + intercept, color='red')
-
-
-            plt.scatter(league_levels, values)
-
-
-
-            plt.xlabel('League Level')
-            plt.ylabel(header)
-            plt.title(f'Regression analysis league level and {header}')
+            print(team, values)
+            # values = file_handling.return_transfermarkt_values_from_csv(team, header)
+            # #ax.set_xlim(2000, 2022)
+            # #ax.set_ylim(0, 50000)
+            # if None in values:
+            #     index = values.index(None)
+            #     values.remove(None)
+            #     league_levels.pop(index)
+            # if None not in values:
+            #     slope, intercept = np.polyfit(league_levels, values, 1)
+            #     covariance = np.cov(league_levels, values)[0][1]
+            #     stdev_x = statistics.stdev(league_levels)
+            #     stdev_y = statistics.stdev(values)
+            #     pearson_correlation_coefficient = round(covariance/(stdev_x * stdev_y), 8)
+            #     #print(team, header, pearson_correlation_coefficient)
+            #     #print(round(slope, 2), round(intercept, 2), team)
+            #     #file_handling.calculations_to_csv("regression_results.csv", header, [team, pearson_correlation_coefficient])
+            #
+            #     plt.plot(league_levels, slope * np.array(league_levels) + intercept, color='red')
+            #
+            #
+            # plt.scatter(league_levels, values)
+            #
+            #
+            #
+            # plt.xlabel('League Level')
+            # plt.ylabel(header)
+            # plt.title(f'Regression analysis league level and {header}')
 
             #plt.show()
 

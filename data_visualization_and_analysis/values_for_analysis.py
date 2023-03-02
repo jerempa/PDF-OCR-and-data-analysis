@@ -47,6 +47,8 @@ def league_tier_throughout_years(team):
     df['Arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], None), axis=1)
     df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
 
+    df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
+
     return df
 
 def season_to_year(season):
@@ -75,6 +77,24 @@ def market_values_to_float(value, year):
         return round(float(value), 2)
     except TypeError:
         return value
+
+def calculate_position(position, league_level):
+    prem_team_count = 20
+    champ_team_count = 24
+    l1_team_count = 24
+    l2_team_count = 24
+    pos = 97 # there are 96 teams in abovementioned leagues so being first in first tier gets max value
+
+    if league_level == 'First Tier':
+        pos -= position
+    elif league_level == 'Second Tier':
+        pos -= prem_team_count - position
+    elif league_level == 'Third Tier':
+        pos -= prem_team_count - champ_team_count - position
+    elif league_level == 'Third Tier':
+        pos -= prem_team_count - champ_team_count - l1_team_count - position
+
+    return pos
 
 def adjust_market_values_to_inflation(market_value, year):
     CPI_values = {'1999': 72.6, '2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,
