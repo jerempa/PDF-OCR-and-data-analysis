@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import json
+import re
 
 
 base_url = 'https://en.wikipedia.org/wiki/'
@@ -24,62 +25,53 @@ all_seasons_full2 = ['2022/23', '2021/22', '2020/21', '2019/20', '2018/19', '201
                     '2006/07', '2005/06', '2004/05', '2003/04', '2002/03', '2001/02', '2000/01', '1999/00']
 
 def get_request():
-    # url_bpl = 'https://www.worldfootball.net/competition/eng-premier-league/'
-    # url_champ = 'https://www.worldfootball.net/competition/eng-championship/'
-    # url_l1 = 'https://www.worldfootball.net/competition/eng-league-one/'
-    # url_l2 = 'https://www.worldfootball.net/competition/eng-league-two/'
+
+    info_list = []
 
     for team in teams:
         team = team.replace(' ', '_')
         url = f'{base_url}List_of_{team}_seasons'
-        #print(url)
         res = requests.get(url, headers=headers)
-        parse_league_position(res.content, team.replace('_', ' '))
-        #break
-        #print(team)
-    #url = f'{base_url}List_of_'
-
-    # response_bpl = requests.get(url_bpl, headers=headers)
-    # response_champ = requests.get(url_champ, headers=headers)
-    # response_l1 = requests.get(url_l1, headers=headers)
-    # response_l2 = requests.get(url_l2, headers=headers)
-    #
-    # responses = [response_bpl, response_champ, response_l1, response_l2]
-
-    # for res in responses:
-    #     stadium_name_dicts = parse_stadium_name(res.content)
-    #     stadium_names.append(stadium_name_dicts)
-
-
-    #create_urls_for_fetching_capacities(stadium_names)
-
-
+        team_info = parse_league_position(res.content, team.replace('_', ' '))
+        info_list.append(team_info)
 
 def parse_league_position(res, team):
-    #print(res)
-    # team_and_stadium = {}
-    #
     team_and_rank = {}
     soup = BeautifulSoup(res, 'html.parser')
     tr_tag = soup.find_all('tr')
     #td_tag = tr_tag.find_all('td')
     for data in tr_tag:
-        #print(data)
-        #print("\n")
         try:
             season = data.find('a').text.strip().replace('–', '/')
             if season in all_seasons_full or season in all_seasons_full2:
                 cols = data.find_all('td')
+                #print(team, len(cols), cols)
                 try:
                     value = cols[8].text.strip()
-                    if len(value) == 3:
-                        value = int(value[0])
-                    elif len(value) == 4:
-                        value = int(value[:2])
-                    elif len(value) == 7:
-                        value = int(value[0])
-                    elif len(value) == 8:
-                        value = int(value[:2])
+                    if len(cols) == 14 or len(cols) == 12:
+                        value = cols[7].text.strip()
+                    elif len(cols) == 17 or len(cols) == 16:
+                        value = cols[9].text.strip()
+                    elif len(cols) == 18:
+                        value = cols[7].text.strip()
+                    reg_exp_pattern = r"\d+"
+
+                    value = int(re.findall(reg_exp_pattern, value)[0])
+                    if value > 24:
+                        value = cols[8].text.strip()
+                        value = int(re.findall(reg_exp_pattern, value)[0])
+                    # if len(value) == 3:
+                    #     value = int(value[0])
+                    # elif len(value) == 4:
+                    #     value = int(value[:2])
+                    # elif len(value) == 5:
+                    #     value = int(value[:1])
+                    # elif len(value) == 6:
+                    #     value = int(value[:1])
+                    # elif len(value) == 7:
+                    #     value = int(value[0])
+                    # elif len(value) == 8:
+                    #     value = int(value[:2])
                     if team in team_and_rank:
                         team_and_rank[team][season] = value
                     else:
@@ -90,58 +82,5 @@ def parse_league_position(res, team):
             #print(season, cols)
         except AttributeError:
             pass
-    print(team_and_rank)
-        # for row in data:
-        #     #print(row, type(row), row.get_text(), type(row.get_text()))
-        #     #print(row.get_text().replace('–', '/'))
-        #     if row.get_text().replace('–', '/').strip() in all_seasons_full or row.get_text().replace('–', '/').strip() in all_seasons_full2:
-        #         pass
-        #     print(row, type(row))
-                #print(row)
-                # try:
-                #     print(row.get_text().replace('–', '/').strip())
-                # except KeyError:
-                #     pass
-        #print("\n")
-    # for data in tr_tag:
-    #     for row in data:
-    #         print(row)
-            # print(row.get_text(), type(row.get_text()))
-            # if row.get_text() in all_seasons_full or row.get_text() in all_seasons_full2:
-            #     pass
-                #print(row)
-        # print(data, type(data.get_text()))
-        # print("\n")
-        # if data.get_text() in all_seasons_full:
-        #     print(data)
-        #     print("\n")
-        # try:
-        #     print(data.get_text())
-        # except KeyError:
-        #     pass
-        # try:
-        #     print(data)
-        #     if season in data['th'].get_text():
-        #         print(data)
-        # except KeyError:
-        #     pass
-    #     try:
-    #         team_name = data['title']
-    #         if team_name in teams:
-    #             url = f'{base_url}{data["href"]}'
-    #
-    #             res_team = requests.get(url, headers=headers)
-    #             teamsoup = BeautifulSoup(res_team.content, 'html.parser')
-    #             tag = teamsoup.find_all('a')
-    #             #
-    #             for row in tag:
-    #                 try:
-    #                     if 'venues' in row['href']:
-    #                         if team_name not in team_and_stadium:
-    #                             team_and_stadium[team_name] = row['title']
-    #                 except KeyError:
-    #                     pass
-    #     except KeyError:
-    #         pass
-    #
-    # return team_and_stadium
+
+    return team_and_rank
