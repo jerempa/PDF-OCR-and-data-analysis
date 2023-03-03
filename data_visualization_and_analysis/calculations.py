@@ -220,7 +220,11 @@ def calculate_r_squared(slope, intercept, x_values, y_values):
     sst = np.sum((y_values - mean_value) ** 2)
     r_squared = round(1 - (ssr / sst), 2)
 
-    return r_squared
+    n = len(y_values)
+    p = 1
+    adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
+
+    return r_squared, round(adjusted_r_squared, 2)
 
 def calculate_mse_rmse_mae(slope, intercept, x_values, y_values):
     x_values = np.array(x_values)
