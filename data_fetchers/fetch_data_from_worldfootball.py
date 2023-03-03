@@ -40,7 +40,7 @@ stadium_names = [{'Wolverhampton Wanderers': 'Molineux Stadium', 'Wolverhampton 
                   'Ipswich Town': 'Portman Road'}
                  ]
 
-def get_request():
+def main():
     url_bpl = 'https://www.worldfootball.net/competition/eng-premier-league/'
     url_champ = 'https://www.worldfootball.net/competition/eng-championship/'
     url_l1 = 'https://www.worldfootball.net/competition/eng-league-one/'

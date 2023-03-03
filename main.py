@@ -24,11 +24,11 @@ def main():
     # data_visualization.scatter_chart(data)
     # debt_visualization.scatter_chart(data)
 
-    #values = fetch_data_from_transfermarkt.get_request() #fetch data from transfermarkt
+    #values = fetch_data_from_transfermarkt.main() #fetch data from transfermarkt
 
     #df_operations.print_df() #print the transfermarkt dataframes
 
-    transfermarkt_data_visualization.line_plot_and_color_visualization()
+    #transfermarkt_data_visualization.line_plot_and_color_visualization()
 
 
     #transfermarkt_data_visualization.scatter_chart()
@@ -36,14 +36,11 @@ def main():
     #transfermarkt_data_visualization.scatter_chart_for_all_values()
 
 
-    #fetch_data_from_worldfootball.get_request()
+    #fetch_data_from_worldfootball.main()
 
-    #fetch_season_data_from_wiki.get_request()
+    #fetch_season_data_from_wiki.main()
 
-    #df_operations.return_attendance_percentage(None, None)
-
-
-    #calculations.main() #calculations of of dataframes
+    calculations.main() #calculations of of dataframes
 
     #calculations.show_average_attendace_to_capacity() #calculations of of dataframes
 

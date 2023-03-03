@@ -85,7 +85,6 @@ def return_team_df(team):
     #print(bpl_df)
 
     team_df = concat_df.loc[concat_df['Team'] == team]
-    print(team_df)
 
     return team_df
     # if team in df:

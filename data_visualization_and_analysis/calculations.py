@@ -20,7 +20,12 @@ def main():
     dfs = []
     for team in teams:
         df = values_for_analysis.league_tier_throughout_years(team)
-        print(team, df)
+        #print(team, df)
+        #average_attendance(df, team)
+        #average_attendance_to_capacity(df, team)
+        #bought_players_avg_and_median(df, team)
+        #squad_value_avg_median(df, team)
+        #avg_squad_value_avg_median(df, team)
         dfs.append(df)
 
     concat_df = df_operations.concat_dfs(dfs)
@@ -31,12 +36,41 @@ def main():
     #print(concat_df)
         #print(type(df))
         #print(team, df)
-    #show_average_attendace_to_capacity(concat_df, "Total")
-    #bought_players_avg_and_median(concat_df, "Total")
-    #squad_value_avg_median(concat_df, "Total")
-    #avg_squad_value_avg_median(concat_df, "Total")
+    average_attendance(concat_df, "Total")
+    average_attendance_to_capacity(concat_df, "Total")
+    bought_players_avg_and_median(concat_df, "Total")
+    squad_value_avg_median(concat_df, "Total")
+    avg_squad_value_avg_median(concat_df, "Total")
 
-def show_average_attendace_to_capacity(df, team):
+def average_attendance(df, team):
+    premier_league_attendance = []
+    championship_attendance = []
+    league_one_attendance = []
+    league_two_attendance = []
+
+    for index, row in df.iterrows():
+        if row['Average attendance'] > 2000 and row['Year'] > 1990: #don't take into account covid year without spectators
+            if row['League level'] == 'First Tier':
+                premier_league_attendance.append(row['Average attendance'])
+            elif row['League level'] == 'Second Tier':
+                championship_attendance.append(row['Average attendance'])
+            elif row['League level'] == 'Third Tier':
+                league_one_attendance.append(row['Average attendance'])
+            elif row['League level'] == 'Fourth Tier':
+                league_two_attendance.append(row['Average attendance'])
+
+    premier_league_median, premier_league_avg = errors.median_avg_errors(premier_league_attendance)
+    championship_median, championship_avg = errors.median_avg_errors(championship_attendance)
+    league_one_median, league_one_avg = errors.median_avg_errors(league_one_attendance)
+    league_two_median, league_two_avg = errors.median_avg_errors(league_two_attendance)
+
+
+    data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg)
+
+
+    file_handling.calculations_to_csv("team_data5.csv", "Average attendance", data)
+
+def average_attendance_to_capacity(df, team):
     premier_league_attendance = []
     championship_attendance = []
     league_one_attendance = []
@@ -62,7 +96,7 @@ def show_average_attendace_to_capacity(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg)
 
 
-    file_handling.calculations_to_csv("all_values.csv", "Average attendance / capacity %", data)
+    file_handling.calculations_to_csv("team_data5.csv", "Average attendance / capacity %", data)
 
 def bought_players_avg_and_median(df, team):
     premier_league_arrivals = []
@@ -92,7 +126,7 @@ def bought_players_avg_and_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted arrivals M€", data)
+    file_handling.calculations_to_csv("team_data5.csv", "Inflation adjusted arrivals M€", data)
 
 def squad_value_avg_median(df, team):
     premier_league_squad_value = []
@@ -119,7 +153,7 @@ def squad_value_avg_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted squad value M€", data)
+    file_handling.calculations_to_csv("team_data5.csv", "Inflation adjusted squad value M€", data)
 
 def avg_squad_value_avg_median(df, team):
     premier_league_avg_squad_value = []
@@ -146,7 +180,7 @@ def avg_squad_value_avg_median(df, team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("all_values.csv", "Inflation adjusted average squad value M€", data)
+    file_handling.calculations_to_csv("team_data5.csv", "Inflation adjusted average squad value M€", data)
 
 def attendances_by_league_level(team):
     team_df = values_for_analysis.league_tier_throughout_years(team)
@@ -178,14 +212,13 @@ def attendances_by_league_level(team):
     data = append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg,
                                  league_one_median, league_one_avg, league_two_median, league_two_avg)
 
-    print(data)
+    #print(data)
 
 
 def append_values_to_data(team, premier_league_median, premier_league_avg, championship_median, championship_avg, league_one_median, league_one_avg, league_two_median, league_two_avg):
     data = []
 
-    if team != 'Total':
-        data.append(team)
+    data.append(team)
     data.append(premier_league_median)
     data.append(premier_league_avg)
 

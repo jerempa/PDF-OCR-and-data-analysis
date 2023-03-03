@@ -20,7 +20,7 @@ teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester Ci
 all_seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13',
                '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 
-def get_request():
+def main():
     url_bpl = 'https://www.transfermarkt.com/quickselect/teams/GB1'
     url_champ = 'https://www.transfermarkt.com/quickselect/teams/GB2'
     url_l1 = 'https://www.transfermarkt.com/quickselect/teams/GB3'
