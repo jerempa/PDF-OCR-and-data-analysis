@@ -164,6 +164,76 @@ def scatter_chart_for_all_values():
 
         #plt.show()
 
+def line_plot_and_color_visualization():
+
+    for header in y_axis_headers:
+
+        for team in teams:
+
+            df = values_for_analysis.league_tier_throughout_years(team)
+            years = df['Year'].astype(int).tolist()
+            values = df[header].tolist()
+
+            fig, ax = plt.subplots()
+
+            if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
+                years = years[:19]
+                values = values[:19] #ignore the none values that appear 1999-2004
+
+            values.pop(2) #ignore COVID season
+            years.pop(2)
+
+            slope, intercept = np.polyfit(years, values, 1)
+
+            plt.plot(years, slope * np.array(years) + intercept, color='red')
+
+            for level in df['League level'].unique():
+                level_df = df[df['League level'] == level]
+                start_year = level_df['Year'].min()
+                end_year = level_df['Year'].max()
+                ax.axvspan(start_year - 0.5, end_year + 0.5, facecolor=background_color[level], alpha=0.5)
+
+            handles = [plt.Rectangle((0, 0), 1, 1, color=background_color[level], alpha=0.5) for level in
+                       background_color]
+
+            labels = list(background_color.keys())
+            ax.legend(handles, labels)
+
+            ax.set_xlim(2000, 2022)
+            ax.set_ylim(0, max(values) + (max(values) / 10))
+
+            plt.plot(years, values)
+
+            plt.title(f'{team} {header} by season')
+            plt.xlabel('Year')
+            plt.ylabel(header)
+
+            plt.show()
+
+            bar_chart(df, team)
+
+
+def bar_chart(df, team):
+    bar_width = 0.8
+    opacity = 0.8
+
+    fig, ax = plt.subplots()
+
+    ax.set_xlim(1998.5, 2022.5)
+
+    ax.set_facecolor('white')
+    for tier in df['League level'].unique():
+        df_tier = df[df['League level'] == tier]
+        ax.bar(df_tier['Year'], df_tier['Average attendance / capacity %'], bar_width, alpha=opacity, color=color_map[tier], label=tier)
+
+    ax.set_title(f'{team} Average Attendance / Capacity % by Year')
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Average Attendance / Capacity %')
+
+    ax.legend()
+
+    plt.show()
+
 
 
 

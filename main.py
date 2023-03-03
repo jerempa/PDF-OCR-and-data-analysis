@@ -1,6 +1,6 @@
 from file_operations import file_handling, extracting_data
 from data_visualization_and_analysis import data_visualization, debt_visualization,\
-    values_for_analysis, league_level_charts, calculations, transfermarkt_data_visualization
+    values_for_analysis, calculations, transfermarkt_data_visualization
 from data_fetchers import fetch_data_from_transfermarkt, df_operations, download_pdfs, fetch_data_from_worldfootball, fetch_season_data_from_wiki
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
@@ -28,13 +28,12 @@ def main():
 
     #df_operations.print_df() #print the transfermarkt dataframes
 
-
-    #league_level_charts.line_plot() #plotting transfermarkt data
+    transfermarkt_data_visualization.line_plot_and_color_visualization()
 
 
     #transfermarkt_data_visualization.scatter_chart()
 
-    transfermarkt_data_visualization.scatter_chart_for_all_values()
+    #transfermarkt_data_visualization.scatter_chart_for_all_values()
 
 
     #fetch_data_from_worldfootball.get_request()
