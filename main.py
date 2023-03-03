@@ -33,14 +33,14 @@ def main():
 
     #transfermarkt_data_visualization.scatter_chart()
 
-    #transfermarkt_data_visualization.scatter_chart_for_all_values()
+    transfermarkt_data_visualization.scatter_chart_for_all_values()
 
 
     #fetch_data_from_worldfootball.main()
 
     #fetch_season_data_from_wiki.main()
 
-    calculations.main() #calculations of of dataframes
+    #calculations.main() #calculations of of dataframes
 
     #calculations.show_average_attendace_to_capacity() #calculations of of dataframes
 

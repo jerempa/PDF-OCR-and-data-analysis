@@ -44,8 +44,8 @@ def scatter_chart():
                 values = values[:19] #ignore the none values that appear 1999-2004
 
             #if header == "Average attendance / capacity %":
-            values.pop(2) #ignore COVID season
-            league_pos.pop(2)
+            # values.pop(2) #ignore COVID season
+            # league_pos.pop(2)
 
             # if header == 'Total spectators':
             #     values.pop(0)
@@ -78,7 +78,7 @@ def scatter_chart():
             mean_absolute_error = error_calculations[2]
 
 
-            file_handling.calculations_to_csv("regression_results_without_covid_season4.csv", header, [team, covariance, stdev_x, stdev_y,
+            file_handling.calculations_to_csv("regression_results_with_covid_season4.csv", header, [team, covariance, stdev_x, stdev_y,
                                                                                                        pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
                                                                                                        root_mean_squared_error, mean_absolute_error])
 
@@ -113,8 +113,8 @@ def scatter_chart_for_all_values():
                 values = values[:19] #ignore the none values that appear 1999-2004
 
             #if header == "Average attendance / capacity %":
-            values.pop(2) #ignore COVID season
-            league_pos.pop(2)
+            # values.pop(2) #ignore COVID season
+            # league_pos.pop(2)
             #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
             # if header == 'Total spectators':
@@ -148,7 +148,7 @@ def scatter_chart_for_all_values():
         mean_absolute_error = error_calculations[2]
 
 
-        file_handling.calculations_to_csv("regression_results_without_covid_season4.csv", header, ["Total", covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+        file_handling.calculations_to_csv("regression_results_with_covid_season4.csv", header, ["Total", covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
                                                                                                    r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
         plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
