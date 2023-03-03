@@ -203,21 +203,19 @@ def append_values_to_data(team, premier_league_median, premier_league_avg, champ
 def calculate_pearson_correlation_coefficient(x_values, y_values):
     covariance = np.cov(x_values, y_values)[0][1]
     stdev_x = statistics.stdev(x_values)
-    stdev_y = statistics.stdev(y_values)
+    stdev_y = statistics.stdev(y_values) #sample values
     pearson_correlation_coefficient = round(covariance / (stdev_x * stdev_y), 8)
 
-    return pearson_correlation_coefficient
+    return pearson_correlation_coefficient, round(covariance, 2), round(stdev_x, 2), round(stdev_y, 2)
 
 
 def calculate_r_squared(slope, intercept, x_values, y_values):
-    x_values = np.array(x_values)
-    y_values = np.array(y_values)
 
-    predicted_values = slope * x_values + intercept
-    residuals = y_values - predicted_values
+    predicted_values = slope * np.array(x_values) + intercept
+    residuals = np.array(y_values) - predicted_values
     ssr = np.sum(residuals ** 2)
     mean_value = statistics.mean(y_values)
-    sst = np.sum((y_values - mean_value) ** 2)
+    sst = np.sum((np.array(y_values) - mean_value) ** 2)
     r_squared = round(1 - (ssr / sst), 2)
 
     n = len(y_values)

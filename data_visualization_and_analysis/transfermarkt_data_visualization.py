@@ -24,8 +24,8 @@ background_color = {
 }
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
-#y_axis_headers = ["Average attendance / capacity %"]
-y_axis_headers = ["Average attendance / capacity %", "Infl adjusted arrivals M€", "Infl adjusted squad market value M€", "Infl adjusted avg squad market value M€"]
+#y_axis_headers = ["Average attendance"]
+y_axis_headers = ["Average attendance", "Average attendance / capacity %", "Infl adjusted arrivals M€", "Infl adjusted squad market value M€", "Infl adjusted avg squad market value M€"]
 
 
 def scatter_chart():
@@ -33,6 +33,7 @@ def scatter_chart():
         for team in teams:
             #league_levels = [1, 2, 3, 4]
             df = values_for_analysis.league_tier_throughout_years(team)
+            #print(team, df)
 
             league_pos = df['Position'].tolist()
             values = df[header].tolist()
@@ -45,17 +46,25 @@ def scatter_chart():
             #if header == "Average attendance / capacity %":
             values.pop(2) #ignore COVID season
             league_pos.pop(2)
+
+            # if header == 'Total spectators':
+            #     values.pop(0)
+            #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
             #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
             #ax.set_xlim(2000, 2022)
             #ax.set_ylim(0, 50000)
 
             slope, intercept = np.polyfit(league_pos, values, 1)
-            # covariance = np.cov(league_pos, values)[0][1]
-            # stdev_x = statistics.stdev(league_pos)
-            # stdev_y = statistics.stdev(values)
-            # pearson_correlation_coefficient = round(covariance/(stdev_x * stdev_y), 8)
-            pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
+            #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
+
+            correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
+                                                                                              values)
+
+            pearson_correlation_coefficient = correlation_calculations[0]
+            covariance = correlation_calculations[1]
+            stdev_x = correlation_calculations[2]
+            stdev_y = correlation_calculations[3]
 
             r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
 
@@ -69,7 +78,9 @@ def scatter_chart():
             mean_absolute_error = error_calculations[2]
 
 
-            file_handling.calculations_to_csv("regression_results_without_covid_season2.csv", header, [team, pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+            file_handling.calculations_to_csv("regression_results_without_covid_season4.csv", header, [team, covariance, stdev_x, stdev_y,
+                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+                                                                                                       root_mean_squared_error, mean_absolute_error])
 
             plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
@@ -106,6 +117,10 @@ def scatter_chart_for_all_values():
             league_pos.pop(2)
             #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
+            # if header == 'Total spectators':
+            #     values.pop(0)
+            #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
+
             #ax.set_xlim(2000, 2022)
             #ax.set_ylim(0, 50000)
             for i in league_pos:
@@ -113,9 +128,13 @@ def scatter_chart_for_all_values():
             for j in values:
                 total_values.append(j)
         slope, intercept = np.polyfit(total_positions, total_values, 1)
-        pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
+        correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
 
-        #r_squared = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
+        pearson_correlation_coefficient = correlation_calculations[0]
+        covariance = correlation_calculations[1]
+        stdev_x = correlation_calculations[2]
+        stdev_y = correlation_calculations[3]
+
 
         r_calculations = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
 
@@ -129,7 +148,8 @@ def scatter_chart_for_all_values():
         mean_absolute_error = error_calculations[2]
 
 
-        file_handling.calculations_to_csv("regression_results_without_covid_season2.csv", header, ["Total", pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+        file_handling.calculations_to_csv("regression_results_without_covid_season4.csv", header, ["Total", covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+                                                                                                   r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
         plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
 
