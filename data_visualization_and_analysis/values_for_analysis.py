@@ -192,6 +192,16 @@ def adjust_values_to_inflation(market_value, year):
             adjusted_value = round(market_value * (CPI_values['2022']/value), 2)
             return float(adjusted_value)
 
+def pound_to_euro_converter(value, year):
+    exhange_rates = {'1999': 1.5195, '2000': 1.6415, '2001': 1.6085, '2002': 1.5908, '2003': 1.4463, '2004': 1.4738, '2005': 1.4625,
+                         '2006': 1.4670, '2007': 1.4621, '2008': 1.2593, '2009': 1.1230, '2010': 1.1665, '2011': 1.1527,
+                         '2012': 1.2338, '2013': 1.1779, '2014': 1.2409, '2015': 1.3782, '2016': 1.2244, '2017': 1.1413,
+                         '2018': 1.1304, '2019': 1.1398, '2020': 1.1250, '2021': 1.1634, '2022': 1.1731} #source: https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-gbp.en.html
+                                                                                                    #used yearly average
+    for key, exhange_value in exhange_rates.items():
+        if key == str(year):
+            adjusted_value = round(value * exhange_value, 2)
+            return float(adjusted_value)
 
 
 
