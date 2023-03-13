@@ -10,10 +10,10 @@ from data_visualization_and_analysis import calculations
 #https://matplotlib.org/stable/gallery/color/named_colors.html
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['AFC Bournemouth', 'Sheffield United', 'Sunderland AFC', 'Swansea City']
-teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sheffield United', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
-         'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
+teams = ["Blackpool FC", 'Sunderland AFC', 'Swansea City', "Wolverhampton Wanderers"]
+# teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
+#          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+#          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
 background_color = {
@@ -34,66 +34,66 @@ def scatter_chart():
     for header in y_axis_headers:
         for team in teams:
             #league_levels = [1, 2, 3, 4]
-            df = values_for_analysis.league_tier_throughout_years(team)
-            #print(team, df)
+            df = values_for_analysis.financial_statement_data_cleansing(team)
+            print(team, df)
 
-            league_pos = df['Position'].tolist()
-            values = df[header].tolist()
-
-
-            if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
-                league_pos = league_pos[:19]
-                values = values[:19] #ignore the none values that appear 1999-2004
-
-            #if header == "Average attendance / capacity %":
-            values.pop(2) #ignore COVID season
-            league_pos.pop(2)
-
-            # if header == 'Total spectators':
-            #     values.pop(0)
-            #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
-            #values = file_handling.return_transfermarkt_values_from_csv(team, header)
-
-            #ax.set_xlim(2000, 2022)
-            #ax.set_ylim(0, 50000)
-
-            slope, intercept = np.polyfit(league_pos, values, 1)
-            #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
-
-            correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
-                                                                                              values)
-
-            pearson_correlation_coefficient = correlation_calculations[0]
-            covariance = correlation_calculations[1]
-            stdev_x = correlation_calculations[2]
-            stdev_y = correlation_calculations[3]
-
-            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
-
-            r_squared = r_calculations[0]
-            adjusted_r_squared = r_calculations[1]
-
-            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
-
-            mean_squared_error = error_calculations[0]
-            root_mean_squared_error = error_calculations[1]
-            mean_absolute_error = error_calculations[2]
-
-
-            file_handling.calculations_to_csv("regression_results_without_covid_season6.csv", header, [team, covariance, stdev_x, stdev_y,
-                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
-                                                                                                       root_mean_squared_error, mean_absolute_error])
-
-            plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
-
-
-            plt.scatter(league_pos, values)
-
-
-
-            plt.xlabel('League position')
-            plt.ylabel(header)
-            plt.title(f'Regression analysis league level & position and {header} {team}')
+            # league_pos = df['Position'].tolist()
+            # values = df[header].tolist()
+            #
+            #
+            # if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
+            #     league_pos = league_pos[:19]
+            #     values = values[:19] #ignore the none values that appear 1999-2004
+            #
+            # #if header == "Average attendance / capacity %":
+            # values.pop(2) #ignore COVID season
+            # league_pos.pop(2)
+            #
+            # # if header == 'Total spectators':
+            # #     values.pop(0)
+            # #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
+            # #values = file_handling.return_transfermarkt_values_from_csv(team, header)
+            #
+            # #ax.set_xlim(2000, 2022)
+            # #ax.set_ylim(0, 50000)
+            #
+            # slope, intercept = np.polyfit(league_pos, values, 1)
+            # #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
+            #
+            # correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
+            #                                                                                   values)
+            #
+            # pearson_correlation_coefficient = correlation_calculations[0]
+            # covariance = correlation_calculations[1]
+            # stdev_x = correlation_calculations[2]
+            # stdev_y = correlation_calculations[3]
+            #
+            # r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
+            #
+            # r_squared = r_calculations[0]
+            # adjusted_r_squared = r_calculations[1]
+            #
+            # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
+            #
+            # mean_squared_error = error_calculations[0]
+            # root_mean_squared_error = error_calculations[1]
+            # mean_absolute_error = error_calculations[2]
+            #
+            #
+            # file_handling.calculations_to_csv("regression_results_without_covid_season6.csv", header, [team, covariance, stdev_x, stdev_y,
+            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+            #                                                                                            root_mean_squared_error, mean_absolute_error])
+            #
+            # plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
+            #
+            #
+            # plt.scatter(league_pos, values)
+            #
+            #
+            #
+            # plt.xlabel('League position')
+            # plt.ylabel(header)
+            # plt.title(f'Regression analysis league level & position and {header} {team}')
 
             #plt.show()
 
@@ -105,7 +105,7 @@ def scatter_chart_for_all_values():
         total_values = []
         for team in teams:
             #league_levels = [1, 2, 3, 4]
-            df = values_for_analysis.league_tier_throughout_years(team)
+            df = values_for_analysis.transfermarkt_data_cleansing(team)
 
             league_pos = df['Position'].tolist()
             values = df[header].tolist()
@@ -173,7 +173,7 @@ def line_plot_and_color_visualization():
 
         for team in teams:
 
-            df = values_for_analysis.league_tier_throughout_years(team)
+            df = values_for_analysis.transfermarkt_data_cleansing(team)
             years = df['Year'].astype(int).tolist()
             values = df[header].tolist()
 

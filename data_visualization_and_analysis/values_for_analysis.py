@@ -1,6 +1,10 @@
 from file_operations import file_handling
 from data_fetchers import df_operations
 
+teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Brighton & Hove Albion", "Charlton Athletic", "Ipswich Town",
+                                       "Leeds United", "Leicester City", "Norwich City", "Queens Park Rangers", "Southampton FC",
+                                       "Sunderland AFC", "Wigan Athletic", "Wolverhampton Wanderers"]
+
 
 def transfermarkt_data_cleansing(team):
     league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
@@ -57,58 +61,69 @@ def transfermarkt_data_cleansing(team):
     return df
 
 def financial_statement_data_cleansing(team):
-    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
-    #print(league_level_dicts[0])
-    # bpl_df = None
-    # for league_level in league_level_dicts:
-    #     if league_level:
-    #         bpl_df = df_operations.create_df_from_dict(league_level)
-    #print(len(league_level_dicts))
-   # print(df_operations.create_df_from_dict(league_level_dicts[0]))
-    #print(df_operations.create_df_from_dict(league_level_dicts[0])['Team'])
-    #print(league_level_dicts)
-    #print(league_level_dicts)
-    #print(team, 'nice')
-    team_df = None
-    #print(team, len(league_level_dicts))
-    for i in range(0, len(league_level_dicts)):
-        if team in df_operations.create_df_from_dict(league_level_dicts[i])['Team'].values:
-            team_df = df_operations.create_df_from_dict(league_level_dicts[i])
+    league_level_dicts = file_handling.return_scraped_data_dict("financial statement data.txt")
+    team_df = df_operations.create_df_from_dict(league_level_dicts[0])
 
     #print(bpl_df)
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
 
+    #print(team_df)
+
     #return team_df
 
 
-
+    #print(type(team_df), len(team_df))
+    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'intangible assets', 'result for the financial year',
+                                 'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
     mask = team_df['Team'] == team
-    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %',
-                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
+    team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
     #print(team, df)
-    #df = df.dropna()
+    df = df.dropna()
 
-    df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
-    df['Total spectators'] = df['Total spectators'].str.replace(',', '').astype(int)
-    df['Year'] = df['Season'].apply(season_to_year)
+    #df['turnover'] = df['turnover'].apply(cleanse_values)
+    #df['turnover'] = df['turnover'].str.replace(',', '').astype(int)
+    if team in teams_that_have_numbers_in_millions:
+        for i in columns_list:
+            if i != 'years':
+                df[i] = df.apply(lambda row: cleanse_values(row[i], i), axis=1)
+        #df['stocks'] = df['stocks'].apply(cleanse_values)
+        #df['stocks'] = df.apply(lambda row: cleanse_values(row['stocks'], 'stocks'), axis=1)
+    else:
+        df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover'), axis=1)
+        df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
+        for i in columns_list:
+            if i not in ['years', 'turnover', 'result for the financial year']:
+                #print(i, len(i), "testi", type(df[i]))
+                df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
 
-    #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
-    df['Squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], None), axis=1)
-    df['Infl adjusted squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], row['Year']), axis=1)
-
-    #df['Average squad market value'] = df['Average squad market value'].apply(market_values_to_float)
-
-    df['Average squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], None), axis=1)
-    df['Infl adjusted avg squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], row['Year']), axis=1)
-
-    #df['Arrivals'] = df['Arrivals'].apply(market_values_to_float)
-    df['Arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], None), axis=1)
-    df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
-
-    df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
 
     return df
+
+def cleanse_values(value, column):
+    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'intangible assets', 'result for the financial year',
+                                 'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
+    #print(value, column)
+    value = value.replace(',', '')
+    if column == 'turnover':
+        if len(value) > 6:
+            value = int(value) / 1000
+            #value = int(value)
+    elif column == 'stocks':
+        if len(value) <= 4:
+            value = int(value) * 1000
+    elif column in ['investments', 'result for the financial year', 'cash at bank and in hand']:
+        if len(value) <= 5:
+            value = int(value) * 1000
+    elif column in ['tangible assets', 'intangible assets', 'wages']:
+        if len(value) <= 6:
+            value = int(value) * 1000
+    elif column in ['creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']:
+        value = value.replace('(', '').replace(')', '')
+        if len(value) <= 6:
+            value = int(value) * 1000
+    return value
+    # return int(value)
 
 def season_to_year(season):
     suffix = season[:2]
