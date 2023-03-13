@@ -67,6 +67,7 @@ def financial_statement_data_cleansing(team):
     #print(bpl_df)
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
 
+    #print(league_level_dicts, team, team_df['Team'], len(team_df['Team']), len(team))
     #print(team_df)
 
     #return team_df
@@ -80,6 +81,7 @@ def financial_statement_data_cleansing(team):
     df = team_df.copy()
     #print(team, df)
     df = df.dropna()
+    #print(team, df)
 
     #df['turnover'] = df['turnover'].apply(cleanse_values)
     #df['turnover'] = df['turnover'].str.replace(',', '').astype(int)
@@ -90,6 +92,7 @@ def financial_statement_data_cleansing(team):
         #df['stocks'] = df['stocks'].apply(cleanse_values)
         #df['stocks'] = df.apply(lambda row: cleanse_values(row['stocks'], 'stocks'), axis=1)
     else:
+        #print(team)
         df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover'), axis=1)
         df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
         for i in columns_list:
@@ -97,12 +100,13 @@ def financial_statement_data_cleansing(team):
                 #print(i, len(i), "testi", type(df[i]))
                 df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
 
+    df['assets'] = df['tangible assets'] + df['intangible assets']
+    df['debt'] = df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']
+    df['inflation adjusted wages'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int)
 
     return df
 
 def cleanse_values(value, column):
-    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'intangible assets', 'result for the financial year',
-                                 'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
     #print(value, column)
     value = value.replace(',', '')
     if column == 'turnover':
@@ -112,7 +116,11 @@ def cleanse_values(value, column):
     elif column == 'stocks':
         if len(value) <= 4:
             value = int(value) * 1000
-    elif column in ['investments', 'result for the financial year', 'cash at bank and in hand']:
+    elif column in ['result for the financial year', 'cash at bank and in hand']:
+        if column == 'result for the financial year':
+            value = value.replace('(', '-').replace(')', '')
+        else:
+            value = value.replace('(', '').replace(')', '')
         if len(value) <= 5:
             value = int(value) * 1000
     elif column in ['tangible assets', 'intangible assets', 'wages']:
@@ -122,7 +130,8 @@ def cleanse_values(value, column):
         value = value.replace('(', '').replace(')', '')
         if len(value) <= 6:
             value = int(value) * 1000
-    return value
+    #print(value, column)
+    return int(value)
     # return int(value)
 
 def season_to_year(season):
@@ -146,7 +155,7 @@ def market_values_to_float(value, year):
         pass
 
     if year and value:
-        value = adjust_market_values_to_inflation(float(value), year)
+        value = adjust_values_to_inflation(float(value), year)
     try:
         return round(float(value), 2)
     except TypeError:
@@ -161,7 +170,7 @@ def calculate_position(position, league_level):
 
     #print(position, type(position), league_level)
     if league_level == 'First Tier':
-        pos = 93 - position # there are 93 teams in abovementioned leagues so being first in first tier gets max value
+        pos = 93 - position # there are 93 teams in aforementioned leagues so being first in first tier gets max value
     elif league_level == 'Second Tier':
         #print("nice", position, pos)
         pos = 93 - prem_team_count - position
@@ -173,11 +182,11 @@ def calculate_position(position, league_level):
 
     return pos
 
-def adjust_market_values_to_inflation(market_value, year):
+def adjust_values_to_inflation(market_value, year):
     CPI_values = {'1999': 72.6, '2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,
                          '2006': 81.4, '2007': 83.3, '2008': 86.2, '2009': 87.9, '2010': 90.1, '2011': 93.6,
-                         '2012': 96.0, '2013': 98.2, '2014': 99.6, '2015': 100.0, '2016': 100.0, '2017': 103.6,
-                         '2018': 106, '2019': 107.8, '2020': 108.9, '2021': 111.6, '2022': 120.5} #source: https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/l522/mm23, as of 19.2.23
+                         '2012': 96.0, '2013': 98.2, '2014': 99.6, '2015': 100.0, '2016': 101.0, '2017': 103.6,
+                         '2018': 106.0, '2019': 107.8, '2020': 108.9, '2021': 111.6, '2022': 120.5} #source: https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/l522/mm23, as of 19.2.23
     for key, value in CPI_values.items():
         if key == str(year):
             adjusted_value = round(market_value * (CPI_values['2022']/value), 2)

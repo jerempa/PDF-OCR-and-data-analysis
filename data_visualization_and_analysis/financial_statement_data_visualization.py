@@ -10,10 +10,10 @@ from data_visualization_and_analysis import calculations
 #https://matplotlib.org/stable/gallery/color/named_colors.html
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-teams = ["Blackpool FC", 'Sunderland AFC', 'Swansea City', "Wolverhampton Wanderers"]
-# teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-#          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
-#          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
+# teams = ["Blackpool FC", 'Sunderland AFC', 'Swansea City', "Wolverhampton Wanderers"]
+teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
+         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+         'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
 background_color = {
@@ -25,7 +25,7 @@ background_color = {
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
 #y_axis_headers = ["Average attendance"]
-y_axis_headers = ["Turnover", "Wages", "Assets", "Debt", "Result for the financial year"]
+y_axis_headers = ["turnover", "wages", "assets", "debt", "result for the financial year"]
 
 
 def scatter_chart():
@@ -37,7 +37,9 @@ def scatter_chart():
             df = values_for_analysis.financial_statement_data_cleansing(team)
             print(team, df)
 
-            # league_pos = df['Position'].tolist()
+
+            #years = df['years'].tolist()
+
             # values = df[header].tolist()
             #
             #
