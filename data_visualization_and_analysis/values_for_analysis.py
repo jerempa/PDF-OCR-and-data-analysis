@@ -2,8 +2,8 @@ from file_operations import file_handling
 from data_fetchers import df_operations
 
 
-def league_tier_throughout_years(team):
-    league_level_dicts = file_handling.return_scraped_data_dict()
+def transfermarkt_data_cleansing(team):
+    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
     #print(league_level_dicts[0])
     # bpl_df = None
     # for league_level in league_level_dicts:
@@ -12,13 +12,74 @@ def league_tier_throughout_years(team):
     #print(len(league_level_dicts))
    # print(df_operations.create_df_from_dict(league_level_dicts[0]))
     #print(df_operations.create_df_from_dict(league_level_dicts[0])['Team'])
+    #print(league_level_dicts)
+    #print(league_level_dicts)
+    #print(team, 'nice')
     team_df = None
-    for i in range(0, len(league_level_dicts) - 1):
+    #print(team, len(league_level_dicts))
+    for i in range(0, len(league_level_dicts)):
         if team in df_operations.create_df_from_dict(league_level_dicts[i])['Team'].values:
             team_df = df_operations.create_df_from_dict(league_level_dicts[i])
 
     #print(bpl_df)
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
+
+    #return team_df
+
+
+
+    mask = team_df['Team'] == team
+    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %',
+                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
+    df = team_df.copy()
+    #print(team, df)
+    #df = df.dropna()
+
+    df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
+    df['Total spectators'] = df['Total spectators'].str.replace(',', '').astype(int)
+    df['Year'] = df['Season'].apply(season_to_year)
+
+    #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
+    df['Squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], None), axis=1)
+    df['Infl adjusted squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Squad market value M€'], row['Year']), axis=1)
+
+    #df['Average squad market value'] = df['Average squad market value'].apply(market_values_to_float)
+
+    df['Average squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], None), axis=1)
+    df['Infl adjusted avg squad market value M€'] = df.apply(lambda row: market_values_to_float(row['Average squad market value M€'], row['Year']), axis=1)
+
+    #df['Arrivals'] = df['Arrivals'].apply(market_values_to_float)
+    df['Arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], None), axis=1)
+    df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
+
+    df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
+
+    return df
+
+def financial_statement_data_cleansing(team):
+    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
+    #print(league_level_dicts[0])
+    # bpl_df = None
+    # for league_level in league_level_dicts:
+    #     if league_level:
+    #         bpl_df = df_operations.create_df_from_dict(league_level)
+    #print(len(league_level_dicts))
+   # print(df_operations.create_df_from_dict(league_level_dicts[0]))
+    #print(df_operations.create_df_from_dict(league_level_dicts[0])['Team'])
+    #print(league_level_dicts)
+    #print(league_level_dicts)
+    #print(team, 'nice')
+    team_df = None
+    #print(team, len(league_level_dicts))
+    for i in range(0, len(league_level_dicts)):
+        if team in df_operations.create_df_from_dict(league_level_dicts[i])['Team'].values:
+            team_df = df_operations.create_df_from_dict(league_level_dicts[i])
+
+    #print(bpl_df)
+    #print(df_operations.create_df_from_dict(league_level_dicts[1]))
+
+    #return team_df
+
 
 
     mask = team_df['Team'] == team
@@ -85,15 +146,15 @@ def calculate_position(position, league_level):
 
     #print(position, type(position), league_level)
     if league_level == 'First Tier':
-        pos = 97 - position # there are 96 teams in abovementioned leagues so being first in first tier gets max value
+        pos = 93 - position # there are 93 teams in abovementioned leagues so being first in first tier gets max value
     elif league_level == 'Second Tier':
         #print("nice", position, pos)
-        pos = 97 - prem_team_count - position
+        pos = 93 - prem_team_count - position
         #print(pos)
     elif league_level == 'Third Tier':
-        pos = 97 - prem_team_count - champ_team_count - position
+        pos = 93 - prem_team_count - champ_team_count - position
     elif league_level == 'Fourth Tier':
-        pos = 97 - prem_team_count - champ_team_count - l1_team_count - position
+        pos = 93 - prem_team_count - champ_team_count - l1_team_count - position
 
     return pos
 
