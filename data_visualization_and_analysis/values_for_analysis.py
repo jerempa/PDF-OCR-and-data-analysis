@@ -64,6 +64,11 @@ def financial_statement_data_cleansing(team):
     league_level_dicts = file_handling.return_scraped_data_dict("financial statement data.txt")
     team_df = df_operations.create_df_from_dict(league_level_dicts[0])
 
+    df_for_pos = transfermarkt_data_cleansing(team)
+    df_for_pos = df_for_pos.iloc[2:]
+
+    #print(df_for_pos)
+
     #print(bpl_df)
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
 
@@ -80,6 +85,16 @@ def financial_statement_data_cleansing(team):
     team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
     #print(team, df)
+    position = df_for_pos['Position'].tolist()
+    # #print(df_for_pos['Position'].tolist())
+    position.reverse()
+    # print(position)
+    position.insert(0, 0)
+    df['position'] = position
+    # print(position, len(position))
+    #df['position'] = df_for_pos['Position']
+    #print(df)
+    #print(df[])
     df = df.dropna()
     #print(team, df)
 
@@ -103,6 +118,20 @@ def financial_statement_data_cleansing(team):
     df['assets'] = df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand']
     df['debt'] = df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']
     df['inflation adjusted wages'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int)
+    # print(df_for_pos['Position'], len(df_for_pos['Position']))
+    # print(len(df['assets']), len(df['debt']), len(df['inflation adjusted wages']), len(df['turnover']), len(df['result for the financial year']), len(df['years']))
+    # for i in columns_list:
+    #     print(len(df[i]), i, len(df[i].tolist()))
+    # print(len(df['assets']), 'test')
+    # #df_for_pos['Position'] = df_for_pos.drop([24, 25])
+    # print(df_for_pos['Position'], len(df_for_pos['Position']))
+    # position = df_for_pos['Position'].tolist()
+    #print(df_for_pos['Position'].tolist())
+    # position.reverse()
+    # # print(position, len(position))
+    # position.insert(0, 0)
+    # print(position, len(position))
+    # print(df_for_pos['Position'])
 
     return df
 

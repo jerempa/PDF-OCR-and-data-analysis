@@ -8,12 +8,17 @@ from data_visualization_and_analysis import values_for_analysis
 from file_operations import file_handling
 from data_visualization_and_analysis import calculations
 #https://matplotlib.org/stable/gallery/color/named_colors.html
+#Bournemouth 7 and Third Tier
+
+position_98_99_season = {'Brentford FC': [1, "Fourth Tier"], 'Brighton & Hove Albion': [17, "Fourth Tier"], 'Leeds United': [4, "First Tier"], 'Leicester City': [10, "First Tier"], 'Nottingham Forest': [20, "First Tier"], 'Southampton FC': [17, "First Tier"], 'Wolverhampton Wanderers': [7, "Second Tier"],
+         'Blackburn Rovers': [19, "First Tier"], 'Blackpool FC': [14, "Third Tier"], 'Huddersfield Town': [10, "Second Tier"], 'Hull City': [21, "Fourth Tier"], 'Norwich City': [9, "Second Tier"], 'Sunderland AFC': [1, "Second Tier"], 'Swansea City': [7, "Fourth Tier"], 'Queens Park Rangers': [20, "Second Tier"], 'Wigan Athletic': [6, "Third Tier"],
+         'Bolton Wanderers': [6, "Second Tier"], 'Charlton Athletic': [18, "First Tier"], 'Ipswich Town': [3, "Second Tier"], 'Portsmouth FC': [19, "Second Tier"]}
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-teams = ["Blackpool FC", 'Sunderland AFC', 'Swansea City', "Wolverhampton Wanderers"]
-# teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-#          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
-#          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
+#teams = ["Blackpool FC", 'Sunderland AFC', 'Swansea City', "Wolverhampton Wanderers"]
+teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
+         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+         'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
 background_color = {
@@ -33,39 +38,19 @@ def scatter_chart():
     #print(teams)
     for header in y_axis_headers:
         for team in teams:
-            #league_levels = [1, 2, 3, 4]
             df = values_for_analysis.financial_statement_data_cleansing(team)
 
-            df_for_pos = values_for_analysis.transfermarkt_data_cleansing(team)
-
-            league_pos = df_for_pos['Position'].tolist()
-            league_pos.pop(0) #remove 2022 as it isn't in financial statement data
-
-            #print(team, df)
-
-
-
-            #years = df['years'].tolist()
+            league_pos = df['position'].tolist()
+            for key, data in position_98_99_season.items():
+                if key == team:
+                    pos_98 = values_for_analysis.calculate_position(data[0], data[1])
+                    league_pos[0] = pos_98 #calculate position for 98_99 season for y-axis
 
             values = df[header].tolist()
 
-            #print(league_pos)
-            #print(values)
-
-            #print(len(league_pos), len(values))
-            #
-            #
-            # if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
-            #     league_pos = league_pos[:19]
-            #     values = values[:19] #ignore the none values that appear 1999-2004
-
-            #if header == "Average attendance / capacity %":
             # values.pop(2) #ignore COVID season
             # league_pos.pop(2)
 
-            # if header == 'Total spectators':
-            #     values.pop(0)
-            #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
             #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
             #ax.set_xlim(2000, 2022)
@@ -74,29 +59,29 @@ def scatter_chart():
             slope, intercept = np.polyfit(league_pos, values, 1)
             #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
 
-            # correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
-            #                                                                                   values)
-            #
-            # pearson_correlation_coefficient = correlation_calculations[0]
-            # covariance = correlation_calculations[1]
-            # stdev_x = correlation_calculations[2]
-            # stdev_y = correlation_calculations[3]
-            #
-            # r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
-            #
-            # r_squared = r_calculations[0]
-            # adjusted_r_squared = r_calculations[1]
-            #
-            # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
-            #
-            # mean_squared_error = error_calculations[0]
-            # root_mean_squared_error = error_calculations[1]
-            # mean_absolute_error = error_calculations[2]
+            correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
+                                                                                              values)
+
+            pearson_correlation_coefficient = correlation_calculations[0]
+            covariance = correlation_calculations[1]
+            stdev_x = correlation_calculations[2]
+            stdev_y = correlation_calculations[3]
+
+            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
+
+            r_squared = r_calculations[0]
+            adjusted_r_squared = r_calculations[1]
+
+            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
+
+            mean_squared_error = error_calculations[0]
+            root_mean_squared_error = error_calculations[1]
+            mean_absolute_error = error_calculations[2]
 
 
-            # file_handling.calculations_to_csv("regression_results_without_covid_season6.csv", header, [team, covariance, stdev_x, stdev_y,
-            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
-            #                                                                                            root_mean_squared_error, mean_absolute_error])
+            file_handling.calculations_to_csv("financial_statement_regression_results.csv", header, [team, covariance, stdev_x, stdev_y,
+                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+                                                                                                       root_mean_squared_error, mean_absolute_error])
 
             plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
@@ -109,7 +94,7 @@ def scatter_chart():
             plt.ylabel(header)
             plt.title(f'Regression analysis league position and {header} {team}')
 
-            plt.show()
+            #plt.show()
 
 
 def scatter_chart_for_all_values():
@@ -118,25 +103,22 @@ def scatter_chart_for_all_values():
         total_positions = []
         total_values = []
         for team in teams:
-            #league_levels = [1, 2, 3, 4]
-            df = values_for_analysis.transfermarkt_data_cleansing(team)
+            df = values_for_analysis.financial_statement_data_cleansing(team)
 
-            league_pos = df['Position'].tolist()
+            league_pos = df['position'].tolist()
+            for key, data in position_98_99_season.items():
+                if key == team:
+                    pos_98 = values_for_analysis.calculate_position(data[0], data[1])
+                    league_pos[0] = pos_98 #calculate position for 98_99 season for y-axis
+
             values = df[header].tolist()
 
 
-            if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
-                league_pos = league_pos[:19]
-                values = values[:19] #ignore the none values that appear 1999-2004
 
-            #if header == "Average attendance / capacity %":
-            values.pop(2) #ignore COVID season
-            league_pos.pop(2)
+             # values.pop(2) #ignore COVID season
+            # league_pos.pop(2)
             #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
-            # if header == 'Total spectators':
-            #     values.pop(0)
-            #     league_pos.pop(0) #ignore the latest season for total spectators as the value isn't comparable to other seasons
 
             #ax.set_xlim(2000, 2022)
             #ax.set_ylim(0, 50000)
@@ -165,7 +147,7 @@ def scatter_chart_for_all_values():
         mean_absolute_error = error_calculations[2]
 
 
-        file_handling.calculations_to_csv("regression_results_without_covid_season6.csv", header, ["Total", covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+        file_handling.calculations_to_csv("financial_statement_regression_results.csv", header, ["Total", covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
                                                                                                    r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
         plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
