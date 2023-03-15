@@ -5,7 +5,9 @@ from datetime import datetime, timedelta
 starting_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000',
                     'Blackpool FC': '1999-2000', 'QPR': '2002-2003', 'Hull': '2001-2002', 'Leeds': '2000-2001', 'Huddersfield': '1999-2000', 'Brighton': '1999-2000',
                     'Blackburn': '1999-2000', 'Charlton': '1999-2000', 'Sunderland': '1999-2000', 'Swansea': '1999-2000', 'Wolves': '1999-2000',
-                    'Bolton': '1999-2000', 'Brentford': '1999-2000', 'Shef United': '1999-2000', 'Coventry': '1999-2000'}
+                    'Bolton': '1999-2000', 'Brentford': '1999-2000', 'Shef United': '1999-2000', 'Coventry': '1999-2000',
+                    "Leicester": '2002-2003', "Bournemouth": "1999-2000", "Norwich": "1999-2000", "Nottingham": "1999-2000", "Portsmouth": "2012-2013",
+                    "Southampton": "1999-2000", "Wigan": "1999-2000"}
 #first_seasons = {'Forest Green Rovers': '2010-2011', 'Ipswich Town': '1999-2000'}
 
 def get_correct_dates(date_str, current_team):

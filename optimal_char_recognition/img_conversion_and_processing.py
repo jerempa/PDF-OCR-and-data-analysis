@@ -38,13 +38,13 @@ def image_processing(images_dict):
         for img in images:
             processed_images_list = []
             for index, image in enumerate(img):
-                # if index <= 8:
-             #       continue
-                filtering = filter_pages(image)
-                if filtering:
-                    image = process_image(image)
-                    data_for_formatting = formatting_data(image)
-                    img_to_string.ocr_result_to_csv(data_for_formatting, team)
+                # if index <= 6:
+                #    continue
+                #filtering = filter_pages(image)
+                #if filtering:
+                image = process_image(image)
+                data_for_formatting = formatting_data(image)
+                img_to_string.ocr_result_to_csv(data_for_formatting, team)
                     #img_to_string.ocr_result_to_txt(image, team)
                 #break
 
@@ -90,7 +90,7 @@ def filter_pages(image):
         attachment_criteria1 = data['text'].str.lower().str.contains('wages').any()
         attachment_criteria2 = data['text'].str.lower().str.contains('salaries').any()
         attachment_criteria3 = data['text'].str.lower().str.contains('pension').any()
-        attachment_criteria4 = data['text'].str.lower().str.contains('payroll').any()
+        attachment_criteria4 = data['text'].str.lower().str.contains('staff').any()
     except AttributeError:
         pass
     # pound_sign = data['text'].str.lower().str.contains('£').any()
@@ -103,7 +103,7 @@ def filter_pages(image):
 
     if ((pala_criteria4 or pala_criteria6) and (pala_criteria1 or pala_criteria3)) \
             or ((balance_sheet_criteria1 or balance_sheet_criteria3) and balance_sheet_criteria2)\
-            or ((attachment_criteria1 or attachment_criteria2) and attachment_criteria3 and attachment_criteria4):
+            or ((attachment_criteria1 or attachment_criteria2) and (attachment_criteria3 or attachment_criteria4)):
         return True
     return False
 

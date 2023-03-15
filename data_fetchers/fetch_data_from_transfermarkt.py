@@ -13,9 +13,10 @@ base_url = 'https://www.transfermarkt.com'
 headers = {'User-Agent':
                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
 
-teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Queens Park Rangers', 'Wigan Athletic',
-         'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
+# teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
+#          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Queens Park Rangers', 'Wigan Athletic',
+#          'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
+teams = ['AFC Bournemouth']
 
 all_seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13',
                '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
@@ -47,11 +48,15 @@ def main():
     league_level_dicts = []
     # #teams_dict = parse_league_and_position(response_champ.json())
 
-    for res in urls:
-        teams_dict = parse_league_and_position(res.json())
-        league_level_dicts.append(teams_dict)
+    print(parse_league_and_position(response_bpl.json()))
 
-    return league_level_dicts
+    # for res in urls:
+    #     teams_dict = parse_league_and_position(response_champ.json())
+    #     league_level_dicts.append(teams_dict)
+
+
+    print(league_level_dicts)
+    #return league_level_dicts
     #
     # league_level_dicts = file_handling.return_scraped_data_dict()
 

@@ -2,11 +2,15 @@ import os
 from PIL import Image
 import json
 import csv
+import pandas as pd
+import numpy as np
 
 import correct_seasons
 from error_handling import errors
 
-teams = ['Coventry']
+teams = ["Blackpool FC", "Bolton", "Brentford", "Brighton", "Huddersfield", "Leeds", "Swansea", "Wolves"]
+years = ['1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']
+
 
 def get_filenames(folder):
     team_and_files = dict()
@@ -20,7 +24,7 @@ def get_filenames(folder):
                     if os.path.isfile(file):
                         files.append(filename)
                 team_and_files[directory] = files
-    print(team_and_files)
+    #print(team_and_files)
     return team_and_files #loop through dir that has team sub-dirs, add their files to a dict
 
 
@@ -177,7 +181,7 @@ def calculations_to_csv(filename, type_of_data, data):
         writer = csv.writer(file)
 
         #print(count_rows)
-        if file.tell() == 0 or (count_csv_rows(filename) % 20 == 0):
+        if file.tell() == 0 or (count_csv_rows(filename) % 22 == 0):
             writer.writerow([type_of_data])
 
         writer.writerow(data)
@@ -192,10 +196,10 @@ def write_scraped_data_to_file(data):
     with open('scraped_data4.txt', 'w') as f:
         json.dump(data, f) #write the scraping output to a file to avoid making unnecessary requests
 
-def return_scraped_data_dict():
+def return_scraped_data_dict(filename):
     teams_dict = None
     try:
-        with open('scraped_data6.txt', 'r') as f:
+        with open(filename, 'r') as f:
             data = f.read()
             teams_dict = json.loads(data)
     except IOError:
@@ -248,3 +252,76 @@ def return_transfermarkt_values_from_csv(team, data_header):
                 return [l2_median, l1_median, champ_median, prem_median]
             #print(row, cur_header)
         #print(reader)
+
+def read_financial_statement_values():
+    teams_dict = None
+    with open("financial_statement_values.txt", "r") as f:
+        data = f.read()
+        teams_dict = json.loads(data)
+    df = pd.DataFrame.from_dict(teams_dict)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    pd.set_option('display.width', 1000)
+    #print(df['Blackburn'])
+    #print(team_df['1999'])
+    #testi = team_df['1999']
+    #print(team_df)
+    # for col in team_df.columns:
+    #     year, key = col.split('_')
+    #     print(f"{year}: {key}")
+    teams = ['Blackburn' , 'Blackpool FC', 'Bolton', 'Brentford', 'Brighton', 'Charlton', 'Coventry',
+             'Huddersfield', 'Hull', 'Ipswich Town', 'Leeds', 'QPR', 'Shef United', 'Sunderland', 'Swansea', 'Wolves']
+    example_dict = {}
+    result = {}
+    for team in teams:
+        team_df = df[team]
+        keys = []
+        for i in years:
+            temp_df = team_df[i]
+            #print(temp_df)
+            team_dict = {}
+            temp_list = []
+            cur_len = 0
+            try:
+                for key, value in temp_df.items():
+                    #print(i, key, value)
+                    #print(i, len(temp_df), temp_df)
+                    if len(temp_df) > cur_len:
+                        if key not in keys:
+                            keys.append(key)
+                    # print(key, value)
+                    temp_list.append({key: value})
+            except AttributeError:
+                pass
+            team_dict[i] = temp_list
+            #print(team_dict)
+            if team in example_dict:
+                example_dict[team][i] = temp_list
+            else:
+                example_dict[team] = team_dict
+       # print(keys)
+        #print(len(example_dict), len(teams))
+        if len(example_dict) == len(teams):
+            #print(example_dict)
+            for team, year_data in example_dict.items():
+                team_data = {}
+                for key in keys:
+                    values = []
+                    for year, year_values in year_data.items():
+                        value_found = False
+                        for i in year_values:
+                            for avain, arvo in i.items():
+                                if avain == key:
+                                    values.append(arvo)
+                                    value_found = True
+                                    break
+                            if value_found:
+                                break
+                        else:
+                            values.append(np.nan)
+                    team_data[key] = values
+                result[team] = team_data
+    print(result)
+    with open("financial statement data.txt", "w") as f:
+        data = json.dumps(result)
+        f.write(data)

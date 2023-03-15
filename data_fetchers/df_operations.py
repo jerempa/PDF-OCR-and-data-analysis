@@ -1,4 +1,6 @@
 import pandas as pd
+import json
+
 from file_operations import file_handling
 
 # stadium_capacities = {'Brentford FC': [17250, 2, 12763], 'Brighton & Hove Albion': [31800, 12, 8850], 'Leeds United': 37890,
@@ -22,19 +24,23 @@ from file_operations import file_handling
 
 
 def print_df():
-    league_level_dicts = file_handling.return_scraped_data_dict()
+    #league_level_dicts1 = file_handling.return_scraped_data_dict('scraped_data6.txt')
+    league_level_dicts = file_handling.return_scraped_data_dict('financial statement data.txt')
 
     # attendances = file_handling.return_scraped_data_dict_attendances()
     # #print(attendances)
     # for team, attendance in attendances.items():
     #     return_attendance_percentage(team, attendance)
-
+    # dict1 = {'years': ['1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']}
+    # print(json.dumps(dict1))
 
     # return league_level_dicts
     # teams_dict
     # create_df_from_dict()
 
     # return league_level_dicts
+    #print(league_level_dicts)
+    #print(league_level_dicts1)
     df_by_league_level = []
     # bpl_df = create_df_from_dict(league_level_dicts[0])
     # champ_df = create_df_from_dict(league_level_dicts[1])
@@ -42,9 +48,14 @@ def print_df():
     for league_level in league_level_dicts:
         if league_level:
             df = create_df_from_dict(league_level)
+            print(df)
+            # print(df[['Team', 'wages', 'years', 'turnover', 'result for the financial year', "intangible assets",
+            #           "tangible assets", "investments", "stocks", "debtors", "cash at bank and in hand",
+            #           'creditors: amounts falling due within one year',
+            #           'creditors: amounts falling due after more than one year']])
             df_by_league_level.append(df)
 
-    return df_by_league_level
+    #return df_by_league_level
             #print(create_df_from_dict(league_level))
 
 def create_df_from_dict(teams_dict):
@@ -115,6 +126,6 @@ def return_attendance_percentage(team_name, avg_attendance_list):
                 #     percentage = attendance / capacity * 100
                 # percentages.append(round(percentage, 2))
 
-   # print(team_name, percentages)
+    print(team_name, percentages)
     #
     return percentages
