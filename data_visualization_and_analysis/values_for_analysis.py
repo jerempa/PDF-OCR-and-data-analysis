@@ -1,7 +1,7 @@
 from file_operations import file_handling
 from data_fetchers import df_operations
 
-teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Brighton & Hove Albion", "Charlton Athletic", "Ipswich Town",
+teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Charlton Athletic", "Ipswich Town",
                                        "Leeds United", "Leicester City", "Norwich City", "Queens Park Rangers", "Southampton FC",
                                        "Sunderland AFC", "Wolverhampton Wanderers"]
 
@@ -67,24 +67,13 @@ def financial_statement_data_cleansing(team):
     df_for_pos = transfermarkt_data_cleansing(team)
     df_for_pos = df_for_pos.iloc[2:]
 
-    #print(df_for_pos)
-
-    #print(bpl_df)
-    #print(df_operations.create_df_from_dict(league_level_dicts[1]))
-
-    #print(league_level_dicts, team, team_df['Team'], len(team_df['Team']), len(team))
-    #print(team_df)
-
-    #return team_df
-
 
     #print(type(team_df), len(team_df))
-    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'intangible assets', 'result for the financial year',
+    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'debtors', 'intangible assets', 'result for the financial year',
                                  'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
-    #print(team, df)
     position = df_for_pos['Position'].tolist()
     # #print(df_for_pos['Position'].tolist())
     position.reverse()
@@ -95,8 +84,8 @@ def financial_statement_data_cleansing(team):
     #df['position'] = df_for_pos['Position']
     #print(df)
     #print(df[])
+    df['team'] = team
     df = df.dropna()
-    #print(team, df)
 
     #df['turnover'] = df['turnover'].apply(cleanse_values)
     #df['turnover'] = df['turnover'].str.replace(',', '').astype(int)
@@ -110,14 +99,16 @@ def financial_statement_data_cleansing(team):
         #print(team)
         df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1)
         df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
+        df['result for the financial year'] = df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1)
         for i in columns_list:
             if i not in ['years', 'turnover', 'result for the financial year']:
                 #print(i, len(i), "testi", type(df[i]))
                 df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
+                df[i] = df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1)
 
-    df['assets'] = df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand']
-    df['debt'] = df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']
-    df['inflation adjusted wages'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int)
+    df['assets (in thousands)'] = (df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']) / 1000
+    df['debt (in thousands)'] = (df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']) / 1000
+    df['inflation adjusted wages (in thousands)'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']) / 1000, axis=1).astype(int)
     # print(df_for_pos['Position'], len(df_for_pos['Position']))
     # print(len(df['assets']), len(df['debt']), len(df['inflation adjusted wages']), len(df['turnover']), len(df['result for the financial year']), len(df['years']))
     # for i in columns_list:
@@ -156,7 +147,7 @@ def cleanse_values(value, column, year):
             value = value.replace('(', '').replace(')', '')
         if len(value) <= 5 or (value[0] == '-' and len(value) == 6):
             value = int(value) * 1000
-    elif column in ['tangible assets', 'intangible assets', 'wages']:
+    elif column in ['tangible assets', 'intangible assets', 'wages', 'debtors']:
         if len(value) <= 5:
             value = int(value) * 1000
     elif column in ['creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']:
