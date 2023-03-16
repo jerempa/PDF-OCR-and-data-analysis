@@ -41,8 +41,6 @@ def main():
 
     #transfermarkt_data_visualization.scatter_chart()
 
-    #transfermarkt_data_visualization.scatter_chart_for_all_values()
-
     #fetch_data_from_worldfootball.main()
 
     # new_dict = None

@@ -67,7 +67,7 @@ def financial_statement_data_cleansing(team):
     df_for_pos = transfermarkt_data_cleansing(team)
     df_for_pos = df_for_pos.iloc[2:]
 
-
+    #print(team_df)
     #print(type(team_df), len(team_df))
     columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'debtors', 'intangible assets', 'result for the financial year',
                                  'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']

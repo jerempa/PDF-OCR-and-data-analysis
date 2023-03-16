@@ -12,7 +12,7 @@ from data_visualization_and_analysis import calculations
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
 #teams = ['Southampton FC']
 teams = ['AFC Bournemouth', 'Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sheffield United', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+         'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Sheffield United', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
@@ -46,8 +46,8 @@ def scatter_chart():
                 values = values[:19] #ignore the none values that appear 1999-2004
 
             #if header == "Average attendance / capacity %":
-            # values.pop(2) #ignore COVID season
-            # league_pos.pop(2)
+            values.pop(2) #ignore COVID season
+            league_pos.pop(2)
 
             # if header == 'Total spectators':
             #     values.pop(0)
@@ -81,7 +81,7 @@ def scatter_chart():
             n = len(values)
 
 
-            file_handling.calculations_to_csv("regression_results_with_covid_season8.csv", header, [team, n, covariance, stdev_x, stdev_y,
+            file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, [team, n, covariance, stdev_x, stdev_y,
                                                                                                        pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
                                                                                                        root_mean_squared_error, mean_absolute_error])
 
@@ -118,8 +118,8 @@ def scatter_chart_for_all_values(header):
             values = values[:19] #ignore the none values that appear 1999-2004
 
         #if header == "Average attendance / capacity %":
-        # values.pop(2) #ignore COVID season
-        # league_pos.pop(2)
+        values.pop(2) #ignore COVID season
+        league_pos.pop(2)
         #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
         # if header == 'Total spectators':
@@ -155,7 +155,7 @@ def scatter_chart_for_all_values(header):
     n = len(total_values)
 
 
-    file_handling.calculations_to_csv("regression_results_with_covid_season8.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+    file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
                                                                                                r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
     plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')

@@ -11,13 +11,13 @@ from data_visualization_and_analysis import calculations
 #Bournemouth 7 and Third Tier
 
 position_98_99_season = {'Brentford FC': [1, "Fourth Tier"], 'Brighton & Hove Albion': [17, "Fourth Tier"], 'Leeds United': [4, "First Tier"], 'Leicester City': [10, "First Tier"], 'Nottingham Forest': [20, "First Tier"], 'Southampton FC': [17, "First Tier"], 'Wolverhampton Wanderers': [7, "Second Tier"],
-         'Blackburn Rovers': [19, "First Tier"], 'Blackpool FC': [14, "Third Tier"], 'Huddersfield Town': [10, "Second Tier"], 'Hull City': [21, "Fourth Tier"], 'Norwich City': [9, "Second Tier"], 'Sunderland AFC': [1, "Second Tier"], 'Swansea City': [7, "Fourth Tier"], 'Queens Park Rangers': [20, "Second Tier"], 'Wigan Athletic': [6, "Third Tier"],
+         'Blackburn Rovers': [19, "First Tier"], 'Blackpool FC': [14, "Third Tier"], 'Cardiff City': [3, "Fourth Tier"], 'Huddersfield Town': [10, "Second Tier"], 'Hull City': [21, "Fourth Tier"], 'Norwich City': [9, "Second Tier"], 'Reading FC': [11, "Third Tier"], 'Sunderland AFC': [1, "Second Tier"], 'Stoke City': [8, "Third Tier"], 'Swansea City': [7, "Fourth Tier"], 'Queens Park Rangers': [20, "Second Tier"], 'Wigan Athletic': [6, "Third Tier"],
          'Bolton Wanderers': [6, "Second Tier"], 'Charlton Athletic': [18, "First Tier"], 'Ipswich Town': [3, "Second Tier"], 'Portsmouth FC': [19, "Second Tier"]}
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['Leicester City']
+#teams = ['Reading FC']
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+         'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
@@ -83,9 +83,9 @@ def scatter_chart():
             n = len(values)
 
 
-            # file_handling.calculations_to_csv("financial_statement_regression_results3.csv", header, [team, n, covariance, stdev_x, stdev_y,
-            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
-            #                                                                                            root_mean_squared_error, mean_absolute_error])
+            file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, [team, n, covariance, stdev_x, stdev_y,
+                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+                                                                                                       root_mean_squared_error, mean_absolute_error])
 
             plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
@@ -99,7 +99,7 @@ def scatter_chart():
             plt.title(f'Regression analysis league position and {header} {team}')
 
             #plt.show()
-        # scatter_chart_for_all_values(header)
+        scatter_chart_for_all_values(header)
 
 
 def scatter_chart_for_all_values(header):
@@ -153,7 +153,7 @@ def scatter_chart_for_all_values(header):
     n = len(total_values)
 
 
-    file_handling.calculations_to_csv("financial_statement_regression_results3.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+    file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
                                                                                                r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
     plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')

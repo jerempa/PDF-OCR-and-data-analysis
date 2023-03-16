@@ -10,12 +10,8 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
 
-# teams = ['AFC Bournemouth', 'Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-#          'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sheffield United', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
-#          'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
-
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+         'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
 
 def main():
@@ -36,7 +32,7 @@ def main():
 
     concat_df = df_operations.concat_dfs(dfs)
     #print(concat_df)
-    concat_df.to_excel('FS_data.xlsx', index=False)
+    concat_df.to_excel('FS_data2.xlsx', index=False)
 
     #concat_df.to_excel('Transfermarkt_data2.xlsx', index=False)
 
@@ -84,7 +80,7 @@ def average_attendance(df, team):
                                  league_two_n, league_two_median, league_two_avg)
 
 
-    file_handling.calculations_to_csv("team_data8.csv", "Average attendance", data)
+    file_handling.calculations_to_csv("team_data9.csv", "Average attendance", data)
 
 def average_attendance_to_capacity(df, team):
     premier_league_attendance = []
@@ -119,7 +115,7 @@ def average_attendance_to_capacity(df, team):
                                  league_two_n, league_two_median, league_two_avg)
 
 
-    file_handling.calculations_to_csv("team_data8.csv", "Average attendance / capacity %", data)
+    file_handling.calculations_to_csv("team_data9.csv", "Average attendance / capacity %", data)
 
 def bought_players_avg_and_median(df, team):
     premier_league_arrivals = []
@@ -156,7 +152,7 @@ def bought_players_avg_and_median(df, team):
                                  league_one_n, league_one_median, league_one_avg,
                                  league_two_n, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data8.csv", "Inflation adjusted arrivals M€", data)
+    file_handling.calculations_to_csv("team_data9.csv", "Inflation adjusted arrivals M€", data)
 
 def squad_value_avg_median(df, team):
     premier_league_squad_value = []
@@ -190,7 +186,7 @@ def squad_value_avg_median(df, team):
                                  league_one_n, league_one_median, league_one_avg,
                                  league_two_n, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data8.csv", "Inflation adjusted squad value M€", data)
+    file_handling.calculations_to_csv("team_data9.csv", "Inflation adjusted squad value M€", data)
 
 def avg_squad_value_avg_median(df, team):
     premier_league_avg_squad_value = []
@@ -224,7 +220,7 @@ def avg_squad_value_avg_median(df, team):
                                  league_one_n, league_one_median, league_one_avg,
                                  league_two_n, league_two_median, league_two_avg)
 
-    file_handling.calculations_to_csv("team_data8.csv", "Inflation adjusted average squad value M€", data)
+    file_handling.calculations_to_csv("team_data9.csv", "Inflation adjusted average squad value M€", data)
 
 def attendances_by_league_level(team):
     team_df = values_for_analysis.transfermarkt_data_cleansing(team)
