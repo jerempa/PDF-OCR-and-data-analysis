@@ -15,7 +15,7 @@ position_98_99_season = {'Brentford FC': [1, "Fourth Tier"], 'Brighton & Hove Al
          'Bolton Wanderers': [6, "Second Tier"], 'Charlton Athletic': [18, "First Tier"], 'Ipswich Town': [3, "Second Tier"], 'Portsmouth FC': [19, "Second Tier"]}
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['Reading FC']
+#teams = ['Nottingham Forest']
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
@@ -30,7 +30,10 @@ background_color = {
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
 #y_axis_headers = ["Average attendance"]
-y_axis_headers = ["turnover", "inflation adjusted wages (in thousands)", "assets (in thousands)", "debt (in thousands)", "result for the financial year"]
+y_axis_headers = ["turnover"]
+#y_axis_headers = ["Ln(turnover)", "Ln(inflation adjusted wages)", "Ln(assets)", "Ln(debt)", "Ln(result for the financial year)"]
+#y_axis_headers = ["turnover", "inflation adjusted wages", "assets", "debt", "result for the financial year"]
+
 
 
 def scatter_chart():
@@ -47,50 +50,59 @@ def scatter_chart():
                     pos_98 = values_for_analysis.calculate_position(data[0], data[1])
                     league_pos[0] = pos_98 #calculate position for 98_99 season for y-axis
 
-            values = df[header].tolist()
+            log_values = df[header].tolist()
+            fig, ax = plt.subplots()
 
-            #print(league_pos)
+            print(league_pos)
+            print(log_values)
 
             # values.pop(2) #ignore COVID season
             # league_pos.pop(2)
 
 
             #ax.set_xlim(2000, 2022)
-            #ax.set_ylim(0, 50000)
+            ax.set_ylim(12, 19)
 
-            slope, intercept = np.polyfit(league_pos, values, 1)
+
+            slope, intercept = np.polyfit(league_pos, log_values, 1)
+            # params = np.polyfit(league_pos, log_values, 1)
+            # a = np.exp(params[1])
+            # b = params[0]
+            #print(a,b)
             #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
 
             correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
-                                                                                              values)
+                                                                                              log_values)
 
             pearson_correlation_coefficient = correlation_calculations[0]
             covariance = correlation_calculations[1]
             stdev_x = correlation_calculations[2]
             stdev_y = correlation_calculations[3]
 
-            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
+            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, log_values)
 
             r_squared = r_calculations[0]
             adjusted_r_squared = r_calculations[1]
 
-            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
+            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, log_values)
 
             mean_squared_error = error_calculations[0]
             root_mean_squared_error = error_calculations[1]
             mean_absolute_error = error_calculations[2]
 
-            n = len(values)
+            n = len(log_values)
 
 
-            file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, [team, n, covariance, stdev_x, stdev_y,
-                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
-                                                                                                       root_mean_squared_error, mean_absolute_error])
+            # file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, [team, n, covariance, stdev_x, stdev_y,
+            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+            #                                                                                            root_mean_squared_error, mean_absolute_error])
 
+            #plt.plot(league_pos, a * np.exp(b * np.array(league_pos)), color='red')
             plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
 
-            plt.scatter(league_pos, values)
+
+            plt.scatter(league_pos, log_values)
 
 
 
@@ -99,7 +111,7 @@ def scatter_chart():
             plt.title(f'Regression analysis league position and {header} {team}')
 
             #plt.show()
-        scatter_chart_for_all_values(header)
+        #scatter_chart_for_all_values(header)
 
 
 def scatter_chart_for_all_values(header):

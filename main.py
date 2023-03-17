@@ -5,6 +5,7 @@ from data_fetchers import fetch_data_from_transfermarkt, df_operations, download
 from optimal_char_recognition import img_conversion_and_processing, img_to_string
 
 import json
+import ast
 
 
 def main():
@@ -32,16 +33,54 @@ def main():
 
     #financial_statement_data_visualization.scatter_chart()
 
-    #financial_statement_data_visualization.scatter_chart_for_all_values()
-
 
     #transfermarkt_data_visualization.line_plot_and_color_visualization()
 
     #time_series_analysis.time_series()
 
-    #transfermarkt_data_visualization.scatter_chart()
+    transfermarkt_data_visualization.scatter_chart()
 
     #fetch_data_from_worldfootball.main()
+    # capa_dict = {}
+    #
+    # with open("stadium_capacities1.txt", 'r') as f:
+    #     data = f.read()
+    #     #data = json.loads(data)
+    #     data = ast.literal_eval(data)
+    #     #print(data)
+    #     #print(type(ast.literal_eval(data)))
+    #     for team, values in data.items():
+    #         #print(team, values)
+    #         capacity_list = []
+    #         for year, capa in values.items():
+    #             capacity_list.append(capa)
+    #         capa_dict[team] = capacity_list
+    #print(json.dumps(capa_dict))
+
+    #capa_dict = json.dumps(capa_dict)
+
+    #print(capa_dict)
+    # lst = []
+    #
+    # with open("scraped_data7.txt", "r") as file:
+    #     data = file.read()
+    #     data = json.loads(data)
+    #     #print(data)
+    #
+    #     for i in data:
+    #         for team, values in i.items():
+    #             #print(team, values)
+    #             for avain, arvo in capa_dict.items():
+    #                 if avain == team:
+    #                     i[team]['Stadium capacity'] = arvo
+    #                     #print(avain, arvo, team)
+    #         #print(json.dumps(i))
+    #         lst.append(json.dumps(i))
+    #
+    # print(lst)
+                # for key, value in values.items():
+                #     print(team, key, value)
+
 
     # new_dict = None
     # with open("financial statement data.txt", 'r') as f:
@@ -65,7 +104,7 @@ def main():
     #print(json.loads(new_dict))
     #fetch_season_data_from_wiki.main()
 
-    calculations.main() #calculations of of dataframes
+    #calculations.main() #calculations of of dataframes
 
     #calculations.show_average_attendace_to_capacity() #calculations of of dataframes
 

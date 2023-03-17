@@ -10,10 +10,10 @@ from data_visualization_and_analysis import calculations
 #https://matplotlib.org/stable/gallery/color/named_colors.html
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['Southampton FC']
-teams = ['AFC Bournemouth', 'Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
-         'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Sheffield United', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
-         'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
+teams = ['Southampton FC']
+# teams = ['AFC Bournemouth', 'Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
+#          'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Sheffield United', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
+#          'Bolton Wanderers', 'Charlton Athletic', 'Derby County', 'Ipswich Town', 'Portsmouth FC']
 #seasons = ['22/23', '21/22', '20/21', '19/20', '18/19', '17/18', '16/17', '15/16', '14/15', '13/14', '12/13', '11/12', '10/11', '09/10', '08/09', '07/08', '06/07', '05/06', '04/05', '03/04', '02/03', '01/02', '00/01', '99/00']
 color_map = {'First Tier': 'green', 'Second Tier': 'yellow', 'Third Tier': 'orange', 'Fourth Tier': 'red', None: 'white'}
 background_color = {
@@ -39,15 +39,19 @@ def scatter_chart():
 
             league_pos = df['Position'].tolist()
             values = df[header].tolist()
+            values2 = df['Stadium capacity'].tolist()
 
+            #print(f'{league_pos}{len(league_pos)}\n{values}{len(values)}\n{values2}{len(values2)}\n{team}\n')
 
             if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
                 league_pos = league_pos[:19]
                 values = values[:19] #ignore the none values that appear 1999-2004
+                values2 = values2[:19]
 
             #if header == "Average attendance / capacity %":
             values.pop(2) #ignore COVID season
             league_pos.pop(2)
+            values2.pop(2)
 
             # if header == 'Total spectators':
             #     values.pop(0)
@@ -56,39 +60,57 @@ def scatter_chart():
             #ax.set_xlim(2000, 2022)
             #ax.set_ylim(0, 50000)
 
-            slope, intercept = np.polyfit(league_pos, values, 1)
+            #slope, intercept = np.polyfit(league_pos, values, 1)
             #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
 
-            correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
-                                                                                              values)
-
-            pearson_correlation_coefficient = correlation_calculations[0]
-            covariance = correlation_calculations[1]
-            stdev_x = correlation_calculations[2]
-            stdev_y = correlation_calculations[3]
-
-            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, values)
+            # correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
+            #                                                                                   values)
+            #
+            # pearson_correlation_coefficient = correlation_calculations[0]
+            # covariance = correlation_calculations[1]
+            # stdev_x = correlation_calculations[2]
+            # stdev_y = correlation_calculations[3]
+            #
+            r_calculations = calculations.calculate_r_squared(league_pos, values, values2)
 
             r_squared = r_calculations[0]
             adjusted_r_squared = r_calculations[1]
 
-            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
+            intercept_coefficient = r_calculations[2][0]
+            x_1_coefficient = r_calculations[2][1]
+            x_2_coefficient = r_calculations[2][2]
 
-            mean_squared_error = error_calculations[0]
-            root_mean_squared_error = error_calculations[1]
-            mean_absolute_error = error_calculations[2]
+            intercept_p_value = r_calculations[3][0]
+            x_1_p_value = r_calculations[3][1]
+            x_2_p_value = r_calculations[3][2]
 
-            n = len(values)
+            intercept_std_err = r_calculations[4][0]
+            x_1_std_err = r_calculations[4][1]
+            x_2_std_ee = r_calculations[4][2]
+
+            #print(x_1_coefficient, x_1_p_value, x_1_std_err)
+            #
+            # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, values)
+            #
+            # mean_squared_error = error_calculations[0]
+            # root_mean_squared_error = error_calculations[1]
+            # mean_absolute_error = error_calculations[2]
+            #
+            # n = len(values)
 
 
-            file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, [team, n, covariance, stdev_x, stdev_y,
-                                                                                                       pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
-                                                                                                       root_mean_squared_error, mean_absolute_error])
+            # file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, [team, n, covariance, stdev_x, stdev_y,
+            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+            #                                                                                            root_mean_squared_error, mean_absolute_error])
 
-            plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
+            # file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, [team, n, covariance, stdev_x, stdev_y,
+            #                                                                                            pearson_correlation_coefficient, r_squared, adjusted_r_squared, mean_squared_error,
+            #                                                                                            root_mean_squared_error, mean_absolute_error])
+
+            #plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
 
-            plt.scatter(league_pos, values)
+            #plt.scatter(league_pos, values)
 
 
 
@@ -97,7 +119,7 @@ def scatter_chart():
             plt.title(f'Regression analysis league level & position and {header} {team}')
 
             #plt.show()
-        scatter_chart_for_all_values(header)
+        #scatter_chart_for_all_values(header)
 
 
 def scatter_chart_for_all_values(header):
@@ -111,15 +133,18 @@ def scatter_chart_for_all_values(header):
 
         league_pos = df['Position'].tolist()
         values = df[header].tolist()
+        values2 = df['Stadium capacity'].tolist()
 
 
         if header == "Infl adjusted squad market value M€" or header == "Infl adjusted avg squad market value M€":
             league_pos = league_pos[:19]
             values = values[:19] #ignore the none values that appear 1999-2004
+            values2 = values2[:19]
 
         #if header == "Average attendance / capacity %":
         values.pop(2) #ignore COVID season
         league_pos.pop(2)
+        values2.pop(2)
         #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
         # if header == 'Total spectators':
@@ -132,33 +157,33 @@ def scatter_chart_for_all_values(header):
             total_positions.append(i)
         for j in values:
             total_values.append(j)
-    slope, intercept = np.polyfit(total_positions, total_values, 1)
-    correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
+    #slope, intercept = np.polyfit(total_positions, total_values, 1)
+    #correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
 
-    pearson_correlation_coefficient = correlation_calculations[0]
-    covariance = correlation_calculations[1]
-    stdev_x = correlation_calculations[2]
-    stdev_y = correlation_calculations[3]
+    # pearson_correlation_coefficient = correlation_calculations[0]
+    # covariance = correlation_calculations[1]
+    # stdev_x = correlation_calculations[2]
+    # stdev_y = correlation_calculations[3]
 
 
-    r_calculations = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
+    r_calculations = calculations.calculate_r_squared(total_positions, total_values, total_values2)
 
     r_squared = r_calculations[0]
     adjusted_r_squared = r_calculations[1]
 
-    error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, total_positions, total_values)
-
-    mean_squared_error = error_calculations[0]
-    root_mean_squared_error = error_calculations[1]
-    mean_absolute_error = error_calculations[2]
+    # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, total_positions, total_values)
+    #
+    # mean_squared_error = error_calculations[0]
+    # root_mean_squared_error = error_calculations[1]
+    # mean_absolute_error = error_calculations[2]
 
     n = len(total_values)
 
 
-    file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
-                                                                                               r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+    # file_handling.calculations_to_csv("regression_results_without_covid_season9.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+    #                                                                                            r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
 
-    plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
+    #plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
 
 
     plt.scatter(total_positions, total_values)

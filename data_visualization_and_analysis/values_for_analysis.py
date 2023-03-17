@@ -1,13 +1,15 @@
 from file_operations import file_handling
 from data_fetchers import df_operations
 
+import numpy as np
+
 teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Charlton Athletic", "Ipswich Town",
                                        "Leeds United", "Leicester City", "Norwich City", "Queens Park Rangers", "Southampton FC",
                                        "Sunderland AFC", "Wolverhampton Wanderers"]
 
 
 def transfermarkt_data_cleansing(team):
-    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
+    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data8.txt")
     #print(league_level_dicts[0])
     # bpl_df = None
     # for league_level in league_level_dicts:
@@ -20,7 +22,8 @@ def transfermarkt_data_cleansing(team):
     #print(league_level_dicts)
     #print(team, 'nice')
     team_df = None
-    #print(team, len(league_level_dicts))
+    #team_df = df_operations.create_df_from_dict(league_level_dicts[0])
+    #print(team_df['Rank'], team_df['League level'])
     for i in range(0, len(league_level_dicts)):
         if team in df_operations.create_df_from_dict(league_level_dicts[i])['Team'].values:
             team_df = df_operations.create_df_from_dict(league_level_dicts[i])
@@ -29,11 +32,12 @@ def transfermarkt_data_cleansing(team):
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
 
     #return team_df
+    #print(team_df['Team'])
 
 
 
     mask = team_df['Team'] == team
-    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %',
+    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity',
                                 'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
     df = team_df.copy()
     #print(team, df)
@@ -41,6 +45,7 @@ def transfermarkt_data_cleansing(team):
 
     df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
     df['Total spectators'] = df['Total spectators'].str.replace(',', '').astype(int)
+    df['Stadium capacity'] = df['Stadium capacity'].str.replace(',', '').astype(int)
     df['Year'] = df['Season'].apply(season_to_year)
 
     #df['Squad market value'] = df['Squad market value'].apply(market_values_to_float)
@@ -75,11 +80,14 @@ def financial_statement_data_cleansing(team):
     team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
     position = df_for_pos['Position'].tolist()
+    capacity = df_for_pos['Stadium capacity'].tolist()
     # #print(df_for_pos['Position'].tolist())
     position.reverse()
+    capacity.reverse()
     # print(position)
     position.insert(0, 0)
     df['position'] = position
+    df['stadium capacity'] = capacity
     # print(position, len(position))
     #df['position'] = df_for_pos['Position']
     #print(df)
@@ -92,23 +100,44 @@ def financial_statement_data_cleansing(team):
     if team in teams_that_have_numbers_in_millions:
         for i in columns_list:
             if i != 'years':
-                df[i] = df.apply(lambda row: cleanse_values(row[i], i, row['years']), axis=1)
+                df[i] = np.log(df.apply(lambda row: cleanse_values(row[i], i, row['years']), axis=1))
         #df['stocks'] = df['stocks'].apply(cleanse_values)
         #df['stocks'] = df.apply(lambda row: cleanse_values(row['stocks'], 'stocks'), axis=1)
     else:
         #print(team)
-        df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1)
+        df['turnover'] = np.log(df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1))
         df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
-        df['result for the financial year'] = df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1)
+        df['Ln(result for the financial year)'] = np.log(df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1))
         for i in columns_list:
             if i not in ['years', 'turnover', 'result for the financial year']:
                 #print(i, len(i), "testi", type(df[i]))
                 df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
-                df[i] = df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1)
+                df[i] = np.log(df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1))
 
-    df['assets (in thousands)'] = (df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']) / 1000
-    df['debt (in thousands)'] = (df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']) / 1000
-    df['inflation adjusted wages (in thousands)'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']) / 1000, axis=1).astype(int)
+    df['Ln(assets)'] = np.log((df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']))
+    df['Ln(debt)'] = np.log((df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']))
+    df['Ln(inflation adjusted wages)'] = np.log(df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int))
+
+    # if team in teams_that_have_numbers_in_millions:
+    #     for i in columns_list:
+    #         if i != 'years':
+    #             df[i] = df.apply(lambda row: cleanse_values(row[i], i, row['years']), axis=1)
+    #     #df['stocks'] = df['stocks'].apply(cleanse_values)
+    #     #df['stocks'] = df.apply(lambda row: cleanse_values(row['stocks'], 'stocks'), axis=1)
+    # else:
+    #     #print(team)
+    #     df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1)
+    #     df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
+    #     df['result for the financial year'] = df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1)
+    #     for i in columns_list:
+    #         if i not in ['years', 'turnover', 'result for the financial year']:
+    #             #print(i, len(i), "testi", type(df[i]))
+    #             df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
+    #             df[i] = df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1)
+    #
+    # df['assets'] = (df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']) / 1000
+    # df['debt'] = (df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']) / 1000
+    # df['inflation adjusted wages'] = df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']) / 1000, axis=1).astype(int)
     # print(df_for_pos['Position'], len(df_for_pos['Position']))
     # print(len(df['assets']), len(df['debt']), len(df['inflation adjusted wages']), len(df['turnover']), len(df['result for the financial year']), len(df['years']))
     # for i in columns_list:
@@ -132,10 +161,10 @@ def cleanse_values(value, column, year):
     if column == 'turnover':
         #print(type(year), year)
         if year == "1999" and len(value) == 6:
-            value = int(value) / 1000
+            pass
         else:
-            if len(value) > 6:
-                value = int(value) / 1000
+            if len(value) <= 6:
+                value = int(value) * 1000
                 #value = int(value)
     elif column == 'stocks':
         if len(value) <= 4:
@@ -192,6 +221,7 @@ def calculate_position(position, league_level):
     l1_team_count = 24
     l2_team_count = 24
     pos = None
+    #print(position, league_level)
 
     #print(position, type(position), league_level)
     if league_level == 'First Tier':

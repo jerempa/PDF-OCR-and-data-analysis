@@ -7,6 +7,8 @@ import numpy as np
 import statistics
 from scipy.stats import linregress
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
 
 
 
@@ -294,39 +296,65 @@ def calculate_pearson_correlation_coefficient(x_values, y_values):
     return pearson_correlation_coefficient, round(covariance, 2), round(stdev_x, 2), round(stdev_y, 2)
 
 
-def calculate_r_squared(slope, intercept, x_values, y_values):
+def calculate_r_squared(x_values1, x_values2, y_values):
 
+    X = np.column_stack((x_values1, x_values2))
+    model = LinearRegression().fit(X, y_values)
+
+    r_squared = model.score(X, y_values)
+    n = len(y_values)
+    p = 2
+    adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
+
+    X = sm.add_constant(X)  # add a constant term for the intercept
+    model = sm.OLS(y_values, X).fit()
+
+    coefs = model.params
+    p_values = model.pvalues
+    std_errs = model.bse
+
+    np.set_printoptions(precision=10, suppress=True)
+
+
+    coefs = [format(x, '.10f') for x in coefs]
+    p_values = [format(x, '.10f') for x in p_values]
+    std_errs = [format(x, '.10f') for x in std_errs]
+
+    #print(coefs, p_values, std_errs)
+    # r_squared = linregress(x_values, y_values).rvalue ** 2
     # predicted_values = slope * np.array(x_values) + intercept
     # residuals = np.array(y_values) - predicted_values
     # ssr = np.sum(residuals ** 2)
     # mean_value = statistics.mean(y_values)
     # sst = np.sum((np.array(y_values) - mean_value) ** 2)
     # r_squared = round(1 - (ssr / sst), 2)
-
-    r_squared = linregress(x_values, y_values).rvalue ** 2
-
     #print(r_squared, round(linregress(x_values, y_values).rvalue ** 2, 2))
-
-    n = len(y_values)
-    p = 1
-    adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
-
-    return round(r_squared, 2), round(adjusted_r_squared, 2)
-
-def calculate_mse_rmse_mae(slope, intercept, x_values, y_values):
-    x_values = np.array(x_values)
-    y_values = np.array(y_values)
-
-    predicted_values = slope * x_values + intercept
-    # residuals = y_values - predicted_values
     #
-    # mse = np.mean(residuals ** 2)
-    # rmse = round(np.sqrt(mse), 2)
-    # mae = round(np.mean(np.abs(residuals)), 2)
+    #
+    # n = len(y_values)
+    # p = 1
+    # adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
 
+    return round(r_squared, 2), round(adjusted_r_squared, 2), coefs, p_values, std_errs
+
+def calculate_mse_rmse_mae(slope, intercept, x_values1, x_values2, y_values):
+    #x_values = np.array(x_values)
+    #y_values = np.array(y_values)
+    X = np.column_stack((x_values1, x_values2))
+    model = LinearRegression().fit(X, y_values)
+    predicted_values = model.predict(X)
+
+    #predicted_values = slope * x_values + intercept
     mse = round(mean_squared_error(y_values, predicted_values), 2)
     rmse = round(mean_squared_error(y_values, predicted_values, squared=False), 2)
     mae = round(mean_absolute_error(y_values, predicted_values), 2)
 
 
     return mse, rmse, mae
+    # residuals = y_values - predicted_values
+    #
+    # mse = np.mean(residuals ** 2)
+    # rmse = round(np.sqrt(mse), 2)
+    # mae = round(np.mean(np.abs(residuals)), 2)
+
+
