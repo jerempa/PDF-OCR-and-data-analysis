@@ -181,7 +181,7 @@ def calculations_to_csv(filename, type_of_data, data):
         writer = csv.writer(file)
 
         #print(count_rows)
-        if file.tell() == 0 or (count_csv_rows(filename) % 22 == 0):
+        if file.tell() == 0 or (count_csv_rows(filename) % 28 == 0):
             writer.writerow([type_of_data])
 
         writer.writerow(data)

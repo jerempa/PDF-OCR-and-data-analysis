@@ -6,6 +6,8 @@ from optimal_char_recognition import img_conversion_and_processing, img_to_strin
 
 import json
 import ast
+import csv
+import pandas as pd
 
 
 def main():
@@ -38,12 +40,82 @@ def main():
 
     #time_series_analysis.time_series()
 
-    transfermarkt_data_visualization.scatter_chart()
+   transfermarkt_data_visualization.scatter_chart()
+        # city_list = ['Bournemouth, Christchurch and Poole', "Blackburn with Darwen", "Blackpool", "Greenwich", "Bolton", "Hammersmith and Fulham", 'Hounslow', "Brighton and Hove", "Cardiff", "Derby", "Kirklees", "Kingston upon Hull, City of",
+    #              "Ipswich", "Leeds", "Leicester", "Norwich", "Nottingham", "Portsmouth", "Reading", "Sheffield", "Southampton", "Stoke-on-Trent", "Sunderland", "Swansea", "Wigan", "Wolverhampton"
+    #              ]
+    # new_dict = None
+    # with open("scraped_data9.txt", 'r') as f:
+    #     data = f.read()
+    #     data = json.loads(data)
+    #     # print(type(data), data)
+    #     new_dict = data
+    #     # print(json.dumps(data))
+    #     # data = data.replace("'", '"')
+    #     # data = data.replace(None, 'null')
+    #     # print(data)
+    #
+    # new_values = []
+    # for i in new_dict:
+    #     for item, value in i.items():
+    #         for key, value1 in value.items():
+    #             print(item, key, len(value1), value1)
 
+    #kingston upon hull viimeisin mikä tehty
+
+    #df = pd.read_csv('MYEB1_detailed_population_estimates_series_UK_(2020_geog21).csv')
+
+    #filtered_df = df[df['laname21'].isin(city_list)]
+
+    #yearly_population = filtered_df.groupby('laname21').sum().iloc[:, 4:]
+
+    # Convert the result to a dictionary
+    #result = yearly_population.to_dict('list')
+
+    # Print the result
+    #print(result)
+
+    # city_populations = []
+    #
+    # for city in city_list:
+    #     # Get the population data for the city
+    #     city_data = df.loc[df['laname21'] == city]
+    #
+    #     # Create a dictionary of the city and its population data
+    #     city_dict = {
+    #         city: {
+    #             '2001': city_data['population_2001'].sum(),
+    #             '2002': city_data['population_2002'].sum(),
+    #             '2003': city_data['population_2003'].sum(),
+    #             '2004': city_data['population_2004'].sum(),
+    #             '2005': city_data['population_2005'].sum(),
+    #             '2006': city_data['population_2006'].sum(),
+    #             '2007': city_data['population_2007'].sum(),
+    #             '2008': city_data['population_2008'].sum(),
+    #             '2009': city_data['population_2009'].sum(),
+    #             '2010': city_data['population_2010'].sum(),
+    #             '2011': city_data['population_2011'].sum(),
+    #             '2012': city_data['population_2012'].sum(),
+    #             '2013': city_data['population_2013'].sum(),
+    #             '2014': city_data['population_2014'].sum(),
+    #             '2015': city_data['population_2015'].sum(),
+    #             '2016': city_data['population_2016'].sum(),
+    #             '2017': city_data['population_2017'].sum(),
+    #             '2018': city_data['population_2018'].sum(),
+    #             '2019': city_data['population_2019'].sum(),
+    #             '2020': city_data['population_2020'].sum()
+    #         }
+    #     }
+    #
+    #     # Add the city dictionary to the list of city populations
+    #     city_populations.append(city_dict)
+    #
+    # # Print the list of city populations
+    # print(city_populations)
     #fetch_data_from_worldfootball.main()
     # capa_dict = {}
     #
-    # with open("stadium_capacities1.txt", 'r') as f:
+    # with open("stadium_cap2.txt", 'r') as f:
     #     data = f.read()
     #     #data = json.loads(data)
     #     data = ast.literal_eval(data)
@@ -55,49 +127,69 @@ def main():
     #         for year, capa in values.items():
     #             capacity_list.append(capa)
     #         capa_dict[team] = capacity_list
-    #print(json.dumps(capa_dict))
-
-    #capa_dict = json.dumps(capa_dict)
-
-    #print(capa_dict)
-    # lst = []
+    # # #print(json.dumps(capa_dict))
+    # #
+    # # #capa_dict = json.dumps(capa_dict)
+    # #
+    # #print(capa_dict)
+    #     capa_dict = {
+    #     'AFC Bournemouth': [172] * 24,
+    #     'Blackburn Rovers': [45] * 24,
+    #     'Blackpool FC': [85] * 24,
+    #     'Bolton Wanderers': [25] * 24,
+    #     'Brentford FC': [0] * 24,
+    #     'Brighton & Hove Albion': [125] * 24,
+    #     'Cardiff City': [0] * 24,
+    #     'Charlton Athletic': [0] * 24,
+    #     'Derby County': [65] * 24,
+    #     'Huddersfield Town': [30] * 24,
+    #     'Hull City': [100] * 24,
+    #     'Ipswich Town': [130] * 24,
+    #     'Leeds United': [0] * 24,
+    #     'Leicester City': [70] * 24,
+    #     'Norwich City': [250] * 24,
+    #     'Nottingham Forest': [70] * 24,
+    #     'Portsmouth FC': [120] * 24,
+    #     'Queens Park Rangers': [0] * 24,
+    #     'Reading FC': [70] * 24,
+    #     'Sheffield United': [0] * 24,
+    #     'Southampton FC': [130] * 24,
+    #     'Stoke City': [65] * 24,
+    #     'Sunderland AFC': [20] * 24,
+    #     'Swansea City': [75] * 24,
+    #     'Wigan Athletic': [35] * 24,
+    #     'Wolverhampton Wanderers': [30] * 24
+    # }
+    #     lst = []
+    #     # # #
+    #     with open("scraped_data9.txt", "r") as file:
+    #         data = file.read()
+    #         data = json.loads(data)
+    #         #print(data)
     #
-    # with open("scraped_data7.txt", "r") as file:
-    #     data = file.read()
-    #     data = json.loads(data)
-    #     #print(data)
-    #
-    #     for i in data:
-    #         for team, values in i.items():
-    #             #print(team, values)
-    #             for avain, arvo in capa_dict.items():
-    #                 if avain == team:
-    #                     i[team]['Stadium capacity'] = arvo
+    #         for i in data:
+    #             for team, values in i.items():
+    #                 #print(team, values)
+    #                 one_list = [1] * 24
+    #                 zero_list = [0] * 24
+    #                 #for avain, arvo in capa_dict.items():
+    #                     #print(team, avain, arvo)
+    #                 if team in ['Bolton Wanderers', 'Brentford FC', 'Charlton Athletic', 'Huddersfield Town', 'Leeds United', 'Queens Park Rangers', 'Sheffield United', 'Sunderland AFC', 'Wigan Athletic', 'Wolverhampton Wanderers']:
+    #                     #arvo.reverse()
     #                     #print(avain, arvo, team)
-    #         #print(json.dumps(i))
-    #         lst.append(json.dumps(i))
+    #                     i[team]['Only football team in top 4 leagues in the metropolitan county'] = zero_list
+    #                 else:
+    #                     i[team]['Only football team in top 4 leagues in the metropolitan county'] = one_list
     #
-    # print(lst)
+    #                 #print(avain, arvo, team)
+    #             #print(json.dumps(i))
+    #             lst.append(json.dumps(i))
+    #
+    #     print(lst)
                 # for key, value in values.items():
                 #     print(team, key, value)
 
 
-    # new_dict = None
-    # with open("financial statement data.txt", 'r') as f:
-    #     data = f.read()
-    #     data = json.loads(data)
-    #     print(type(data), data)
-    #     new_dict = data
-    #     #print(json.dumps(data))
-    #     #data = data.replace("'", '"')
-    #     #data = data.replace(None, 'null')
-    #     #print(data)
-    #
-    # new_values = []
-    # for i in new_dict:
-    #     for item, value in i.items():
-    #         for key, value1 in value.items():
-    #             print(item,key,  len(value1), value1)
     #
     #     new_dict = data
 

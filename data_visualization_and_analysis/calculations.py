@@ -306,9 +306,32 @@ def calculate_r_squared(x_values1, x_values2, y_values):
     p = 2
     adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
 
-    X = sm.add_constant(X)  # add a constant term for the intercept
+    print(r_squared, adjusted_r_squared, "!ets")
+
+    return round(r_squared, 2), round(adjusted_r_squared, 2)
+
+def regression_calcs(x_1, x_2, x_3, y):
+
+    #print(X)
+    # print(len(x_1), x_1)
+    # print(len(x_2), x_2)
+    # print(len(y), y)
+    #print(model.params)
+    y_values = np.array(y)
+
+    X = np.column_stack((x_1, x_2, x_3))
+
+    X = sm.add_constant(X)
+
+    #print(X, y)
     model = sm.OLS(y_values, X).fit()
 
+
+    #print(model.summary())
+
+    t_values = model.tvalues
+    r_squared = model.rsquared
+    adj_r_squared = model.rsquared_adj
     coefs = model.params
     p_values = model.pvalues
     std_errs = model.bse
@@ -316,11 +339,13 @@ def calculate_r_squared(x_values1, x_values2, y_values):
     np.set_printoptions(precision=10, suppress=True)
 
 
-    coefs = [format(x, '.10f') for x in coefs]
-    p_values = [format(x, '.10f') for x in p_values]
-    std_errs = [format(x, '.10f') for x in std_errs]
+    # coefs = [format(x, '.10f') for x in coefs]
+    # p_values = [format(x, '.10f') for x in p_values]
+    # std_errs = [format(x, '.10f') for x in std_errs]
 
-    #print(coefs, p_values, std_errs)
+    print(coefs, p_values, std_errs, t_values, round(r_squared, 2), round(adj_r_squared, 2))
+
+    return coefs, p_values, std_errs, t_values, round(r_squared, 2), round(adj_r_squared, 2)
     # r_squared = linregress(x_values, y_values).rvalue ** 2
     # predicted_values = slope * np.array(x_values) + intercept
     # residuals = np.array(y_values) - predicted_values
@@ -335,7 +360,6 @@ def calculate_r_squared(x_values1, x_values2, y_values):
     # p = 1
     # adjusted_r_squared = 1 - ((1 - r_squared) * (n - 1) / (n - p - 1))
 
-    return round(r_squared, 2), round(adjusted_r_squared, 2), coefs, p_values, std_errs
 
 def calculate_mse_rmse_mae(slope, intercept, x_values1, x_values2, y_values):
     #x_values = np.array(x_values)

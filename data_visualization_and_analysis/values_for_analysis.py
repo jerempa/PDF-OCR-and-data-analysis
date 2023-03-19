@@ -9,7 +9,8 @@ teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Charlton Athletic", 
 
 
 def transfermarkt_data_cleansing(team):
-    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data8.txt")
+    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data9.txt")
+    #print(league_level_dicts)
     #print(league_level_dicts[0])
     # bpl_df = None
     # for league_level in league_level_dicts:
@@ -21,7 +22,12 @@ def transfermarkt_data_cleansing(team):
     #print(league_level_dicts)
     #print(league_level_dicts)
     #print(team, 'nice')
+    #print(league_level_dicts)
     team_df = None
+    #print(l)
+    # print(league_level_dicts[0])
+    # print(league_level_dicts[1])
+    # print(league_level_dicts[2])
     #team_df = df_operations.create_df_from_dict(league_level_dicts[0])
     #print(team_df['Rank'], team_df['League level'])
     for i in range(0, len(league_level_dicts)):
@@ -31,6 +37,8 @@ def transfermarkt_data_cleansing(team):
     #print(bpl_df)
     #print(df_operations.create_df_from_dict(league_level_dicts[1]))
 
+    #print(team_df)
+
     #return team_df
     #print(team_df['Team'])
 
@@ -38,7 +46,8 @@ def transfermarkt_data_cleansing(team):
 
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity',
-                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€']]
+                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€',
+                                'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county']]
     df = team_df.copy()
     #print(team, df)
     #df = df.dropna()
@@ -62,6 +71,10 @@ def transfermarkt_data_cleansing(team):
     df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
 
     df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
+
+    df['(Distance to the nearest major city (km))^2'] = df['Distance to the nearest major city (km)']**2
+
+    df['Squad size'] = df.apply(lambda row: calculate_squad_size(row['Squad market value M€'], row['Average squad market value M€']), axis=1)
 
     return df
 
@@ -236,6 +249,17 @@ def calculate_position(position, league_level):
         pos = 93 - prem_team_count - champ_team_count - l1_team_count - position
 
     return pos
+
+def calculate_squad_size(market_value, avg_market_value):
+    #print(market_value, avg_market_value)
+    try:
+        squad_size = int(round(market_value / avg_market_value))
+
+        #print(squad_size, market_value)
+
+        return squad_size
+    except ValueError:
+        pass
 
 def adjust_values_to_inflation(market_value, year):
     CPI_values = {'1999': 72.6, '2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,
