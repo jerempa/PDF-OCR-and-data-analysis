@@ -47,7 +47,7 @@ def transfermarkt_data_cleansing(team):
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity',
                                 'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€',
-                                'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county']]
+                                'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county', 'Manager']]
     df = team_df.copy()
     #print(team, df)
     #df = df.dropna()
@@ -75,6 +75,10 @@ def transfermarkt_data_cleansing(team):
     df['(Distance to the nearest major city (km))^2'] = df['Distance to the nearest major city (km)']**2
 
     df['Squad size'] = df.apply(lambda row: calculate_squad_size(row['Squad market value M€'], row['Average squad market value M€']), axis=1)
+
+    df['Managerial change'] = df.apply(lambda row: determine_if_manager_was_changed(row['Manager'], df['Manager'].shift(-1).loc[row.name]), axis=1)
+
+    #print(df['Managerial change'], df['Year'], df['Season'])
 
     return df
 
@@ -260,6 +264,11 @@ def calculate_squad_size(market_value, avg_market_value):
         return squad_size
     except ValueError:
         pass
+
+def determine_if_manager_was_changed(manager, last_season_manager):
+    if manager != last_season_manager:
+        return 1
+    return 0
 
 def adjust_values_to_inflation(market_value, year):
     CPI_values = {'1999': 72.6, '2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,
