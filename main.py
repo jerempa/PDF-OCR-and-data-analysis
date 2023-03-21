@@ -32,15 +32,15 @@ def main():
     #values = fetch_data_from_transfermarkt.main() #fetch data from transfermarkt
 
     #df_operations.print_df() #print the transfermarkt dataframes
+    #transfermarkt_data_visualization.scatter_chart()
 
-    #financial_statement_data_visualization.scatter_chart()
+    financial_statement_data_visualization.scatter_chart()
 
 
     #transfermarkt_data_visualization.line_plot_and_color_visualization()
 
     #time_series_analysis.time_series()
 
-   transfermarkt_data_visualization.scatter_chart()
         # city_list = ['Bournemouth, Christchurch and Poole', "Blackburn with Darwen", "Blackpool", "Greenwich", "Bolton", "Hammersmith and Fulham", 'Hounslow', "Brighton and Hove", "Cardiff", "Derby", "Kirklees", "Kingston upon Hull, City of",
     #              "Ipswich", "Leeds", "Leicester", "Norwich", "Nottingham", "Portsmouth", "Reading", "Sheffield", "Southampton", "Stoke-on-Trent", "Sunderland", "Swansea", "Wigan", "Wolverhampton"
     #              ]
@@ -160,32 +160,32 @@ def main():
     #     'Wigan Athletic': [35] * 24,
     #     'Wolverhampton Wanderers': [30] * 24
     # }
-    #     lst = []
-    #     # # #
-    #     with open("scraped_data9.txt", "r") as file:
-    #         data = file.read()
-    #         data = json.loads(data)
-    #         #print(data)
-    #
-    #         for i in data:
-    #             for team, values in i.items():
-    #                 #print(team, values)
-    #                 one_list = [1] * 24
-    #                 zero_list = [0] * 24
-    #                 #for avain, arvo in capa_dict.items():
-    #                     #print(team, avain, arvo)
-    #                 if team in ['Bolton Wanderers', 'Brentford FC', 'Charlton Athletic', 'Huddersfield Town', 'Leeds United', 'Queens Park Rangers', 'Sheffield United', 'Sunderland AFC', 'Wigan Athletic', 'Wolverhampton Wanderers']:
-    #                     #arvo.reverse()
-    #                     #print(avain, arvo, team)
-    #                     i[team]['Only football team in top 4 leagues in the metropolitan county'] = zero_list
-    #                 else:
-    #                     i[team]['Only football team in top 4 leagues in the metropolitan county'] = one_list
-    #
-    #                 #print(avain, arvo, team)
-    #             #print(json.dumps(i))
-    #             lst.append(json.dumps(i))
-    #
-    #     print(lst)
+    #    lst = []
+        # # #
+        # with open("scraped_data9.txt", "r") as file:
+        #     data = file.read()
+        #     data = json.loads(data)
+        #     #print(data)
+        #
+        #     for i in data:
+        #         for team, values in i.items():
+        #             #print(team, values)
+        #             one_list = [1] * 24
+        #             zero_list = [0] * 24
+        #             #for avain, arvo in capa_dict.items():
+        #                 #print(team, avain, arvo)
+        #             if team in ['Huddersfield Town', 'Leeds United', 'Wigan Athletic', 'Hull City', 'Cardiff City']:
+        #                 #arvo.reverse()
+        #                 #print(avain, arvo, team)
+        #                 i[team]['City has a professional rugby team'] = one_list
+        #             else:
+        #                 i[team]['City has a professional rugby team'] = zero_list
+        #
+        #             #print(avain, arvo, team)
+        #         #print(json.dumps(i))
+        #         lst.append(json.dumps(i))
+        #
+        # print(lst)
                 # for key, value in values.items():
                 #     print(team, key, value)
 

@@ -9,7 +9,7 @@ teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Charlton Athletic", 
 
 
 def transfermarkt_data_cleansing(team):
-    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data9.txt")
+    league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
     #print(league_level_dicts)
     #print(league_level_dicts[0])
     # bpl_df = None
@@ -45,9 +45,9 @@ def transfermarkt_data_cleansing(team):
 
 
     mask = team_df['Team'] == team
-    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity',
-                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€',
-                                'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county', 'Manager']]
+    team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity', 'City population',
+                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€', 'Average squad age',
+                                'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county', 'Manager', 'City has a professional rugby team']]
     df = team_df.copy()
     #print(team, df)
     #df = df.dropna()
@@ -69,14 +69,27 @@ def transfermarkt_data_cleansing(team):
     #df['Arrivals'] = df['Arrivals'].apply(market_values_to_float)
     df['Arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], None), axis=1)
     df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
+    df['Ln(Infl adjusted arrivals M€)'] = np.log1p(df['Infl adjusted arrivals M€'])
+
+    df['Ln(Infl adjusted squad market value M€)'] = np.log(df['Infl adjusted squad market value M€'])
+    df['Ln(Infl adjusted avg squad market value M€)'] = np.log(df['Infl adjusted avg squad market value M€'])
 
     df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
 
-    df['(Distance to the nearest major city (km))^2'] = df['Distance to the nearest major city (km)']**2
+    #df['(Distance to the nearest major city (km))^2'] = df['Distance to the nearest major city (km)']**2
 
-    df['Squad size'] = df.apply(lambda row: calculate_squad_size(row['Squad market value M€'], row['Average squad market value M€']), axis=1)
+
+    df['(Squad size)^2'] = df.apply(lambda row: calculate_squad_size(row['Squad market value M€'], row['Average squad market value M€']), axis=1)**2
 
     df['Managerial change'] = df.apply(lambda row: determine_if_manager_was_changed(row['Manager'], df['Manager'].shift(-1).loc[row.name]), axis=1)
+
+    df['(Average squad age (years))^2'] = round(df['Average squad age'].astype(float)**2, 2)
+
+    df['Ln(City population)'] = np.log(df['City population'])
+
+    df['Stadium capacity (thousands)'] = df['Stadium capacity'] / 1000
+
+    #df['Avg attendance (thousands)'] = df['Average attendance'] / 1000
 
     #print(df['Managerial change'], df['Year'], df['Season'])
 

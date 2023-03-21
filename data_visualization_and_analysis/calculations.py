@@ -9,6 +9,7 @@ from scipy.stats import linregress
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
+import pandas as pd
 
 
 
@@ -312,6 +313,7 @@ def calculate_r_squared(x_values1, x_values2, y_values):
 
 def regression_calcs(x_1, x_2, x_3, y):
 
+
     #print(X)
     # print(len(x_1), x_1)
     # print(len(x_2), x_2)
@@ -327,7 +329,18 @@ def regression_calcs(x_1, x_2, x_3, y):
     model = sm.OLS(y_values, X).fit()
 
 
-    #print(model.summary())
+    print(model.summary())
+
+    results_df = pd.read_html(model.summary().tables[0].as_html(), header=0, index_col=0)[0]
+    results_df1 = pd.read_html(model.summary().tables[1].as_html(), header=0, index_col=0)[0]
+    results_df2 = pd.read_html(model.summary().tables[2].as_html(), header=0, index_col=0)[0]
+
+    #results_df = pd.concat([results_df, results_df1, results_df2], axis=0)
+
+    results_df.to_excel("results.xlsx")
+    results_df1.to_excel("results1.xlsx")
+    results_df2.to_excel("results2.xlsx")
+
 
     t_values = model.tvalues
     r_squared = model.rsquared
@@ -336,14 +349,20 @@ def regression_calcs(x_1, x_2, x_3, y):
     p_values = model.pvalues
     std_errs = model.bse
 
-    np.set_printoptions(precision=10, suppress=True)
+    #np.set_printoptions(precision=10, suppress=True)
 
 
     # coefs = [format(x, '.10f') for x in coefs]
     # p_values = [format(x, '.10f') for x in p_values]
     # std_errs = [format(x, '.10f') for x in std_errs]
 
-    print(coefs, p_values, std_errs, t_values, round(r_squared, 2), round(adj_r_squared, 2))
+    # print("Coefs: ", coefs)
+    print("P-values", p_values)
+    # print("Standard errors", std_errs)
+    # print("t values", t_values)
+    # print("R squared", round(r_squared, 2))
+    print("\n")
+    #print(coefs, p_values, std_errs, t_values, round(r_squared, 2), round(adj_r_squared, 2))
 
     return coefs, p_values, std_errs, t_values, round(r_squared, 2), round(adj_r_squared, 2)
     # r_squared = linregress(x_values, y_values).rvalue ** 2
