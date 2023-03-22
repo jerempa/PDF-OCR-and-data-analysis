@@ -311,7 +311,7 @@ def calculate_r_squared(x_values1, x_values2, y_values):
 
     return round(r_squared, 2), round(adjusted_r_squared, 2)
 
-def regression_calcs(x_1, x_2, x_3, x_4, x_5, x_6, x_7, y):
+def regression_calcs(x_1, x_2, x_3, x_4, y):
 
 
     #print(X)
@@ -329,7 +329,7 @@ def regression_calcs(x_1, x_2, x_3, x_4, x_5, x_6, x_7, y):
     print(min(y_values))
     print(max(y_values), "max")
 
-    X = np.column_stack((x_1, x_2, x_3, x_4, x_5, x_6, x_7))
+    X = np.column_stack((x_1, x_2, x_3, x_4))
 
     X = sm.add_constant(X)
 

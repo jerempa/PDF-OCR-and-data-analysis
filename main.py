@@ -35,9 +35,9 @@ def main():
     #values = fetch_data_from_transfermarkt.main() #fetch data from transfermarkt
 
     #df_operations.print_df() #print the transfermarkt dataframes
-    #transfermarkt_data_visualization.scatter_chart()
+    transfermarkt_data_visualization.scatter_chart()
 
-    financial_statement_data_visualization.scatter_chart()
+    #financial_statement_data_visualization.scatter_chart()
 
 
     #transfermarkt_data_visualization.line_plot_and_color_visualization()

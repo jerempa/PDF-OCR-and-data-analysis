@@ -24,7 +24,7 @@ background_color = {
 }
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
-y_axis_headers = ["Ln(Infl adjusted arrivals M€)"]
+y_axis_headers = ["Ln(Infl adjusted avg squad market value M€)"]
 #y_axis_headers = ["Average attendance", "Average attendance / capacity %", "Infl adjusted arrivals M€", Ln("Infl adjusted squad market value M€)", "Infl adjusted avg squad market value M€"]
 
 
@@ -221,19 +221,24 @@ def scatter_chart_for_all_values(header):
         # #x_3 = df['City population'].tolist()
         # x_3 = df['Ln(City population)'].tolist()
         # x_4 = df['Distance to the nearest major city (km)'].tolist()
-        # x_8 = df['City has a professional rugby team'].tolist()
-        # x_9 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        # x_5 = df['City has a professional rugby team'].tolist()
+        # x_6 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        # x_7 = df['Team is in the Premier League'].tolist()
 
-        #squa market value and avg squad market value predictors:
-        # x_2 = df['(Squad size)^2'].tolist()
-        # x_3 = df['(Average squad age (years))^2'].tolist()
+        #squad market value and avg squad market value predictors:
+        x_2 = df['(Squad size)^2'].tolist()
+        x_3 = df['(Average squad age (years))^2'].tolist()
+        x_4 = df['Team is in the Premier League'].tolist()
+
 
 
         #Arrivals:
-        x_2 = df['(Average squad age (years))^2'].tolist()
-        x_3 = df['Managerial change'].tolist()
+        # x_2 = df['(Average squad age (years))^2'].tolist()
+        # x_3 = df['Managerial change'].tolist()
+        # x_4 = df['Team is in the Premier League'].tolist()
 
         #print(y_values)
+        #print(team, df)
 
 
 
@@ -253,12 +258,12 @@ def scatter_chart_for_all_values(header):
         y_values = y_values[1:19]  # ignore the none values that appear 1999-2004
         x_2 = x_2[1:19]
         x_3 = x_3[1:19]
-        # x_4 = x_4[1:19]
-        # x_8 = x_8[1:19]
-        # x_9 = x_9[1:19]
+        x_4 = x_4[1:19]
         # x_5 = x_5[1:19]
         # x_6 = x_6[1:19]
         # x_7 = x_7[1:19]
+        # x_8 = x_8[1:19]
+        # x_9 = x_9[1:19]
 
         #print(y_values)
         # print(x_2)
@@ -268,12 +273,17 @@ def scatter_chart_for_all_values(header):
         league_pos.pop(1)
         x_2.pop(1)
         x_3.pop(1)
+        x_4.pop(1)
+        # x_5.pop(1)
+        # x_6.pop(1)
+        # x_7.pop(1)
 
         if header == "Infl adjusted arrivals M€":
             x_2.pop(0)
             x_3.pop(-1)
             league_pos.pop(-1)
             y_values.pop(-1)
+            x_4.pop(-1)
 
         # print(len(x_2))
         # print(len(y_values))
@@ -281,9 +291,6 @@ def scatter_chart_for_all_values(header):
         # x_4.pop(1)
         # x_8.pop(1)
         # x_9.pop(1)
-        # x_5.pop(1)
-        # x_6.pop(1)
-        # x_7.pop(1)
         #values = file_handling.return_transfermarkt_values_from_csv(team, header)
 
         # if header == 'Total spectators':
@@ -310,18 +317,18 @@ def scatter_chart_for_all_values(header):
             x_2_total.append(k)
         for k in x_3:
             x_3_total.append(k)
-        # for k in x_4:
-        #     x_4_total.append(k)
+        for k in x_4:
+            x_4_total.append(k)
+        # for k in x_5:
+        #     x_5_total.append(k)
+        # for k in x_6:
+        #     x_6_total.append(k)
+        # for k in x_7:
+        #     x_7_total.append(k)
         # for k in x_8:
         #     x_8_total.append(k)
         # for k in x_9:
         #     x_9_total.append(k)
-        # # for k in x_5:
-        # #     x_5_total.append(k)
-        # # for k in x_6:
-        # #     x_6_total.append(k)
-        # # for k in x_7:
-        # #     x_7_total.append(k)
     #slope, intercept = np.polyfit(total_positions, total_values, 1)
     #correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
 
@@ -347,16 +354,19 @@ def scatter_chart_for_all_values(header):
     total_values_mean = statistics.mean(total_values)
     x_2_mean = statistics.mean(x_2_total)
     x_3_mean = statistics.mean(x_3_total)
-    # x_4_mean = statistics.mean(x_4_total)
-    # x_8_mean = statistics.mean(x_8_total)
+    x_4_mean = statistics.mean(x_4_total)
+    # x_5_mean = statistics.mean(x_3_total)
+    # x_6_mean = statistics.mean(x_4_total)
+    # x_7_mean = statistics.mean(x_7_total)
+    #x_8_mean = statistics.mean(x_8_total)
     # x_9_mean = statistics.mean(x_9_total)
 
     x_2_total1 = []
     x_3_total1 = []
     x_4_total1 = []
-    # x_5_total = []
-    # x_6_total = []
-    # x_7_total = []
+    x_5_total1 = []
+    x_6_total1 = []
+    x_7_total1 = []
     x_8_total1 = []
     x_9_total1 = []
     total_positions1 = []
@@ -371,8 +381,14 @@ def scatter_chart_for_all_values(header):
         x_2_total1.append(i - x_2_mean)
     for i in x_3_total:
         x_3_total1.append(i - x_3_mean)
-    # for i in x_4_total:
-    #     x_4_total1.append(i - x_4_mean)
+    for i in x_4_total:
+        x_4_total1.append(i - x_4_mean)
+    # for i in x_5_total:
+    #     x_5_total1.append(i - x_5_mean)
+    # for i in x_6_total:
+    #     x_6_total1.append(i - x_6_mean)
+    # for i in x_7_total:
+    #     x_7_total1.append(i - x_7_mean)
     # for i in x_8_total:
     #     x_8_total1.append(i - x_8_mean)
     # for i in x_9_total:
@@ -391,21 +407,14 @@ def scatter_chart_for_all_values(header):
     #     f.write(str(x_8_total))
     #     f.write(str(x_9_total))
     #     f.write(str(total_values))
-    # print(total_positions)
-    # print(sum(x_2_total1), x_2_total1)
-    # print(sum(x_3_total1), x_3_total1)
-    # print(sum(x_4_total1), x_4_total1)
-    # print(x_8_total)
-    # print(x_9_total)
-    # print(total_values)
     #Market values:
-    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, total_values)
+    regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, x_4_total, total_values)
 
     #Bought players:
-    regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total, total_values)
+    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total, x_4_total, total_values)
 
     #Attendances:
-    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, x_4_total1, x_8_total, x_9_total total_values)
+    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, x_4_total1, x_5_total, x_6_total, x_7_total, total_values)
 
 
     intercept_coefficient = regression_calculations[0][0]

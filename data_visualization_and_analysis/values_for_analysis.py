@@ -53,6 +53,7 @@ def transfermarkt_data_cleansing(team):
     #df = df.dropna()
 
     df['Average attendance'] = df['Average attendance'].str.replace(',', '').astype(int)
+    df['Ln(Average attendance)'] = np.sqrt(df['Average attendance'])
     df['Total spectators'] = df['Total spectators'].str.replace(',', '').astype(int)
     df['Stadium capacity'] = df['Stadium capacity'].str.replace(',', '').astype(int)
     df['Year'] = df['Season'].apply(season_to_year)
@@ -95,11 +96,11 @@ def transfermarkt_data_cleansing(team):
 
     df['Team is in the Premier League'] = df.apply(lambda row: which_league_team_in(row['Position'], "Prem"), axis=1).astype(int)
 
-    df['Team is in the Championship'] = df.apply(lambda row: which_league_team_in(row['Position'], "Champ"), axis=1).astype(int)
-
-    df['Team is in League One'] = df.apply(lambda row: which_league_team_in(row['Position'], "L1"), axis=1).astype(int)
-
-    df['Team is in League Two'] = df.apply(lambda row: which_league_team_in(row['Position'], "L2"), axis=1).astype(int)
+    # df['Team is in the Championship'] = df.apply(lambda row: which_league_team_in(row['Position'], "Champ"), axis=1).astype(int)
+    #
+    # df['Team is in League One'] = df.apply(lambda row: which_league_team_in(row['Position'], "L1"), axis=1).astype(int)
+    #
+    # df['Team is in League Two'] = df.apply(lambda row: which_league_team_in(row['Position'], "L2"), axis=1).astype(int)
 
     df['Transfer spending'] = df.apply(lambda row: calculate_transfer_spending(row['Infl adjusted arrivals M€'], row['Infl adjusted departures M€']), axis=1)
 

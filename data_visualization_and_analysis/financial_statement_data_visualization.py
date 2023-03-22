@@ -132,7 +132,7 @@ def scatter_chart_for_all_values(header):
 
         #tm_df = values_for_analysis.transfermarkt_data_cleansing(team)
 
-        print(team, df)
+        #print(team, df)
 
         league_pos = df['Position'].tolist()
         # for key, data in position_98_99_season.items():
