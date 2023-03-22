@@ -46,7 +46,7 @@ def transfermarkt_data_cleansing(team):
 
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, ['Season', 'League level', 'Total spectators', 'Average attendance', 'Average attendance / capacity %', 'Stadium capacity', 'City population',
-                                'Rank', 'Arrivals M€', 'Squad market value M€', 'Average squad market value M€', 'Average squad age',
+                                'Rank', 'Arrivals M€', 'Departures M€', 'Squad market value M€', 'Average squad market value M€', 'Average squad age',
                                 'Distance to the nearest major city (km)', 'Only football team in top 4 leagues in the metropolitan county', 'Manager', 'City has a professional rugby team']]
     df = team_df.copy()
     #print(team, df)
@@ -71,6 +71,10 @@ def transfermarkt_data_cleansing(team):
     df['Infl adjusted arrivals M€'] = df.apply(lambda row: market_values_to_float(row['Arrivals M€'], row['Year']), axis=1)
     df['Ln(Infl adjusted arrivals M€)'] = np.log1p(df['Infl adjusted arrivals M€'])
 
+    df['Departures M€'] = df.apply(lambda row: market_values_to_float(row['Departures M€'], None), axis=1)
+    df['Infl adjusted departures M€'] = df.apply(lambda row: market_values_to_float(row['Departures M€'], row['Year']), axis=1)
+
+
     df['Ln(Infl adjusted squad market value M€)'] = np.log(df['Infl adjusted squad market value M€'])
     df['Ln(Infl adjusted avg squad market value M€)'] = np.log(df['Infl adjusted avg squad market value M€'])
 
@@ -89,6 +93,19 @@ def transfermarkt_data_cleansing(team):
 
     df['Stadium capacity (thousands)'] = df['Stadium capacity'] / 1000
 
+    df['Team is in the Premier League'] = df.apply(lambda row: which_league_team_in(row['Position'], "Prem"), axis=1).astype(int)
+
+    df['Team is in the Championship'] = df.apply(lambda row: which_league_team_in(row['Position'], "Champ"), axis=1).astype(int)
+
+    df['Team is in League One'] = df.apply(lambda row: which_league_team_in(row['Position'], "L1"), axis=1).astype(int)
+
+    df['Team is in League Two'] = df.apply(lambda row: which_league_team_in(row['Position'], "L2"), axis=1).astype(int)
+
+    df['Transfer spending'] = df.apply(lambda row: calculate_transfer_spending(row['Infl adjusted arrivals M€'], row['Infl adjusted departures M€']), axis=1)
+
+
+
+
     #df['Avg attendance (thousands)'] = df['Average attendance'] / 1000
 
     #print(df['Managerial change'], df['Year'], df['Season'])
@@ -100,24 +117,93 @@ def financial_statement_data_cleansing(team):
     team_df = df_operations.create_df_from_dict(league_level_dicts[0])
 
     df_for_pos = transfermarkt_data_cleansing(team)
-    df_for_pos = df_for_pos.iloc[2:]
-
+    df_for_pos = df_for_pos.iloc[1:-2]
+    #df_for_pos = df_for_pos.iloc[1:-1]
+    #print(df_for_pos)
+    #[55, 65, 68, 75, 71, 61, 65, 62, 73, 72, 67, 69, 69, 66, 61, 60, 62, 57, 60, 43, 45]
     #print(team_df)
     #print(type(team_df), len(team_df))
-    columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'debtors', 'intangible assets', 'result for the financial year',
-                                 'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
+    # columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'debtors', 'intangible assets', 'result for the financial year',
+    #                              'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
+    columns_list = ['years', 'turnover', 'result for the financial year', 'wages']
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
+    df = df.iloc[2:]
+    #print(df)
+
     position = df_for_pos['Position'].tolist()
-    capacity = df_for_pos['Stadium capacity'].tolist()
+    position.pop(0)
+    position.insert(-1, 0) #shifting the values by one index
+
+    capacity = df_for_pos['Stadium capacity (thousands)'].tolist()
+    population = df_for_pos['Ln(City population)'].tolist()
+    only_team = df_for_pos['Only football team in top 4 leagues in the metropolitan county'].tolist()
+
+    has_rugby = df_for_pos['City has a professional rugby team'].tolist()
+    squad_size = df_for_pos['(Squad size)^2'].tolist()
+    avg_squad_age = df_for_pos['(Average squad age (years))^2'].tolist()
+
+    transfer_spending = df_for_pos['Transfer spending'].tolist()
+    transfer_spending.pop(0)
+    transfer_spending.insert(-1, 0) #shifting the values by one index
+
+    team_in_prem = df_for_pos['Team is in the Premier League'].tolist()
+    team_in_prem.pop(0)
+    team_in_prem.insert(-1, 0) #shifting the values by one index
+
+    team_in_champ = df_for_pos['Team is in the Championship'].tolist()
+    team_in_champ.pop(0)
+    team_in_champ.insert(-1, 0) #shifting the values by one index
+
+    team_in_l1 = df_for_pos['Team is in League One'].tolist()
+    team_in_l1.pop(0)
+    team_in_l1.insert(-1, 0) #shifting the values by one index
+
+    team_in_l2 = df_for_pos['Team is in League Two'].tolist()
+    team_in_l2.pop(0)
+    team_in_l2.insert(-1, 0) #shifting the values by one index
+
     # #print(df_for_pos['Position'].tolist())
+
     position.reverse()
     capacity.reverse()
+    population.reverse()
+    squad_size.reverse()
+    avg_squad_age.reverse()
+    team_in_prem.reverse()
+    team_in_champ.reverse()
+    team_in_l1.reverse()
+    team_in_l2.reverse()
+    transfer_spending.reverse()
+
+    # print(len(position), position)
+    # print(len(population), population)
+    # print(len(capacity), capacity)
     # print(position)
-    position.insert(0, 0)
-    df['position'] = position
-    df['stadium capacity'] = capacity
+    # position.insert(0, 0)
+    # capacity.insert(0, 0)
+    # population.insert(0, 0)
+    # only_team.insert(0, 0)
+    # has_rugby.insert(0, 0)
+
+    df['Position'] = position
+    #print(df['Position'])
+    df['Stadium capacity (thousands)'] = capacity
+    df['Ln(City population)'] = population
+    df['Only football team in top 4 leagues in the metropolitan county'] = only_team
+    df['City has a professional rugby team'] = has_rugby
+    df['Transfer spending'] = transfer_spending
+    df['(Squad size)^2'] = squad_size
+    df['(Average squad age (years))^2'] = avg_squad_age
+    df['Team is in the Premier League'] = team_in_prem
+    df['Team is in the Championship'] = team_in_champ
+    df['Team is in League One'] = team_in_l1
+    df['Team is in League Two'] = team_in_l2
+
+    df = df.drop(df.index[-2]) #drop covid row
+
+    #print(df)
     # print(position, len(position))
     #df['position'] = df_for_pos['Position']
     #print(df)
@@ -130,23 +216,30 @@ def financial_statement_data_cleansing(team):
     if team in teams_that_have_numbers_in_millions:
         for i in columns_list:
             if i != 'years':
-                df[i] = np.log(df.apply(lambda row: cleanse_values(row[i], i, row['years']), axis=1))
+                df[i] = df.apply(lambda row: cleanse_values(row[i], i, row['years']), axis=1)
+                if i == 'result for the financial year':
+                    df[f'1 / {i}'] = df[i]
+                else:
+                    df[f'Ln({i})'] = np.log(df[i])
         #df['stocks'] = df['stocks'].apply(cleanse_values)
         #df['stocks'] = df.apply(lambda row: cleanse_values(row['stocks'], 'stocks'), axis=1)
     else:
         #print(team)
-        df['turnover'] = np.log(df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1))
+        df['turnover'] = df.apply(lambda row: cleanse_values(row['turnover'], 'turnover', row['years']), axis=1)
+        df['Ln(turnover)'] = np.log(df['turnover'])
         df['result for the financial year'] = df['result for the financial year'].str.replace(',', '').str.replace('(', '-').str.replace(')', '').astype(int)
-        df['Ln(result for the financial year)'] = np.log(df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1))
+        df['1 / result for the financial year'] = df.apply(lambda row: pound_to_euro_converter(row['result for the financial year'], row['years']), axis=1)
         for i in columns_list:
             if i not in ['years', 'turnover', 'result for the financial year']:
                 #print(i, len(i), "testi", type(df[i]))
                 df[i] = df[i].str.replace(',', '').str.replace('(', '').str.replace(')', '').astype(int)
-                df[i] = np.log(df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1))
+                df[i] = df.apply(lambda row: pound_to_euro_converter(row[i], row['years']), axis=1)
+                #df[f'L']
 
-    df['Ln(assets)'] = np.log((df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']))
-    df['Ln(debt)'] = np.log((df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']))
+    #df['Ln(assets)'] = np.log((df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']))
+    #df['Ln(debt)'] = np.log((df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']))
     df['Ln(inflation adjusted wages)'] = np.log(df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int))
+    #df['Team is in the Premier League'] = df.apply(lambda row: team_is_in_premier_league(row['Position']), axis=1).astype(int)
 
     # if team in teams_that_have_numbers_in_millions:
     #     for i in columns_list:
@@ -182,6 +275,7 @@ def financial_statement_data_cleansing(team):
     # position.insert(0, 0)
     # print(position, len(position))
     # print(df_for_pos['Position'])
+    #print(df)
 
     return df
 
@@ -213,8 +307,11 @@ def cleanse_values(value, column, year):
         value = value.replace('(', '').replace(')', '')
         if len(value) <= 6:
             value = int(value) * 1000
-    #print(value, column)
     value = pound_to_euro_converter(int(value), year)
+
+    # if column == 'turnover':
+    #     value = int(value) / 1000000
+    #print(value, column)
     return int(value)
     # return int(value)
 
@@ -283,6 +380,37 @@ def determine_if_manager_was_changed(manager, last_season_manager):
         return 1
     return 0
 
+def which_league_team_in(position, league):
+    if position >= 73:
+        return 4
+    elif position >= 49:
+        return 3
+    elif position >= 25:
+        return 2
+    else:
+        return 1
+    # if position >= 73 and league == "Prem":
+    #     return 1
+    # elif league == "Prem":
+    #     return 0
+    # if 49 <= position < 73 and league == "Champ":
+    #     return 1
+    # elif league == "Champ":
+    #     return 0
+    # if 25 <= position < 49 and league == 'L1':
+    #     return 1
+    # elif league == 'L1':
+    #     return 0
+    # if position < 25:
+    #     return 1
+    # elif league == 'L2':
+    #     return 0
+
+def calculate_transfer_spending(bought, sold):
+    #print(bought, sold)
+    return float(sold - bought)
+
+
 def adjust_values_to_inflation(market_value, year):
     CPI_values = {'1999': 72.6, '2000': 73.4, '2001': 74.6, '2002': 75.7, '2003': 76.7, '2004': 77.8, '2005': 79.4,
                          '2006': 81.4, '2007': 83.3, '2008': 86.2, '2009': 87.9, '2010': 90.1, '2011': 93.6,
@@ -298,7 +426,6 @@ def pound_to_euro_converter(value, year):
                          '2006': 1.4670, '2007': 1.4621, '2008': 1.2593, '2009': 1.1230, '2010': 1.1665, '2011': 1.1527,
                          '2012': 1.2338, '2013': 1.1779, '2014': 1.2409, '2015': 1.3782, '2016': 1.2244, '2017': 1.1413,
                          '2018': 1.1304, '2019': 1.1398, '2020': 1.1250, '2021': 1.1634, '2022': 1.1731} #source: https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-gbp.en.html
-                                                                                                    #used yearly average
     for key, exhange_value in exhange_rates.items():
         if key == str(year):
             adjusted_value = round(value * exhange_value, 2)

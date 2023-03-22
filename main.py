@@ -23,6 +23,9 @@ def main():
 
     #extracting_data.main() #extract financial statement data from csv
 
+    #swansea, brighton palkat
+    #revenue bolton
+
 
     #file_handling.read_financial_statement_values()
     # data = extracting_data.file_reading(team_and_files)

@@ -15,7 +15,7 @@ position_98_99_season = {'Brentford FC': [1, "Fourth Tier"], 'Brighton & Hove Al
          'Bolton Wanderers': [6, "Second Tier"], 'Charlton Athletic': [18, "First Tier"], 'Ipswich Town': [3, "Second Tier"], 'Portsmouth FC': [19, "Second Tier"]}
 
 #teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['Nottingham Forest']
+#teams = ['Swansea City']
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
@@ -30,7 +30,7 @@ background_color = {
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
 #y_axis_headers = ["Average attendance"]
-y_axis_headers = ["turnover"]
+y_axis_headers = ["1 / result for the financial year"]
 #y_axis_headers = ["Ln(turnover)", "Ln(inflation adjusted wages)", "Ln(assets)", "Ln(debt)", "Ln(result for the financial year)"]
 #y_axis_headers = ["turnover", "inflation adjusted wages", "assets", "debt", "result for the financial year"]
 
@@ -44,7 +44,7 @@ def scatter_chart():
             df = values_for_analysis.financial_statement_data_cleansing(team)
 
             #print(team, df)
-            league_pos = df['position'].tolist()
+            league_pos = df['Position'].tolist()
             for key, data in position_98_99_season.items():
                 if key == team:
                     pos_98 = values_for_analysis.calculate_position(data[0], data[1])
@@ -53,44 +53,44 @@ def scatter_chart():
             log_values = df[header].tolist()
             fig, ax = plt.subplots()
 
-            print(league_pos)
-            print(log_values)
+            # print(league_pos)
+            # print(log_values)
 
             # values.pop(2) #ignore COVID season
             # league_pos.pop(2)
 
 
             #ax.set_xlim(2000, 2022)
-            ax.set_ylim(12, 19)
+            #ax.set_ylim(12, 19)
 
 
-            slope, intercept = np.polyfit(league_pos, log_values, 1)
+            #slope, intercept = np.polyfit(league_pos, log_values, 1)
             # params = np.polyfit(league_pos, log_values, 1)
             # a = np.exp(params[1])
             # b = params[0]
             #print(a,b)
             #pearson_correlation_coefficient = calculations.calculate_pearson_correlation_coefficient(league_pos, values)
 
-            correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
-                                                                                              log_values)
-
-            pearson_correlation_coefficient = correlation_calculations[0]
-            covariance = correlation_calculations[1]
-            stdev_x = correlation_calculations[2]
-            stdev_y = correlation_calculations[3]
-
-            r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, log_values)
-
-            r_squared = r_calculations[0]
-            adjusted_r_squared = r_calculations[1]
-
-            error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, log_values)
-
-            mean_squared_error = error_calculations[0]
-            root_mean_squared_error = error_calculations[1]
-            mean_absolute_error = error_calculations[2]
-
-            n = len(log_values)
+            # correlation_calculations = calculations.calculate_pearson_correlation_coefficient(league_pos,
+            #                                                                                   log_values)
+            #
+            # pearson_correlation_coefficient = correlation_calculations[0]
+            # covariance = correlation_calculations[1]
+            # stdev_x = correlation_calculations[2]
+            # stdev_y = correlation_calculations[3]
+            #
+            # r_calculations = calculations.calculate_r_squared(slope, intercept, league_pos, log_values)
+            #
+            # r_squared = r_calculations[0]
+            # adjusted_r_squared = r_calculations[1]
+            #
+            # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, league_pos, log_values)
+            #
+            # mean_squared_error = error_calculations[0]
+            # root_mean_squared_error = error_calculations[1]
+            # mean_absolute_error = error_calculations[2]
+            #
+            # n = len(log_values)
 
 
             # file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, [team, n, covariance, stdev_x, stdev_y,
@@ -98,7 +98,7 @@ def scatter_chart():
             #                                                                                            root_mean_squared_error, mean_absolute_error])
 
             #plt.plot(league_pos, a * np.exp(b * np.array(league_pos)), color='red')
-            plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
+            #plt.plot(league_pos, slope * np.array(league_pos) + intercept, color='red')
 
 
 
@@ -111,7 +111,7 @@ def scatter_chart():
             plt.title(f'Regression analysis league position and {header} {team}')
 
             #plt.show()
-        #scatter_chart_for_all_values(header)
+        scatter_chart_for_all_values(header)
 
 
 def scatter_chart_for_all_values(header):
@@ -119,16 +119,95 @@ def scatter_chart_for_all_values(header):
     #for header in y_axis_headers:
     total_positions = []
     total_values = []
+    x_2_total = []
+    x_3_total = []
+    x_4_total = []
+    x_5_total = []
+    x_6_total = []
+    x_7_total = []
+    x_8_total = []
+    x_9_total = []
     for team in teams:
         df = values_for_analysis.financial_statement_data_cleansing(team)
 
-        league_pos = df['position'].tolist()
-        for key, data in position_98_99_season.items():
-            if key == team:
-                pos_98 = values_for_analysis.calculate_position(data[0], data[1])
-                league_pos[0] = pos_98 #calculate position for 98_99 season for y-axis
+        #tm_df = values_for_analysis.transfermarkt_data_cleansing(team)
 
-        values = df[header].tolist()
+        print(team, df)
+
+        league_pos = df['Position'].tolist()
+        # for key, data in position_98_99_season.items():
+        #     if key == team:
+        #         pos_98 = values_for_analysis.calculate_position(data[0], data[1])
+        #         league_pos[0] = pos_98 #calculate position for 98_99 season for y-axis
+
+        y_values = df[header].tolist()
+
+        #print(len(y_values), "jee")
+        #y_values.reverse()
+        #x_22 = df['stadium capacity (thousands)'].tolist()
+
+
+        #revenue predictors:
+        #x_2 = df['Stadium capacity'].tolist()
+        # x_2 = df['Stadium capacity (thousands)'].tolist()
+        # # # #x_3 = df['City population'].tolist()
+        # x_3 = df['Ln(City population)'].tolist()
+        # x_4 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        # x_5 = df['City has a professional rugby team'].tolist()
+        # x_6 = df['Team is in the Premier League'].tolist()
+        # x_7 = df['Team is in the Championship'].tolist()
+        # x_8 = df['Team is in League One'].tolist()
+        # x_9 = df['Team is in League Two'].tolist()
+
+        #wages predictors:
+        # x_2 = df['(Squad size)^2'].tolist()
+        # # #x_3 = df['City population'].tolist()
+        # x_3 = df['(Average squad age (years))^2'].tolist()
+        # x_4 = df['Team is in the Premier League'].tolist()
+        #x_4 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        #x_5 = df['City has a professional rugby team'].tolist()
+
+        #result for the financial year predictors:
+        x_2 = df['Ln(City population)'].tolist()
+        x_3 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        x_4 = df['City has a professional rugby team'].tolist()
+        x_5 = df['Team is in the Premier League'].tolist()
+        x_6 = df['Transfer spending'].tolist()
+        x_7 = df['Stadium capacity (thousands)']
+        #x_6 =
+
+        # print(len(league_pos), league_pos)
+        # print(len(y_values), y_values)
+        # print(len(x_2), x_2)
+        # print(len(x_3), x_3)
+        # print(len(x_4), x_4)
+        # print(len(x_5), x_5)
+
+        #x_9 = df['Distance to the nearest major city (km)'].tolist()
+
+        # print(league_pos)
+        # print(values)
+
+        # league_pos = league_pos[1:19]
+        # y_values = y_values[1:19]  # ignore the none values that appear 1999-2004
+        # x_2 = x_2[1:19]
+        # x_3 = x_3[1:19]
+        # x_4 = x_4[1:19]
+        # x_5 = x_5[1:19]
+
+        # print(len(league_pos), league_pos)
+        # print(len(y_values), y_values)
+        # print(len(x_2), x_2)
+        # print(len(x_3), x_3)
+        # print(len(x_4), x_4)
+        # print(len(x_5), x_5)
+
+        # y_values.pop(1)
+        # league_pos.pop(1)
+        # x_2.pop(1)
+        # x_3.pop(1)
+        # x_4.pop(1)
+        # x_5.pop(1) #ignore covid season
 
 
 
@@ -141,34 +220,103 @@ def scatter_chart_for_all_values(header):
         #ax.set_ylim(0, 50000)
         for i in league_pos:
             total_positions.append(i)
-        for j in values:
+        for j in y_values:
             total_values.append(j)
-    slope, intercept = np.polyfit(total_positions, total_values, 1)
-    correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
+        for k in x_2:
+            x_2_total.append(k)
+        for k in x_3:
+            x_3_total.append(k)
+        for k in x_4:
+            x_4_total.append(k)
+        for k in x_5:
+            x_5_total.append(k)
+        for k in x_6:
+            x_6_total.append(k)
+        for k in x_7:
+            x_7_total.append(k)
+        # for k in x_8:
+        #     x_8_total.append(k)
+        # for k in x_9:
+        #     x_9_total.append(k)
 
-    pearson_correlation_coefficient = correlation_calculations[0]
-    covariance = correlation_calculations[1]
-    stdev_x = correlation_calculations[2]
-    stdev_y = correlation_calculations[3]
+    total_positions_mean = statistics.mean(total_positions)
+    total_values_mean = statistics.mean(total_values)
+    x_2_mean = statistics.mean(x_2_total)
+    x_3_mean = statistics.mean(x_3_total)
+    x_4_mean = statistics.mean(x_4_total)
+    x_5_mean = statistics.mean(x_5_total)
+    x_6_mean = statistics.mean(x_6_total)
+    x_7_mean = statistics.mean(x_7_total)
+    # x_9_mean = statistics.mean(x_9_total)
+
+    x_2_total1 = []
+    x_3_total1 = []
+    x_4_total1 = []
+    x_5_total1 = []
+    x_6_total1 = []
+    x_7_total1 = []
+    x_8_total1 = []
+    x_9_total1 = []
+    total_positions1 = []
+    total_values1 = []
 
 
-    r_calculations = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
+    for i in total_positions:
+        total_positions1.append(i - total_positions_mean)
+    for i in total_values:
+        total_values1.append(i - total_values_mean)
+    for i in x_2_total:
+        x_2_total1.append(i - x_2_mean)
+    for i in x_3_total:
+        x_3_total1.append(i - x_3_mean)
+    for i in x_4_total:
+        x_4_total1.append(i - x_4_mean)
+    # for i in x_5_total:
+    #     x_5_total1.append(i - x_5_mean)
+    for i in x_6_total:
+        x_6_total1.append(i - x_6_mean)
+    for i in x_7_total:
+        x_7_total1.append(i - x_7_mean)
 
-    r_squared = r_calculations[0]
-    adjusted_r_squared = r_calculations[1]
-
-    error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, total_positions, total_values)
-
-    mean_squared_error = error_calculations[0]
-    root_mean_squared_error = error_calculations[1]
-    mean_absolute_error = error_calculations[2]
-    n = len(total_values)
+    # print(total_positions)
+    # print(total_positions1)
 
 
-    file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
-                                                                                               r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+    #revenue:
 
-    plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
+    regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total, x_4_total, x_5_total, x_6_total1, x_7_total, total_values)
+
+    #wages:
+    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, total_values)
+
+
+
+    #slope, intercept = np.polyfit(total_positions, total_values, 1)
+    #correlation_calculations = calculations.calculate_pearson_correlation_coefficient(total_positions, total_values)
+
+    # pearson_correlation_coefficient = correlation_calculations[0]
+    # covariance = correlation_calculations[1]
+    # stdev_x = correlation_calculations[2]
+    # stdev_y = correlation_calculations[3]
+
+
+    #r_calculations = calculations.calculate_r_squared(slope, intercept, total_positions, total_values)
+
+    # r_squared = r_calculations[0]
+    # adjusted_r_squared = r_calculations[1]
+    #
+    # error_calculations = calculations.calculate_mse_rmse_mae(slope, intercept, total_positions, total_values)
+    #
+    # mean_squared_error = error_calculations[0]
+    # root_mean_squared_error = error_calculations[1]
+    # mean_absolute_error = error_calculations[2]
+    # n = len(total_values)
+
+
+    # file_handling.calculations_to_csv("financial_statement_regression_results4.csv", header, ["Total", n, covariance, stdev_x, stdev_y, pearson_correlation_coefficient,
+    #                                                                                            r_squared, adjusted_r_squared, mean_squared_error, root_mean_squared_error, mean_absolute_error])
+    #
+    # plt.plot(total_positions, slope * np.array(total_positions) + intercept, color='red')
 
 
     plt.scatter(total_positions, total_values)
