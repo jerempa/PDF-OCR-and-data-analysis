@@ -7,3 +7,6 @@ Contents of this repo will be tightly related to my Bachelor's thesis. I will ge
 In addition, this repo includes files for fetching data from various websites through HTTP-requests, for instance getting squad value and average attendance throughout the years. All of these values will be the base of data visualization and analysis that are going to be utilized in my thesis.
 
 At the moment the values scraped are ready and manually checked to be correct. The values are in [this](https://github.com/jerempa/PDF-OCR-and-data-analysis/tree/main/csv_and_txt_files) directory. There are also regression results based on them. Some data visualization has also been done in transfermarkt_data_visualization.py-file.
+
+
+Update 29.6.23: Multiple linear regression was the basis of my thesis. This repo contains OCR, data collection, parsing and analysing. Thesis received grade 5 out of 5.
