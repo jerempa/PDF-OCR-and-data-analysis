@@ -8,7 +8,7 @@ teams_that_have_numbers_in_millions = ["Bolton Wanderers", "Charlton Athletic", 
                                        "Sunderland AFC", "Wolverhampton Wanderers"]
 
 
-def transfermarkt_data_cleansing(team):
+def transfermarkt_data_cleansing(team, bool):
     league_level_dicts = file_handling.return_scraped_data_dict("scraped_data7.txt")
     #print(league_level_dicts)
     #print(league_level_dicts[0])
@@ -79,7 +79,7 @@ def transfermarkt_data_cleansing(team):
     df['Ln(Infl adjusted squad market value M€)'] = np.log(df['Infl adjusted squad market value M€'])
     df['Ln(Infl adjusted avg squad market value M€)'] = np.log(df['Infl adjusted avg squad market value M€'])
 
-    df['Position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
+    df['Overall position'] = df.apply(lambda row: calculate_position(int(row['Rank']), row['League level']), axis=1)
 
     #df['(Distance to the nearest major city (km))^2'] = df['Distance to the nearest major city (km)']**2
 
@@ -94,7 +94,7 @@ def transfermarkt_data_cleansing(team):
 
     df['Stadium capacity (thousands)'] = df['Stadium capacity'] / 1000
 
-    df['Team is in the Premier League'] = df.apply(lambda row: which_league_team_in(row['Position'], "Prem"), axis=1).astype(int)
+    df['The league in which team is in'] = df.apply(lambda row: which_league_team_in(row['Overall position'], "Prem"), axis=1).astype(int)
 
     # df['Team is in the Championship'] = df.apply(lambda row: which_league_team_in(row['Position'], "Champ"), axis=1).astype(int)
     #
@@ -103,6 +103,16 @@ def transfermarkt_data_cleansing(team):
     # df['Team is in League Two'] = df.apply(lambda row: which_league_team_in(row['Position'], "L2"), axis=1).astype(int)
 
     df['Transfer spending'] = df.apply(lambda row: calculate_transfer_spending(row['Infl adjusted arrivals M€'], row['Infl adjusted departures M€']), axis=1)
+
+    df['Team'] = team
+
+    df['Average attendance / capacity %^2'] = (df['Average attendance / capacity %']**2).astype(float)
+
+    if bool:
+
+        df = df.iloc[1:len(df['Team']) - 5]
+
+        df = df.drop(df.index[1]) #drop covid row
 
 
 
@@ -117,23 +127,16 @@ def financial_statement_data_cleansing(team):
     league_level_dicts = file_handling.return_scraped_data_dict("financial statement data.txt")
     team_df = df_operations.create_df_from_dict(league_level_dicts[0])
 
-    df_for_pos = transfermarkt_data_cleansing(team)
+    df_for_pos = transfermarkt_data_cleansing(team, False)
     df_for_pos = df_for_pos.iloc[1:-2]
     #df_for_pos = df_for_pos.iloc[1:-1]
-    #print(df_for_pos)
-    #[55, 65, 68, 75, 71, 61, 65, 62, 73, 72, 67, 69, 69, 66, 61, 60, 62, 57, 60, 43, 45]
-    #print(team_df)
-    #print(type(team_df), len(team_df))
-    # columns_list = ['years', 'turnover', 'stocks', 'investments', 'tangible assets', 'debtors', 'intangible assets', 'result for the financial year',
-    #                              'cash at bank and in hand', 'wages', 'creditors: amounts falling due within one year', 'creditors: amounts falling due after more than one year']
     columns_list = ['years', 'turnover', 'result for the financial year', 'wages']
     mask = team_df['Team'] == team
     team_df = team_df.loc[mask, columns_list]
     df = team_df.copy()
     df = df.iloc[2:]
-    #print(df)
 
-    position = df_for_pos['Position'].tolist()
+    position = df_for_pos['Overall position'].tolist()
     position.pop(0)
     position.insert(-1, 0) #shifting the values by one index
 
@@ -144,26 +147,29 @@ def financial_statement_data_cleansing(team):
     has_rugby = df_for_pos['City has a professional rugby team'].tolist()
     squad_size = df_for_pos['(Squad size)^2'].tolist()
     avg_squad_age = df_for_pos['(Average squad age (years))^2'].tolist()
+    avg_squad_age = df_for_pos['(Average squad age (years))^2'].tolist()
+    league_level = df_for_pos['League level'].tolist()
+
 
     transfer_spending = df_for_pos['Transfer spending'].tolist()
     transfer_spending.pop(0)
     transfer_spending.insert(-1, 0) #shifting the values by one index
 
-    team_in_prem = df_for_pos['Team is in the Premier League'].tolist()
+    team_in_prem = df_for_pos['The league in which team is in'].tolist()
     team_in_prem.pop(0)
     team_in_prem.insert(-1, 0) #shifting the values by one index
 
-    team_in_champ = df_for_pos['Team is in the Championship'].tolist()
-    team_in_champ.pop(0)
-    team_in_champ.insert(-1, 0) #shifting the values by one index
-
-    team_in_l1 = df_for_pos['Team is in League One'].tolist()
-    team_in_l1.pop(0)
-    team_in_l1.insert(-1, 0) #shifting the values by one index
-
-    team_in_l2 = df_for_pos['Team is in League Two'].tolist()
-    team_in_l2.pop(0)
-    team_in_l2.insert(-1, 0) #shifting the values by one index
+    # team_in_champ = df_for_pos['Team is in the Championship'].tolist()
+    # team_in_champ.pop(0)
+    # team_in_champ.insert(-1, 0) #shifting the values by one index
+    #
+    # team_in_l1 = df_for_pos['Team is in League One'].tolist()
+    # team_in_l1.pop(0)
+    # team_in_l1.insert(-1, 0) #shifting the values by one index
+    #
+    # team_in_l2 = df_for_pos['Team is in League Two'].tolist()
+    # team_in_l2.pop(0)
+    # team_in_l2.insert(-1, 0) #shifting the values by one index
 
     # #print(df_for_pos['Position'].tolist())
 
@@ -173,9 +179,10 @@ def financial_statement_data_cleansing(team):
     squad_size.reverse()
     avg_squad_age.reverse()
     team_in_prem.reverse()
-    team_in_champ.reverse()
-    team_in_l1.reverse()
-    team_in_l2.reverse()
+    league_level.reverse()
+    # team_in_champ.reverse()
+    # team_in_l1.reverse()
+    # team_in_l2.reverse()
     transfer_spending.reverse()
 
     # print(len(position), position)
@@ -188,7 +195,7 @@ def financial_statement_data_cleansing(team):
     # only_team.insert(0, 0)
     # has_rugby.insert(0, 0)
 
-    df['Position'] = position
+    df['Overall position'] = position
     #print(df['Position'])
     df['Stadium capacity (thousands)'] = capacity
     df['Ln(City population)'] = population
@@ -197,10 +204,11 @@ def financial_statement_data_cleansing(team):
     df['Transfer spending'] = transfer_spending
     df['(Squad size)^2'] = squad_size
     df['(Average squad age (years))^2'] = avg_squad_age
-    df['Team is in the Premier League'] = team_in_prem
-    df['Team is in the Championship'] = team_in_champ
-    df['Team is in League One'] = team_in_l1
-    df['Team is in League Two'] = team_in_l2
+    df['The league in which team is in'] = team_in_prem
+    df['League level'] = league_level
+    # df['Team is in the Championship'] = team_in_champ
+    # df['Team is in League One'] = team_in_l1
+    # df['Team is in League Two'] = team_in_l2
 
     df = df.drop(df.index[-2]) #drop covid row
 
@@ -240,6 +248,7 @@ def financial_statement_data_cleansing(team):
     #df['Ln(assets)'] = np.log((df['tangible assets'] + df['intangible assets'] + df['stocks'] + df['investments'] + df['cash at bank and in hand'] + df['debtors']))
     #df['Ln(debt)'] = np.log((df['creditors: amounts falling due within one year'] + df['creditors: amounts falling due after more than one year']))
     df['Ln(inflation adjusted wages)'] = np.log(df.apply(lambda row: adjust_values_to_inflation(row['wages'], row['years']), axis=1).astype(int))
+    df['year'] = df['years'].astype(int)
     #df['Team is in the Premier League'] = df.apply(lambda row: team_is_in_premier_league(row['Position']), axis=1).astype(int)
 
     # if team in teams_that_have_numbers_in_millions:
@@ -390,22 +399,6 @@ def which_league_team_in(position, league):
         return 2
     else:
         return 1
-    # if position >= 73 and league == "Prem":
-    #     return 1
-    # elif league == "Prem":
-    #     return 0
-    # if 49 <= position < 73 and league == "Champ":
-    #     return 1
-    # elif league == "Champ":
-    #     return 0
-    # if 25 <= position < 49 and league == 'L1':
-    #     return 1
-    # elif league == 'L1':
-    #     return 0
-    # if position < 25:
-    #     return 1
-    # elif league == 'L2':
-    #     return 0
 
 def calculate_transfer_spending(bought, sold):
     #print(bought, sold)

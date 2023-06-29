@@ -8,14 +8,11 @@ from data_visualization_and_analysis import values_for_analysis
 from file_operations import file_handling
 from data_visualization_and_analysis import calculations
 #https://matplotlib.org/stable/gallery/color/named_colors.html
-#Bournemouth 7 and Third Tier
 
 position_98_99_season = {'Brentford FC': [1, "Fourth Tier"], 'Brighton & Hove Albion': [17, "Fourth Tier"], 'Leeds United': [4, "First Tier"], 'Leicester City': [10, "First Tier"], 'Nottingham Forest': [20, "First Tier"], 'Southampton FC': [17, "First Tier"], 'Wolverhampton Wanderers': [7, "Second Tier"],
          'Blackburn Rovers': [19, "First Tier"], 'Blackpool FC': [14, "Third Tier"], 'Cardiff City': [3, "Fourth Tier"], 'Huddersfield Town': [10, "Second Tier"], 'Hull City': [21, "Fourth Tier"], 'Norwich City': [9, "Second Tier"], 'Reading FC': [11, "Third Tier"], 'Sunderland AFC': [1, "Second Tier"], 'Stoke City': [8, "Third Tier"], 'Swansea City': [7, "Fourth Tier"], 'Queens Park Rangers': [20, "Second Tier"], 'Wigan Athletic': [6, "Third Tier"],
          'Bolton Wanderers': [6, "Second Tier"], 'Charlton Athletic': [18, "First Tier"], 'Ipswich Town': [3, "Second Tier"], 'Portsmouth FC': [19, "Second Tier"]}
 
-#teams = ['Brighton & Hove Albion', 'Leeds United', 'Blackpool FC', 'Huddersfield Town', 'Hull City', 'Queens Park Rangers', 'Ipswich Town']
-#teams = ['Swansea City']
 teams = ['Brentford FC', 'Brighton & Hove Albion', 'Leeds United', 'Leicester City', 'Nottingham Forest', 'Southampton FC', 'Wolverhampton Wanderers',
          'Blackburn Rovers', 'Blackpool FC', 'Cardiff City', 'Huddersfield Town', 'Hull City', 'Norwich City', 'Reading FC', 'Stoke City', 'Sunderland AFC', 'Swansea City', 'Queens Park Rangers', 'Wigan Athletic',
          'Bolton Wanderers', 'Charlton Athletic', 'Ipswich Town', 'Portsmouth FC']
@@ -30,8 +27,8 @@ background_color = {
 
 #league_levels = ['Premier League', 'Championship', 'League One', 'League Two']
 #y_axis_headers = ["Average attendance"]
-y_axis_headers = ["1 / result for the financial year"]
-#y_axis_headers = ["Ln(turnover)", "Ln(inflation adjusted wages)", "Ln(assets)", "Ln(debt)", "Ln(result for the financial year)"]
+#y_axis_headers = ["1 / result for the financial year"]
+y_axis_headers = ['Ln(turnover)', 'Ln(inflation adjusted wages)'] #ln(turnover), #ln(inflation adjusted wages)
 #y_axis_headers = ["turnover", "inflation adjusted wages", "assets", "debt", "result for the financial year"]
 
 
@@ -44,7 +41,7 @@ def scatter_chart():
             df = values_for_analysis.financial_statement_data_cleansing(team)
 
             #print(team, df)
-            league_pos = df['Position'].tolist()
+            league_pos = df['Overall position'].tolist()
             for key, data in position_98_99_season.items():
                 if key == team:
                     pos_98 = values_for_analysis.calculate_position(data[0], data[1])
@@ -127,6 +124,7 @@ def scatter_chart_for_all_values(header):
     x_7_total = []
     x_8_total = []
     x_9_total = []
+    dfs = []
     for team in teams:
         df = values_for_analysis.financial_statement_data_cleansing(team)
 
@@ -134,7 +132,7 @@ def scatter_chart_for_all_values(header):
 
         #print(team, df)
 
-        league_pos = df['Position'].tolist()
+        league_pos = df['Overall position'].tolist()
         # for key, data in position_98_99_season.items():
         #     if key == team:
         #         pos_98 = values_for_analysis.calculate_position(data[0], data[1])
@@ -154,39 +152,29 @@ def scatter_chart_for_all_values(header):
         # x_3 = df['Ln(City population)'].tolist()
         # x_4 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
         # x_5 = df['City has a professional rugby team'].tolist()
-        # x_6 = df['Team is in the Premier League'].tolist()
-        # x_7 = df['Team is in the Championship'].tolist()
-        # x_8 = df['Team is in League One'].tolist()
-        # x_9 = df['Team is in League Two'].tolist()
+        # x_6 = df['The league in which team is in'].tolist()
+        #x_7 = df['Team is in the Championship'].tolist()
+        #x_8 = df['Team is in League One'].tolist()
+        #x_9 = df['Team is in League Two'].tolist()
 
         #wages predictors:
-        # x_2 = df['(Squad size)^2'].tolist()
-        # # #x_3 = df['City population'].tolist()
-        # x_3 = df['(Average squad age (years))^2'].tolist()
-        # x_4 = df['Team is in the Premier League'].tolist()
+        x_2 = df['(Squad size)^2'].tolist()
+        # #x_3 = df['City population'].tolist()
+        x_3 = df['(Average squad age (years))^2'].tolist()
+        x_4 = df['The league in which team is in'].tolist()
         #x_4 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
         #x_5 = df['City has a professional rugby team'].tolist()
 
         #result for the financial year predictors:
-        x_2 = df['Ln(City population)'].tolist()
-        x_3 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
-        x_4 = df['City has a professional rugby team'].tolist()
-        x_5 = df['Team is in the Premier League'].tolist()
-        x_6 = df['Transfer spending'].tolist()
-        x_7 = df['Stadium capacity (thousands)']
+        # x_2 = df['Ln(City population)'].tolist()
+        # x_3 = df['Only football team in top 4 leagues in the metropolitan county'].tolist()
+        # x_4 = df['City has a professional rugby team'].tolist()
+        # x_5 = df['The league in which team is in'].tolist()
+        # x_6 = df['Transfer spending'].tolist()
+        # x_7 = df['Stadium capacity (thousands)']
         #x_6 =
 
-        # print(len(league_pos), league_pos)
-        # print(len(y_values), y_values)
-        # print(len(x_2), x_2)
-        # print(len(x_3), x_3)
-        # print(len(x_4), x_4)
-        # print(len(x_5), x_5)
-
         #x_9 = df['Distance to the nearest major city (km)'].tolist()
-
-        # print(league_pos)
-        # print(values)
 
         # league_pos = league_pos[1:19]
         # y_values = y_values[1:19]  # ignore the none values that appear 1999-2004
@@ -195,12 +183,6 @@ def scatter_chart_for_all_values(header):
         # x_4 = x_4[1:19]
         # x_5 = x_5[1:19]
 
-        # print(len(league_pos), league_pos)
-        # print(len(y_values), y_values)
-        # print(len(x_2), x_2)
-        # print(len(x_3), x_3)
-        # print(len(x_4), x_4)
-        # print(len(x_5), x_5)
 
         # y_values.pop(1)
         # league_pos.pop(1)
@@ -208,6 +190,7 @@ def scatter_chart_for_all_values(header):
         # x_3.pop(1)
         # x_4.pop(1)
         # x_5.pop(1) #ignore covid season
+        dfs.append(df)
 
 
 
@@ -228,12 +211,12 @@ def scatter_chart_for_all_values(header):
             x_3_total.append(k)
         for k in x_4:
             x_4_total.append(k)
-        for k in x_5:
-            x_5_total.append(k)
-        for k in x_6:
-            x_6_total.append(k)
-        for k in x_7:
-            x_7_total.append(k)
+        # for k in x_5:
+        #     x_5_total.append(k)
+        # for k in x_6:
+        #     x_6_total.append(k)
+        # for k in x_7:
+        #     x_7_total.append(k)
         # for k in x_8:
         #     x_8_total.append(k)
         # for k in x_9:
@@ -241,12 +224,17 @@ def scatter_chart_for_all_values(header):
 
     total_positions_mean = statistics.mean(total_positions)
     total_values_mean = statistics.mean(total_values)
+    # total_values_stdev = print(statistics.stdev(total_values), header)
+    # total_values_min = print(min(total_values), header)
+    # total_values_max = print(max(total_values), header)
+    # print("\n", len(total_values))
+
     x_2_mean = statistics.mean(x_2_total)
     x_3_mean = statistics.mean(x_3_total)
     x_4_mean = statistics.mean(x_4_total)
-    x_5_mean = statistics.mean(x_5_total)
-    x_6_mean = statistics.mean(x_6_total)
-    x_7_mean = statistics.mean(x_7_total)
+    # x_5_mean = statistics.mean(x_5_total)
+    # x_6_mean = statistics.mean(x_6_total)
+    #x_7_mean = statistics.mean(x_7_total)
     # x_9_mean = statistics.mean(x_9_total)
 
     x_2_total1 = []
@@ -273,10 +261,10 @@ def scatter_chart_for_all_values(header):
         x_4_total1.append(i - x_4_mean)
     # for i in x_5_total:
     #     x_5_total1.append(i - x_5_mean)
-    for i in x_6_total:
-        x_6_total1.append(i - x_6_mean)
-    for i in x_7_total:
-        x_7_total1.append(i - x_7_mean)
+    # for i in x_6_total:
+    #     x_6_total1.append(i - x_6_mean)
+    # for i in x_7_total:
+    #     x_7_total1.append(i - x_7_mean)
 
     # print(total_positions)
     # print(total_positions1)
@@ -284,10 +272,12 @@ def scatter_chart_for_all_values(header):
 
     #revenue:
 
-    regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total, x_4_total, x_5_total, x_6_total1, x_7_total, total_values)
+    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, x_4_total, x_5_total, x_6_total, total_values)
 
+
+    concat_df = df_operations.concat_dfs(dfs)
     #wages:
-    #regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, total_values)
+    regression_calculations = calculations.regression_calcs(total_positions1, x_2_total1, x_3_total1, x_4_total, concat_df, header, total_values)
 
 
 
